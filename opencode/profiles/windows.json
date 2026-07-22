@@ -3,10 +3,56 @@
   "shell": "powershell.exe",
   "mcp": {
     "codebase-memory-mcp": {
-      "enabled": false
+      "type": "local",
+      "command": [
+        "C:\\Users\\UAG3HC\\AppData\\Local\\Programs\\codebase-memory-mcp\\codebase-memory-mcp.exe"
+      ],
+      "enabled": true,
+      "timeout": 10000
     },
-    "grep-app": {
-      "enabled": false
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      },
+      "enabled": true
+    },
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp",
+      "headers": {
+        "EXA_API_KEY": "{env:EXA_API_KEY}"
+      },
+      "enabled": true
+    },
+    "ast-grep": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/ast-grep/ast-grep-mcp",
+        "ast-grep-server"
+      ],
+      "enabled": true,
+      "environment": {
+        "HTTP_PROXY": "http://127.0.0.1:3128",
+        "HTTPS_PROXY": "http://127.0.0.1:3128"
+      }
+    },
+    "crawl4ai": {
+      "type": "local",
+      "command": [
+        "C:\\Users\\UAG3HC\\.conda\\envs\\ai_platform\\python.exe",
+        "C:\\Users\\UAG3HC\\AppData\\Local\\Temp\\opencode\\crawl4ai_mcp\\server.py"
+      ],
+      "enabled": true,
+      "timeout": 120000
+    },
+    "drawio": {
+      "type": "local",
+      "command": ["drawio-mcp"],
+      "enabled": true
     }
   }
 }
