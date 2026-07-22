@@ -1,0 +1,285 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "default_agent": "ask",
+
+  "lsp": {
+    "pyright": {
+      "command": ["pyright-langserver", "--stdio"],
+      "extensions": [".py", ".pyi"]
+    }
+  },
+
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "headers": {
+        "CONTEXT7_API_KEY":  "{env:CONTEXT7_API_KEY}"
+      }
+    },
+
+    "codebase-memory-mcp": {
+      "type": "local",
+      "enabled": true,
+      "command": ["{env:CODEBASE_MEMORY_MCP_BIN}"],
+      "timeout": 30000
+    },
+
+    "ast-grep": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/ast-grep/ast-grep-mcp",
+        "ast-grep-server"
+      ],
+      "timeout": 30000
+    },
+
+    "grep-app": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "node",
+        "{env:GREP_APP_MCP_PATH}"
+      ],
+      "timeout": 30000
+    },
+
+    "exa": {
+      "type": "remote",
+      "enabled": true,
+      "url": "https://mcp.exa.ai/mcp",
+      "headers": {
+        "EXA_API_KEY": "{env:EXA_API_KEY}"
+      }
+    }
+  },
+
+  "permission": {
+    "edit": "ask",
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "lsp": "allow",
+    "todowrite": "allow",
+    "question": "allow",
+    "external_directory": "ask",
+    "webfetch": "ask",
+    "websearch": "ask",
+    "bash": {
+      "*": "ask",
+      "pwd": "allow",
+      "ls *": "allow",
+      "find *": "allow",
+      "rg *": "allow",
+      "grep *": "allow",
+      "cat *": "allow",
+      "sed *": "allow",
+      "head *": "allow",
+      "tail *": "allow",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git show*": "allow"
+    }
+  },
+
+  "agent": {
+    "ask": {
+      "description": "Read-only architecture and implementation Q&A agent",
+      "mode": "primary",
+      "color": "#00ff00",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "lsp": "allow",
+        "edit": "deny",
+        "todowrite": "allow",
+        "question": "allow",
+        "webfetch": "ask",
+        "websearch": "ask",
+        "external_directory": "ask",
+        "codebase-memory-mcp_*": "allow",
+        "context7_*": "allow",
+        "ast-grep_*": "allow",
+        "grep-app_*": "allow",
+        "exa_*": "ask",
+        "task": {
+          "*": "deny",
+          "research": "ask",
+          "review": "ask"
+        },
+        "bash": {
+          "*": "ask",
+          "pwd": "allow",
+          "ls *": "allow",
+          "find *": "allow",
+          "rg *": "allow",
+          "grep *": "allow",
+          "cat *": "allow",
+          "sed *": "allow",
+          "head *": "allow",
+          "tail *": "allow",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git show*": "allow"
+        }
+      },
+      "prompt": "You are Ask, a read-only codebase exploration and architecture agent.\n\nPurpose:\nAnswer technical questions by scanning the local codebase, project memory, dependency docs, callers, schemas, tests, configs, and runtime entrypoints.\n\nHard rules:\n- Do not edit files.\n- Do not write patches.\n- Do not change git state.\n- Do not create commits, branches, migrations, generated files, or config changes.\n- Ask clarification only when the codebase cannot resolve the ambiguity.\n\nWorkflow:\n1. Identify the relevant module, boundary, or data flow.\n2. Inspect files with read, grep, glob, list, LSP, and safe git commands.\n3. Use codebase-memory-mcp for past decisions, conventions, related modules, and known runtime paths.\n4. Use Context7 for dependency or API documentation.\n5. Use ast-grep for structural code questions.\n6. Check callers, tests, config, and runtime entrypoints before concluding.\n7. If multiple designs are possible, compare tradeoffs and recommend one.\n\nOutput:\n- Direct answer\n- Evidence from codebase\n- Relevant files/functions\n- Architecture/data-flow explanation when useful\n- Risks or unknowns\n- Suggested next steps"
+    },
+
+    "review": {
+      "description": "Strict read-only code review agent for current git changes",
+      "mode": "primary",
+      "color": "#00ffff",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "lsp": "allow",
+        "edit": "deny",
+        "todowrite": "allow",
+        "question": "allow",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "external_directory": "ask",
+        "codebase-memory-mcp_*": "allow",
+        "ast-grep_*": "allow",
+        "grep-app_*": "allow",
+        "context7_*": "allow",
+        "task": {
+          "*": "deny",
+          "review-python": "allow",
+          "review-tests": "allow",
+          "review-architecture": "allow"
+        },
+        "bash": {
+          "*": "ask",
+          "pwd": "allow",
+          "ls *": "allow",
+          "find *": "allow",
+          "rg *": "allow",
+          "grep *": "allow",
+          "cat *": "allow",
+          "sed *": "allow",
+          "head *": "allow",
+          "tail *": "allow",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git show*": "allow"
+        }
+      },
+      "prompt": "You are a strict read-only code review agent.\n\nWorkflow:\n1. Inspect the user's request and current git scope.\n2. Use git status, git diff, git diff --staged, git log, and git show when useful.\n3. Use read, grep, glob, list, LSP, ast-grep, grep-app, and codebase-memory-mcp to inspect related modules, callers, schemas, tests, configs, and runtime paths.\n4. For large changes, split analysis by subsystem using review subagents when useful.\n5. Do not modify files. Do not apply patches. Do not run destructive git commands.\n\nFocus on correctness bugs, broken imports, API contract changes, database/schema migration risks, async/sync misuse, error handling, transaction safety, type/schema mismatches, missing tests, security, performance regressions, coupling, and backward compatibility.\n\nOutput:\n- Summary\n- Git scope\n- Findings by severity: Critical, High, Medium, Low\n- Cross-codebase impact\n- Expected behavior\n- Suggested fixes\n- Tests to run/add"
+    },
+
+    "research": {
+      "description": "External documentation and web research agent",
+      "mode": "subagent",
+      "color": "info",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "lsp": "allow",
+        "edit": "deny",
+        "webfetch": "allow",
+        "websearch": "allow",
+        "context7_*": "allow",
+        "exa_*": "allow",
+        "bash": {
+          "*": "ask"
+        }
+      },
+      "prompt": "You are a research agent. Use official docs, Context7, Exa, and web sources to answer library, API, framework, and dependency questions. Prefer primary sources. Do not edit files."
+    },
+
+    "review-python": {
+      "description": "Python correctness, typing, imports, async, and runtime review",
+      "mode": "subagent",
+      "hidden": true,
+      "color": "warning",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "lsp": "allow",
+        "edit": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "codebase-memory-mcp_*": "allow",
+        "ast-grep_*": "allow",
+        "bash": {
+          "*": "ask",
+          "rg *": "allow",
+          "git diff*": "allow",
+          "git show*": "allow"
+        }
+      },
+      "prompt": "Review Python changes for broken imports, typing issues, async/sync misuse, bad exception handling, data model mismatch, runtime path issues, and packaging problems. Do not edit files."
+    },
+
+    "review-tests": {
+      "description": "Test coverage and regression-risk review",
+      "mode": "subagent",
+      "hidden": true,
+      "color": "secondary",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "lsp": "allow",
+        "edit": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "bash": {
+          "*": "ask",
+          "rg *": "allow",
+          "git diff*": "allow",
+          "git show*": "allow"
+        }
+      },
+      "prompt": "Review whether the current change has enough tests. Identify missing unit, integration, regression, and edge-case tests. Do not edit files."
+    },
+
+    "review-architecture": {
+      "description": "Architecture, schema, data-flow, and cross-module impact review",
+      "mode": "subagent",
+      "hidden": true,
+      "color": "accent",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "lsp": "allow",
+        "edit": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "codebase-memory-mcp_*": "allow",
+        "ast-grep_*": "allow",
+        "grep-app_*": "allow",
+        "bash": {
+          "*": "ask",
+          "rg *": "allow",
+          "git diff*": "allow",
+          "git show*": "allow",
+          "git log*": "allow"
+        }
+      },
+      "prompt": "Review architecture impact. Trace data flow, module boundaries, schemas, persistence, runtime entrypoints, public interfaces, backward compatibility, and coupling. Do not edit files."
+    }
+  }
+}

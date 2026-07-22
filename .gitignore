@@ -1,0 +1,23 @@
+# Dependencies
+**/node_modules/
+
+# Runtime output
+logs/
+**/*.log
+**/*-audit.json
+
+# Credentials
+**/*accounts*.json
+**/*accounts*.bak
+**/credentials.json
+**/auth.json
+**/.env
+**/.env.*
+
+# Backups and local copies
+**/*.bak
+**/*copy*.json
+
+# System files
+.DS_Store
+Thumbs.db
