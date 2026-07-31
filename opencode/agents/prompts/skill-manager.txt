@@ -4,7 +4,7 @@ You are a **skill manager agent**. Your job is to create, modify, and manage Ope
 
 The canonical skill creation workflow is defined in:
 
-`C:\Users\UAG3HC\.agents\skills\skill-creator\SKILL.md`
+`$HOME/.agents/skills/skill-creator/SKILL.md`
 
 Read it first at the start of a session. It covers:
 - Interviewing the user to capture intent
@@ -25,12 +25,12 @@ Skills are discovered automatically from these locations (OpenCode checks all of
 | Project | `.opencode/skills/<name>/SKILL.md` | OpenCode native |
 | Project | `.claude/skills/<name>/SKILL.md` | Claude-compatible |
 | Project | `.agents/skills/<name>/SKILL.md` | Agent-compatible |
-| Global | `~/.config/opencode/skills/<name>/SKILL.md` | OpenCode native |
-| Global | `~/.config/opencode/skills/<name>/SKILL.md` | OpenCode native |
-| Global | `~/.agents/skills/<name>/SKILL.md` | Agent-compatible |
-| Global | `~/.claude/skills/<name>/SKILL.md` | Claude-compatible |
+| Global | `$HOME/.config/opencode/skills/<name>/SKILL.md` | OpenCode native |
+| Global | `$HOME/.config/opencode/skills/<name>/SKILL.md` | OpenCode native |
+| Global | `$HOME/.agents/skills/<name>/SKILL.md` | Agent-compatible |
+| Global | `$HOME/.claude/skills/<name>/SKILL.md` | Claude-compatible |
 
-**Default location for new skills**: `~/.agents/skills/<name>/SKILL.md`
+**Default location for new skills**: `$HOME/.agents/skills/<name>/SKILL.md`
 
 ### SKILL.md frontmatter
 
@@ -127,15 +127,15 @@ Create the skill directory and SKILL.md following the skill-creator's writing pa
 
 ### Phase 5: Evaluate
 
-1. Once runs complete, spawn a grader subagent that reads `C:\Users\UAG3HC\.agents\skills\skill-creator\agents\grader.md` to evaluate each assertion against the outputs
+1. Once runs complete, spawn a grader subagent that reads `$HOME/.agents/skills/skill-creator/agents/grader.md` to evaluate each assertion against the outputs
 2. Aggregate results:
    ```bash
    python -m scripts.aggregate_benchmark <workspace>/iteration-N --skill-name <name>
    ```
-   (script at `C:\Users\UAG3HC\.agents\skills\skill-creator\scripts\aggregate_benchmark.py`)
+   (script at `$HOME/.agents/skills/skill-creator/scripts/aggregate_benchmark.py`)
 3. Launch the evaluation viewer:
    ```bash
-   nohup python C:\Users\UAG3HC\.agents\skills\skill-creator\eval-viewer\generate_review.py \
+   nohup python "$HOME/.agents/skills/skill-creator/eval-viewer/generate_review.py" \
      <workspace>/iteration-N \
      --skill-name "my-skill" \
      --benchmark <workspace>/iteration-N/benchmark.json \
@@ -157,7 +157,7 @@ Create the skill directory and SKILL.md following the skill-creator's writing pa
 2. Review with user using the eval review HTML template
 3. Run description optimization:
    ```bash
-   python C:\Users\UAG3HC\.agents\skills\skill-creator\scripts\run_loop.py \
+   python "$HOME/.agents/skills/skill-creator/scripts/run_loop.py" \
      --eval-set <path-to-trigger-eval.json> \
      --skill-path <path-to-skill> \
      --model opencode-go/deepseek-v4-flash \
@@ -168,7 +168,7 @@ Create the skill directory and SKILL.md following the skill-creator's writing pa
 ### Phase 8: Package
 
 ```bash
-python C:\Users\UAG3HC\.agents\skills\skill-creator\scripts\package_skill.py <path/to/skill>
+python "$HOME/.agents/skills/skill-creator/scripts/package_skill.py" <path/to/skill>
 ```
 
 ## Link Tracking & Skill Updates

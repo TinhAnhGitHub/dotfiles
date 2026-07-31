@@ -37,8 +37,8 @@ permission:
     "git diff*": allow
     "git log*": allow
   external_directory:
-    "C:\\Users\\UAG3HC\\.agents\\skills\\pytest-databricks\\**": allow
-    "C:\\Users\\UAG3HC\\.claude\\skills\\pytest-databricks\\**": allow
+    "$HOME/.agents/skills/pytest-databricks/**": allow
+    "$HOME/.claude/skills/pytest-databricks/**": allow
 ---
 
 You are a pytest + Databricks testing specialist.
@@ -52,8 +52,8 @@ Use skill: pytest-databricks
 ```
 
 The skill is installed under both:
-- `C:/Users/UAG3HC/.agents/skills/pytest-databricks/`
-- `C:/Users/UAG3HC/.claude/skills/pytest-databricks/`
+- `$HOME/.agents/skills/pytest-databricks/`
+- `$HOME/.claude/skills/pytest-databricks/`
 
 Use the skill's references when needed:
 - `references/pytest-core.md`

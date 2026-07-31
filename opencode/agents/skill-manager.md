@@ -33,7 +33,7 @@ permission:
     "kill *": ask
     "nohup *": ask
   external_directory:
-    "C:\\Users\\UAG3HC\\.agents\\skills\\*": allow
-    "C:\\Users\\UAG3HC\\.config\\opencode\\skills\\*": allow
+    "$HOME/.agents/skills/*": allow
+    "$HOME/.config/opencode/skills/*": allow
 ---
 {file:./prompts/skill-manager.txt}

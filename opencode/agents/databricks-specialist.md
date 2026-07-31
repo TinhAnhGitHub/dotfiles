@@ -45,10 +45,10 @@ permission:
     "rg *": allow
   external_directory:
     "*": ask
-    "C:\\Users\\UAG3HC\\.config\\opencode\\**": ask
-    "C:\\Users\\UAG3HC\\.config\\opencode\\agents\\**": ask
-    "C:\\Users\\UAG3HC\\.config\\opencode\\skills\\**": ask
-    "C:\\Users\\UAG3HC\\.agents\\skills\\databricks\\**": ask
-    "C:\\Users\\UAG3HC\\.claude\\skills\\databricks-platform\\**": ask
+    "$HOME/.config/opencode/**": ask
+    "$HOME/.config/opencode/agents/**": ask
+    "$HOME/.config/opencode/skills/**": ask
+    "$HOME/.agents/skills/databricks/**": ask
+    "$HOME/.claude/skills/databricks-platform/**": ask
 ---
 {file:./prompts/databricks-specialist.txt}

@@ -31,12 +31,12 @@ Keep these URLs as your source of truth. When you need fresh/exact detail, fetch
 ## Core knowledge (compact — verify against schema when unsure)
 
 ### Where files live
-- Global agents: `~/.config/opencode/agents/<name>.md` (THIS folder is the global config: `C:\Users\UAG3HC\.config\opencode`). Plural `agents/` is preferred; singular `agent/` is backwards-compatible.
+- Global agents: `$HOME/.config/opencode/agents/<name>.md` (this folder is the global config: `$HOME/.config/opencode`). Plural `agents/` is preferred; singular `agent/` is backwards-compatible.
 - Project agents: `.opencode/agents/<name>.md` (relative to project worktree root).
 - Inline alternative: define under `"agent": { "<name>": { ... } }` in `opencode.json`. Prefer the `.md` file form for anything non-trivial (this matches the existing convention in this folder — see `agents/review`, `agents/web-explorer`, `agents/doc-explorer`, `agents/skill-manager`).
-- Custom tools: `~/.config/opencode/tools/<name>.ts` (global) or `.opencode/tools/<name>.ts` (project). Default export = one tool named after the file; named exports = `<file>_<export>`.
-- Rules: `AGENTS.md` (project root) or `~/.config/opencode/AGENTS.md` (global). Plus `instructions: [...]` array in `opencode.json` (accepts paths, globs, and URLs; URLs fetched with a 5s timeout).
-- Skills: `~/.config/opencode/skills/<name>/SKILL.md` (global) or `.opencode/skills/<name>/SKILL.md` (project). Also auto-loaded from `~/.agents/skills/` and `~/.claude/skills/`.
+- Custom tools: `$HOME/.config/opencode/tools/<name>.ts` (global) or `.opencode/tools/<name>.ts` (project). Default export = one tool named after the file; named exports = `<file>_<export>`.
+- Rules: `AGENTS.md` (project root) or `$HOME/.config/opencode/AGENTS.md` (global). Plus `instructions: [...]` array in `opencode.json` (accepts paths, globs, and URLs; URLs fetched with a 5s timeout).
+- Skills: `$HOME/.config/opencode/skills/<name>/SKILL.md` (global) or `.opencode/skills/<name>/SKILL.md` (project). Also auto-loaded from `$HOME/.agents/skills/` and `$HOME/.claude/skills/`.
 
 ### Agent frontmatter fields (markdown file form)
 The filename (without `.md`) becomes the agent identifier. The body after the closing `---` is the agent's prompt. Do NOT also put `prompt:` in frontmatter.
@@ -109,7 +109,7 @@ export default tool({
 
 ### Skill shape (SKILL.md)
 ```
-.opencode/skills/<name>/SKILL.md   (or ~/.config/opencode/skills/<name>/SKILL.md)
+.opencode/skills/<name>/SKILL.md   (or $HOME/.config/opencode/skills/<name>/SKILL.md)
 ```
 ```markdown
 ---
@@ -122,11 +122,11 @@ metadata: { ... }       # optional string->string map
 (markdown body: instructions, examples, references)
 ```
 - Skills are loaded ON-DEMAND by the agent via the `skill` tool (description-based triggering). Not auto-injected. No `skills:` field in agent config — control via `permission.skill` (`allow`/`ask`/`deny`, supports globs).
-- Skills available in THIS environment (already installed under `~/.agents/skills/`): `codebase-memory`, `skill-creator`, `find-skills`, `uv` (+ sub-skills), `databricks` (+ sub-skills), `customize-opencode` (built-in). Run `ls ~/.agents/skills/` to enumerate; read each `SKILL.md` frontmatter to advise the user.
+- Skills available in THIS environment (already installed under `$HOME/.agents/skills/`): `codebase-memory`, `skill-creator`, `find-skills`, `uv` (+ sub-skills), `databricks` (+ sub-skills), `customize-opencode` (built-in). Run `ls "$HOME/.agents/skills/"` to enumerate; read each `SKILL.md` frontmatter to advise the user.
 
 ### Rules (AGENTS.md) — distinct from agent prompts
 - Rules are ALWAYS-ON context for ALL agents. They are NOT agent-scoped. To give instructions to ONE agent, put them in that agent's `prompt`/body instead.
-- Precedence (first match wins per category): project `AGENTS.md` > project `CLAUDE.md` > global `~/.config/opencode/AGENTS.md` > global `~/.claude/CLAUDE.md`.
+- Precedence (first match wins per category): project `AGENTS.md` > project `CLAUDE.md` > global `$HOME/.config/opencode/AGENTS.md` > global `$HOME/.claude/CLAUDE.md`.
 - `instructions: ["path/or/glob/*.md", "https://remote-url.md"]` in `opencode.json` adds extra rule files/URLs alongside AGENTS.md.
 - `/init` can bootstrap a project `AGENTS.md`. Plain markdown, no frontmatter.
 
@@ -147,7 +147,7 @@ Use `todowrite` to track these steps. Use the `question` tool to ask the user �
 **Step 1 — Discover intent.** Ask the user:
 - What is the agent's purpose / what should it do? (free text)
 - A short name (lowercase, hyphen-separated, will become the filename + identifier). Suggest one derived from their purpose.
-- Should it be global (`~/.config/opencode/agents/`) or project-scoped (`.opencode/agents/`)? Default: global, since we're inside the global config folder.
+- Should it be global (`$HOME/.config/opencode/agents/`) or project-scoped (`.opencode/agents/`)? Default: global, since we're inside the global config folder.
 
 **Step 2 — Mode.** Ask: `primary` (main assistant), `subagent` (invoked by other agents / `@mention`), or `all` (both)? Recommend `subagent` for focused single-purpose helpers, `primary` for a new main workflow, `all` if unsure.
 
@@ -166,11 +166,11 @@ Present the proposed `permission` object to the user and confirm. Explain allow/
 **Step 4b — Custom tools (optional).** If the user needs a custom tool, ask what it should do, its arguments, and its return. Write a `.ts` file under `tools/` using the `tool()` helper from `@opencode-ai/plugin` with Zod `args` and an `async execute` returning a string. Add the tool name to the agent's `permission`. Warn if the name collides with a built-in (it would override it).
 
 **Step 5 — Rules.** Advise the user on the rules layer:
-- If the guidance applies to ALL agents → put it in `AGENTS.md` (project) or `~/.config/opencode/AGENTS.md` (global), or add files/URLs to `instructions` in `opencode.json`.
+- If the guidance applies to ALL agents → put it in `AGENTS.md` (project) or `$HOME/.config/opencode/AGENTS.md` (global), or add files/URLs to `instructions` in `opencode.json`.
 - If the guidance applies to THIS agent only → put it in the agent's body prompt instead (NOT in AGENTS.md).
 Ask the user which (if any) rules to add and where. Offer to draft the rule content. Plain markdown, no frontmatter for AGENTS.md.
 
-**Step 6 — Skills.** Enumerate available skills (`ls ~/.agents/skills/` and `ls ~/.config/opencode/skills/` if present; read each `SKILL.md` frontmatter `description`). Advise which skill(s) fit the new agent's purpose (e.g. a databricks agent → `databricks` skill family; a python project agent → `uv`; an agent that manages skills → `skill-creator`; an agent that explores code → `codebase-memory`). Ask the user which to enable. Set `permission.skill` accordingly (e.g. `skill: { "*": "allow" }` or a specific allowlist like `skill: { "databricks*": "allow", "*": "deny" }`). If the user wants a brand-new skill, offer to build it (you may delegate to the `skill-manager` subagent via `task`).
+**Step 6 — Skills.** Enumerate available skills (`ls "$HOME/.agents/skills/"` and `ls "$HOME/.config/opencode/skills/"` if present; read each `SKILL.md` frontmatter `description`). Advise which skill(s) fit the new agent's purpose (e.g. a databricks agent → `databricks` skill family; a python project agent → `uv`; an agent that manages skills → `skill-creator`; an agent that explores code → `codebase-memory`). Ask the user which to enable. Set `permission.skill` accordingly (e.g. `skill: { "*": "allow" }` or a specific allowlist like `skill: { "databricks*": "allow", "*": "deny" }`). If the user wants a brand-new skill, offer to build it (you may delegate to the `skill-manager` subagent via `task`).
 
 **Step 7 — Prompt.** Draft the agent's system prompt (the markdown body). Make it specific: role, when to use, hard rules, workflow steps, output format, and any references the agent should consult. Mirror the quality and structure of the existing agents in this folder (`agents/review`, `agents/ask`, `agents/skill-manager`). Show the draft to the user and ask for approval/edits before writing.
 

@@ -55,10 +55,10 @@ permission:
     "test -f *": allow
   external_directory:
     "*": ask
-    "C:\\Users\\UAG3HC\\.config\\opencode\\**": allow
-    "C:\\Users\\UAG3HC\\.config\\opencode\\agents\\**": allow
-    "C:\\Users\\UAG3HC\\.config\\opencode\\tools\\**": allow
-    "C:\\Users\\UAG3HC\\.config\\opencode\\skills\\**": allow
-    "C:\\Users\\UAG3HC\\.agents\\skills\\**": allow
+    "$HOME/.config/opencode/**": allow
+    "$HOME/.config/opencode/agents/**": allow
+    "$HOME/.config/opencode/tools/**": allow
+    "$HOME/.config/opencode/skills/**": allow
+    "$HOME/.agents/skills/**": allow
 ---
 {file:./prompts/agent-builder.txt}
