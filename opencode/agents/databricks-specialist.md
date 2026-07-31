@@ -8,8 +8,8 @@ description: >
   Databricks skills, and—when explicitly asked to end/consolidate a
   session—convert lessons into Databricks skills or update this agent's rules.
 mode: all
-model: opencode-go/deepseek-v4-flash
-temperature: 0.2
+model: openai/gpt-5.6-sol
+temperature: 0.3
 color: "#ff6f00"
 steps: 160
 permission:

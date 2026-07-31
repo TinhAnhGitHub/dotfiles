@@ -23,7 +23,8 @@ to identify the right sub-skill for your task, then load it alongside this one.
 | **Bundle (DABs) config, deploy, CI/CD** | [`dabs`](dabs/SKILL.md) | Creating/validating/deploying `databricks.yml` bundles, multi-environment targets |
 | **Lakeflow Jobs (data engineering DAGs)** | [`jobs`](jobs/SKILL.md) | Orchestrating multi-task jobs, notebooks, Python wheels, SQL, dbt, triggers |
 | **Lakeflow Spark Declarative Pipelines (DLT)** | [`pipelines`](pipelines/SKILL.md) | Building batch/streaming ETL pipelines with Python or SQL |
-| **Model Serving & MLflow** | [`model-serving`](model-serving/SKILL.md) | Managing serving endpoints, registering models, PyFunc, batch scoring |
+| **Model Serving & MLflow model development** | [`model-serving`](model-serving/SKILL.md) | Managing serving endpoints, registering models, PyFunc, batch scoring |
+| **MLflow GenAI evaluation, tracing & monitoring** | [`evaluation-monitoring`](../mlflow/evaluation-monitoring/SKILL.md) | Evaluation datasets, human feedback/expectations, LLM judges/scorers, prompt/agent/trace evaluation, regression tests, automatic evaluation, UC traces, production monitoring |
 | **Databricks Apps (full-stack deployment)** | [`apps`](apps/SKILL.md) | Building and deploying Streamlit, Gradio, Dash, Flask, FastAPI apps |
 | **Data App UI/UX design** | [`app-design`](app-design/SKILL.md) | Designing dashboards, KPIs, charts, Genie/chat surfaces with proper layout and notation |
 | **Lakebase Postgres (OLTP)** | [`lakebase`](lakebase/SKILL.md) | Provisioning Postgres projects, synced tables, Data API, connectivity |
@@ -111,3 +112,6 @@ databricks experimental aitools tools get-default-warehouse --profile <PROFILE>
 2. **Identify the sub-skill** from the routing table above and load it too.
 3. For CLI/auth issues, also load [`core`](core/SKILL.md).
 4. For platform-wide operations, also load [`platform`](platform/SKILL.md).
+5. For MLflow GenAI evaluation, tracing, human feedback, or production quality
+   monitoring, also load the parent `mlflow` skill and
+   [`evaluation-monitoring`](../mlflow/evaluation-monitoring/SKILL.md).
