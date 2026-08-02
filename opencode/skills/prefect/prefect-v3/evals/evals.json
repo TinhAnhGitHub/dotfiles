@@ -1,0 +1,23 @@
+{
+  "skill_name": "prefect-v3",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a Prefect 3 flow that downloads the same customer data repeatedly. Show me a tested pattern for retries, input-based caching with persisted results, structured logs, and a pytest test that does not leave state in my real Prefect workspace. Please call out what changes if the task runs in Kubernetes.",
+      "expected_output": "A Prefect 3 implementation with imports, retry and cache configuration, run logging, a prefect_test_harness test, and a Kubernetes result-storage caveat; it should warn about idempotency and trusted serializers.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Design a production deployment for a Prefect 3 flow. It should build an immutable Docker image in GitHub Actions, deploy through prefect.yaml to a Kubernetes work pool, run every weekday, accept an event payload for ad-hoc processing, and avoid putting credentials in Git. Compare Prefect Cloud with a self-hosted server and include troubleshooting for Scheduled-to-Late runs and Kubernetes RBAC.",
+      "expected_output": "A decision-aware deployment design with preflight/version checks, prefect.yaml and CI examples, schedule and event-trigger patterns, Secret/API-key handling, Cloud versus self-hosted tradeoffs, worker/RBAC checks, and official source links.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need to run Prefect 3 on a restricted network with a self-hosted HA server and custom worker. Explain the Postgres/Redis/Docket requirements, health checks, Helm/basic auth/CSRF/network rules, database retention, and give a minimal custom worker/plugin outline. Flag beta, version-dependent, and dangerous operations instead of inventing APIs.",
+      "expected_output": "An operationally safe Prefect 3 runbook covering HA prerequisites, worker health, Helm/security/networking, database maintenance, custom worker/plugin extension points, permissions, and explicit version/caveat labels with official links.",
+      "files": []
+    }
+  ]
+}
