@@ -1,0 +1,23 @@
+{
+  "skill_name": "mlflow-prompt-registry",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a Prompt Registry lifecycle for a Databricks support agent. Show how Git, registered prompt versions, candidate/production aliases, model_config, exact prompt URIs, MLflow traces, LoggedModels, Unity Catalog model versions, and a serving endpoint release fit together. Explain why an alias is not deployment evidence.",
+      "expected_output": "A precise prompt lifecycle with immutable versions, mutable aliases, exact-version release manifests, model/trace lineage, and an explicit Databricks-managed MLflow caveat.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Use current MLflow Prompt Registry APIs to optimize a prompt and migrate it to a new model. Compare GEPA and MetaPromptOptimizer, show the optimize_prompts contract, explain training/holdout data and scorers, and describe how the optimized prompt is evaluated, registered, approved, and rolled back.",
+      "expected_output": "A current optimize_prompts workflow with predict_fn, train_data, prompt_uris, optimizer/scorers, version registration, independent regression gates, and model migration lineage.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Explain MLflow Prompt Registry templates, variables, structured output, model configuration, caching, automatic prompt linking, and the security risks of using Jinja or user-controlled content. Distinguish what response_format tracks from what the application must validate.",
+      "expected_output": "A concise API-aware explanation of text/chat/Jinja formats, {{variables}}, mutable model config, version/alias cache semantics, trace/model linkage, runtime validation, and safe template boundaries.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "genai-flavors",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Package a LangGraph support agent with MLflow using Models from Code, preserve tracing, validate native and PyFunc loading, and prepare it for Unity Catalog registration.",
+      "expected_output": "Complete source and logging patterns with a realistic signature/input, pinned dependencies/resources, secret handling, evaluation gate, and LangGraph-specific constraints.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Create an MLflow ResponsesAgent that supports synchronous and streaming Responses API output and records a safe allow-listed tool call. Explain migration from ChatAgent.",
+      "expected_output": "A Pydantic-2 ResponsesAgent Models-from-Code implementation with valid event IDs/final items, traced validated tool dispatch, no arbitrary code execution, and contract tests.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Choose between DSPy and LlamaIndex MLflow flavors for an optimized RAG workflow backed by an external vector store, and show how to package and evaluate the selected design.",
+      "expected_output": "A clear decision, external-store Models-from-Code pattern, optimizer/settings/version capture, interface constraints, isolated validation, and systematic evaluation plan.",
+      "files": []
+    }
+  ]
+}

@@ -4,7 +4,7 @@ description: >
   the web. Follows doc hierarchy (TOC -> sections -> subsections) in BFS/DFS
   style. Can fall back to local read/grep for project-internal docs.
 mode: all
-model: opencode/mimo-v2.5-free
+model: opencode/deepseek-v4-flash-free
 temperature: 0.1
 color: "#4488ff"
 steps: 30

@@ -3,9 +3,9 @@ name: databricks
 description: >
   Databricks unified skill suite: CLI, Python SDK, DABs, Unity Catalog, Jobs,
   Pipelines, Model Serving, AI/agents, Apps, Lakebase, serverless migration,
-  vector search, app design, and platform operations. This is the parent/entry-point
-  skill for ALL Databricks work. Load this first, then load the matching sub-skill
-  from the routing table below.
+  vector search, LLMOps, app design, and platform operations. This is the
+  parent/entry-point skill for ALL Databricks work. Load this first, then load
+  the matching sub-skill from the routing table below.
 ---
 
 # Databricks — Unified Skill Suite
@@ -24,7 +24,12 @@ to identify the right sub-skill for your task, then load it alongside this one.
 | **Lakeflow Jobs (data engineering DAGs)** | [`jobs`](jobs/SKILL.md) | Orchestrating multi-task jobs, notebooks, Python wheels, SQL, dbt, triggers |
 | **Lakeflow Spark Declarative Pipelines (DLT)** | [`pipelines`](pipelines/SKILL.md) | Building batch/streaming ETL pipelines with Python or SQL |
 | **Model Serving & MLflow model development** | [`model-serving`](model-serving/SKILL.md) | Managing serving endpoints, registering models, PyFunc, batch scoring |
+| **End-to-end LLMOps workflows** | [`llmops`](llmops/SKILL.md) | Designing or implementing Git-to-production workflows for agents and LLM applications, including component lineage, prompt/version management, evaluation gates, custom serving endpoint releases, monitoring, cost, rollback, and governance |
 | **MLflow GenAI evaluation, tracing & monitoring** | [`evaluation-monitoring`](../mlflow/evaluation-monitoring/SKILL.md) | Evaluation datasets, human feedback/expectations, LLM judges/scorers, prompt/agent/trace evaluation, regression tests, automatic evaluation, UC traces, production monitoring |
+| **MLflow app versioning & GenAI packaging** | [`version-tracking`](../mlflow/version-tracking/SKILL.md) + [`genai-flavors`](../mlflow/genai-flavors/SKILL.md) | LoggedModel/Git lineage, LangChain/LangGraph, DSPy, LlamaIndex, ResponsesAgent, Models from Code, signatures and resources |
+| **MLflow Prompt Registry & prompt optimization** | [`prompt-registry`](../mlflow/prompt-registry/SKILL.md) | Prompt versions/aliases, `prompts:/` URIs, templates, model configuration, lineage, GEPA/MetaPromptOptimizer, and model migration |
+| **MLflow Model Registry & UC promotion** | [`model-registry`](../mlflow/model-registry/SKILL.md) | Registered model versions/aliases, signatures, environment promotion, rollback, and the explicit bridge to served entities/traffic |
+| **MLflow MCP Registry** | [`mcp-registry`](../mlflow/mcp-registry/SKILL.md) | Governed MCP server versions, aliases, tool snapshots, access endpoints, and Databricks-served agent dependencies |
 | **Databricks Apps (full-stack deployment)** | [`apps`](apps/SKILL.md) | Building and deploying Streamlit, Gradio, Dash, Flask, FastAPI apps |
 | **Data App UI/UX design** | [`app-design`](app-design/SKILL.md) | Designing dashboards, KPIs, charts, Genie/chat surfaces with proper layout and notation |
 | **Lakebase Postgres (OLTP)** | [`lakebase`](lakebase/SKILL.md) | Provisioning Postgres projects, synced tables, Data API, connectivity |
@@ -112,6 +117,10 @@ databricks experimental aitools tools get-default-warehouse --profile <PROFILE>
 2. **Identify the sub-skill** from the routing table above and load it too.
 3. For CLI/auth issues, also load [`core`](core/SKILL.md).
 4. For platform-wide operations, also load [`platform`](platform/SKILL.md).
-5. For MLflow GenAI evaluation, tracing, human feedback, or production quality
-   monitoring, also load the parent `mlflow` skill and
-   [`evaluation-monitoring`](../mlflow/evaluation-monitoring/SKILL.md).
+5. For any MLflow task, also load parent [`mlflow`](../mlflow/SKILL.md) and the narrow
+   sub-skill listed above. Combine [`model-serving`](model-serving/SKILL.md) with
+   [`model-registry`](../mlflow/model-registry/SKILL.md) for UC model promotion and endpoint
+   rollout; combine it with [`genai-flavors`](../mlflow/genai-flavors/SKILL.md) when packaging
+   custom PyFunc or ResponsesAgent artifacts.
+6. For a production LLM application or agent, load [`llmops`](llmops/SKILL.md) as the
+   orchestration layer, then add only the component skills needed by the implementation.

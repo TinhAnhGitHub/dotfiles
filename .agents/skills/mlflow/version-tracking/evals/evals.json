@@ -1,0 +1,23 @@
+{
+  "skill_name": "version-tracking",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Version a traced support agent with MLflow so every trace resolves to its Git commit, prompt version, provider model, retriever index, and generation config. Include a safe fallback for Databricks Git Folders.",
+      "expected_output": "A feature-gated LoggedModel and active-model workflow with immutable source/config identities, trace linkage, no secret leakage, and a Databricks-compatible fallback.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Compare two MLflow application versions on the same evaluation dataset, explain which evidence should gate promotion, and show how production failures become regression cases.",
+      "expected_output": "A fair traced comparison using mlflow.genai.evaluate, fixed scorers/data, slice-level gates, lineage, and a closed trace-to-dataset loop.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Explain why moving a Unity Catalog model alias is not the same as deploying a new Databricks serving endpoint version, then propose an auditable release record.",
+      "expected_output": "A precise separation of LoggedModel, registered version/alias, served entity, endpoint config, traffic route, readiness state, and deployment evidence.",
+      "files": []
+    }
+  ]
+}

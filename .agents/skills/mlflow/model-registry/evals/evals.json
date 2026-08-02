@@ -1,0 +1,23 @@
+{
+  "skill_name": "model-registry",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build an MLflow 3 champion/challenger registration and promotion workflow with signatures, evaluation evidence, aliases, rollback, and event-driven CI safeguards.",
+      "expected_output": "A registry-URI-aware workflow using returned model URIs, immutable numbered versions, authorized tags/aliases, explicit quality gates, idempotent automation, and compensating rollback.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Register a ResponsesAgent in Azure Databricks Unity Catalog and canary its new version on a custom model serving endpoint with 10 percent traffic and UC observability.",
+      "expected_output": "A UC signature/resource/permission-aware model registration plus explicit served entities, traffic, readiness, logs/inference/telemetry evidence, Preview/region caveats, and rollback.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Explain and automate promotion from staging to production when separate Unity Catalog model names are used, then show why moving @champion alone does not update an existing endpoint.",
+      "expected_output": "Correct copy_model_version lineage, destination version/alias metadata, separate endpoint config update, dual readiness polling, release manifest, and rollback plan.",
+      "files": []
+    }
+  ]
+}

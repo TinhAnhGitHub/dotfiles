@@ -18,7 +18,10 @@ This reference covers the full infrastructure configuration for agent and model 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.serving import (
     ServedEntityInput, EndpointCoreConfigInput, TrafficConfig,
-    AiGatewayConfig, AiGatewayRateLimit, AiGatewayGuardrails,
+    AiGatewayConfig, AiGatewayRateLimit, AiGatewayRateLimitKey,
+    AiGatewayRateLimitRenewalPeriod, AiGatewayGuardrails,
+    AiGatewayGuardrailParameters, AiGatewayGuardrailPiiBehavior,
+    AiGatewayGuardrailPiiBehaviorBehavior,
     AiGatewayInferenceTableConfig, FallbackConfig
 )
 from databricks.sdk.service.catalog import RegisteredModelAlias
@@ -364,20 +367,25 @@ w.serving_endpoints.put_ai_gateway(
     name="my-agent-endpoint",
     rate_limits=[
         AiGatewayRateLimit(
-            key="user",
-            value="user_123",
-            calls_per_sec=100,
-            calls_per_min=6000,
+            key=AiGatewayRateLimitKey.USER,
+            principal="user_123",
+            calls=100,
+            renewal_period=AiGatewayRateLimitRenewalPeriod.MINUTE,
         )
     ],
     guardrails=AiGatewayGuardrails(
-        input_config={
-            "pii_detection": {"enabled": True, "redact": True},
-            "content_moderation": {"enabled": True, "threshold": 0.8},
-        },
-        output_config={
-            "pii_detection": {"enabled": True, "redact": True},
-        },
+        input=AiGatewayGuardrailParameters(
+            safety=True,
+            pii=AiGatewayGuardrailPiiBehavior(
+                behavior=AiGatewayGuardrailPiiBehaviorBehavior.MASK,
+            ),
+        ),
+        output=AiGatewayGuardrailParameters(
+            safety=True,
+            pii=AiGatewayGuardrailPiiBehavior(
+                behavior=AiGatewayGuardrailPiiBehaviorBehavior.MASK,
+            ),
+        ),
     ),
     inference_table_config=AiGatewayInferenceTableConfig(
         catalog_name="main",

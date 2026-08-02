@@ -1,6 +1,6 @@
 # Model Serving Limits, Quotas, and Regions
 
-Source: [Databricks docs](https://docs.databricks.com/aws/en/machine-learning/model-serving/model-serving-limits)
+Source: [Azure Databricks docs](https://learn.microsoft.com/en-us/azure/databricks/machine-learning/model-serving/model-serving-limits)
 
 ## Resource and Payload Limits (Custom Models & AI Agents)
 

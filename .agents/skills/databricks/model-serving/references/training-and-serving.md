@@ -248,7 +248,7 @@ databricks jobs get-run-output "$TASK_RUN_ID" --output json | jq '.notebook_outp
 
 **Serving UI hides SP-owned endpoints by default.** If the deploy ran as a service principal, the Serving page won't show the new endpoint until you switch from "Owned by me" to "All". Or just `databricks serving-endpoints list`.
 
-These `jobs submit` traps — the `spec.client: "4"` requirement, using the TASK run_id (not the submit run_id) to fetch output, and `dbutils.notebook.exit` over `print()` on serverless — are shown in the example above. For broader Lakeflow Jobs guidance, see the **[databricks-jobs](../../databricks-jobs/SKILL.md)** skill.
+These `jobs submit` traps — the `spec.client: "4"` requirement, using the TASK run_id (not the submit run_id) to fetch output, and `dbutils.notebook.exit` over `print()` on serverless — are shown in the example above. For broader Lakeflow Jobs guidance, see the **[databricks-jobs](../../jobs/SKILL.md)** skill.
 
 ---
 
@@ -304,7 +304,9 @@ databricks serving-endpoints list --output json \
 ## Related skills
 
 - **`databricks-agent-bricks`** skill — no-code Knowledge Assistants and Supervisor Agents. Prefer this over hand-rolling agents.
-- **`databricks-mlflow-evaluation`** skill — evaluate model/agent quality before promoting `@prod`.
+- **`mlflow` + `evaluation-monitoring`** skills — evaluate model/agent quality before promoting `@prod`.
+- **`mlflow` + `model-registry`** skills — registered version, alias, promotion, rollback, and release-evidence semantics.
+- **`mlflow` + `genai-flavors`** skills — package LangChain/LangGraph, DSPy, LlamaIndex, custom PyFunc, or ResponsesAgent artifacts.
 - **`databricks-vector-search`** skill — vector indexes used as retrieval tools in agents.
 - **`databricks-jobs`** skill — async deploy pattern (`--no-wait`, TASK run_id trap).
-- **`databricks-unity-catalog`** skill — UC governs the registered model: permissions, lineage, audit.
+- **`databricks-platform`** skill — UC permissions, workspace bindings, lineage, audit, and platform operations.

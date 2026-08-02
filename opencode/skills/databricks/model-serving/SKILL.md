@@ -10,6 +10,9 @@ parent: databricks-core
 # Model Serving Endpoints
 
 **FIRST**: Use the parent `databricks-core` skill for CLI basics, authentication, and profile selection.
+Also load parent `mlflow` plus `model-registry` for model-version/alias/promotion semantics,
+and `genai-flavors` when packaging a custom PyFunc or ResponsesAgent. This skill owns endpoint
+operations; the MLflow skills own artifact and registry semantics.
 
 Model Serving provides managed endpoints for serving LLMs, custom ML models, and external models as scalable REST APIs. Endpoints are identified by **name** (unique per workspace).
 
@@ -175,11 +178,15 @@ env:
     valueFrom: serving-endpoint
 ```
 
-Then wire the endpoint into your app via the `serving()` plugin or a custom route in `onPluginsReady`. For the full app integration pattern, use the **`databricks-apps`** skill and read the [Model Serving Guide](../databricks-apps/references/appkit/model-serving.md).
+Then wire the endpoint into your app via the `serving()` plugin or a custom route in `onPluginsReady`. For the full app integration pattern, use the **`databricks-apps`** skill and read the [Model Serving Guide](../apps/references/appkit/model-serving.md).
 
 ### Develop & deploy new models
 
-This skill is ops-focused (manage existing endpoints). For the dev-side flow — train a model, register to Unity Catalog, log a PyFunc or `ResponsesAgent`, deploy — see the references below.
+This skill is ops-focused (manage existing endpoints). For the dev-side flow — train a model,
+register to Unity Catalog, log a PyFunc or `ResponsesAgent`, deploy — use the MLflow
+`model-registry` and `genai-flavors` skills, then see the references below. Remember that moving a
+UC model alias does not update a served entity pinned to `entity_version`; update endpoint config
+explicitly and verify both readiness fields.
 
 | Reference | When to read |
 |---|---|---|

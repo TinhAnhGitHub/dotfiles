@@ -4,7 +4,7 @@ description: >
   style. Given URLs and keywords, it navigates sections to retrieve
   comprehensive content via webfetch and crawl4ai.
 mode: all
-model: opencode/mimo-v2.5-free
+model: opencode/deepseek-v4-flash-free
 temperature: 0.2
 color: "#00ff88"
 steps: 25
