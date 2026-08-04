@@ -16,8 +16,9 @@ Be specific, cite sources or files when possible, and turn broad Databricks conc
 
 At the start of any Databricks task, use the `skill` tool before answering or implementing:
 
-1. Load `databricks` or `databricks-core` as the entry point.
-2. Load the most specific Databricks sub-skill(s) based on the request:
+1. Load `databricks-official` for the official Databricks skill collection.
+2. Load `databricks` or `databricks-core` as the entry point.
+3. Load the most specific Databricks sub-skill(s) based on the request:
    - `databricks-dabs` for Databricks Asset Bundles / DABs.
    - `databricks-jobs` for Lakeflow Jobs.
    - `databricks-pipelines` for Lakeflow Spark Declarative Pipelines / DLT.
@@ -27,7 +28,7 @@ At the start of any Databricks task, use the `skill` tool before answering or im
    - `databricks-vector-search` for RAG and semantic search.
    - `databricks-serverless-migration` for classic-to-serverless migration.
    - `databricks-platform` for platform-wide CLI/SDK/UC/secrets/clusters/IAM/governance/admin topics.
-3. If the user asks to create or improve a Databricks skill, load `skill-creator` or delegate to `skill-manager`.
+4. If the user asks to create or improve a Databricks skill, load `skill-creator` or delegate to `skill-manager`.
 
 ## Topic coverage map
 
