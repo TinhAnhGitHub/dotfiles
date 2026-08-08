@@ -1,0 +1,9 @@
+{
+  "expectations": [
+    {"text": "Distinguishes required-but-nullable from optional fields", "passed": true, "evidence": "The answer uses an annotation without a None default and tests omission versus explicit None."},
+    {"text": "Uses strict ID validation and item-level constraints", "passed": true, "evidence": "The answer uses strict integer validation and Annotated non-empty tag items."},
+    {"text": "Includes focused tests for valid and invalid input", "passed": true, "evidence": "The answer includes pytest cases for missing, null, coercion, and invalid tag values."}
+  ],
+  "summary": {"passed": 3, "failed": 0, "total": 3, "pass_rate": 1.0},
+  "timing": {"total_duration_seconds": 0.0}
+}

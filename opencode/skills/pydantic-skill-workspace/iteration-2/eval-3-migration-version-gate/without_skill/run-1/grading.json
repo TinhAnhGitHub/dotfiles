@@ -1,0 +1,9 @@
+{
+  "expectations": [
+    {"text": "Recognizes the target version does not support validate_by_name", "passed": true, "evidence": "The baseline notes validate_by_name is introduced in 2.11."},
+    {"text": "Uses the compatible v2.6-v2.10 alias configuration", "passed": true, "evidence": "The baseline uses ConfigDict(populate_by_name=True)."},
+    {"text": "States the compatibility caveat without upgrading dependencies", "passed": true, "evidence": "The baseline keeps the dependency range and documents the newer alternative."}
+  ],
+  "summary": {"passed": 3, "failed": 0, "total": 3, "pass_rate": 1.0},
+  "timing": {"total_duration_seconds": 0.0}
+}

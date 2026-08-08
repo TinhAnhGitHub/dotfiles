@@ -22,7 +22,7 @@
       "type": "remote",
       "url": "https://mcp.exa.ai/mcp",
       "headers": {
-        "EXA_API_KEY": "{env:EXA_API_KEY}"
+        "x-api-key": "{env:EXA_API_KEY}"
       },
       "enabled": true
     },
@@ -32,6 +32,8 @@
         "uvx",
         "--from",
         "git+https://github.com/ast-grep/ast-grep-mcp",
+        "--with",
+        "mcp<2",
         "ast-grep-server"
       ],
       "enabled": true,

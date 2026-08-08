@@ -1,0 +1,83 @@
+{
+  "skill_name": "pydantic-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create request and response models for a user API. nickname may be null but must be present in the request, IDs must reject strings, and every tag must be a non-empty string. Include focused tests.",
+      "expected_output": "Uses explicit required/nullable semantics, strict ID validation, Annotated item constraints, and tests.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Migrate this Pydantic v1 model using @validator(each_item=True), @root_validator, orm_mode, .dict(), and parse_obj_as() to current Pydantic without upgrading dependencies. Explain compatibility choices.",
+      "expected_output": "Uses v2 APIs and explains semantic differences without deprecated v1 decorators.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Build application settings from APP_DB__HOST, a .env file, and a mounted secrets directory. Show precedence tests and do not print secret values.",
+      "expected_output": "Uses pydantic-settings, nested env configuration, source precedence, and redacted tests.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Validate a list of UUIDs and generate JSON Schema without creating a model class. The adapter will run in a loop.",
+      "expected_output": "Uses one reusable TypeAdapter for validation, serialization, and schema generation.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "A Pydantic model has a before validator that accepts integers for a string field, but its generated JSON Schema says only string. Fix the validation/schema contract and test it.",
+      "expected_output": "Uses json_schema_input_type or an equivalent current schema customization and tests both paths.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "A base-user field contains a subclass with api_token, and model_dump unexpectedly exposes it. Explain Pydantic v2 subclass serialization and secure the output.",
+      "expected_output": "Explains annotated-type serialization, avoids unsafe global duck typing, and adds a regression test.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "The project is pinned to pydantic>=2.6,<2.11, but a patch uses validate_by_name. Replace it with a compatible approach and state the version caveat.",
+      "expected_output": "Detects the version gate and uses the supported v2.6-v2.10 alternative.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Design a discriminated union for cat and dog events, compare it with an untagged union, and show its JSON Schema and error behavior.",
+      "expected_output": "Uses Literal tags and a discriminator, explains predictability/performance/error differences, and shows schema output.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "A custom type still implements __get_validators__ and __modify_schema__. Modernize it using the least coupled Pydantic v2 approach, with serialization and schema tests.",
+      "expected_output": "Starts with Annotated/functional APIs and uses core-schema hooks only when justified.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Explain why Optional[str] is still reported missing in a Pydantic v2 model, and provide the correct model and regression tests.",
+      "expected_output": "Distinguishes nullable from optional and tests missing versus explicit None.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "We stream incomplete JSON from an LLM and are considering allow_partial and experimental_allow_partial. Explain the difference, version gates, safe defaults, and what completeness checks remain necessary.",
+      "expected_output": "Distinguishes partial JSON parsing from experimental partial validation and warns that neither proves completeness.",
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "Review this Pydantic test suite that asserts exact error locations and messages across the latest minor versions. Explain which error details are stable and how to make the assertions robust.",
+      "expected_output": "Prefers stable error types and treats locations/messages as contract- or version-dependent.",
+      "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "A Pydantic v2.13 model needs polymorphic serialization for a trusted plugin hierarchy. Compare it with SerializeAsAny and serialize_as_any, gate it by version, and test that api_token is not leaked.",
+      "expected_output": "Explains the narrower polymorphic option versus broad duck typing and includes a secret-exposure regression test.",
+      "files": []
+    }
+  ]
+}

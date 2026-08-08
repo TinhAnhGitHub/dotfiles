@@ -1,0 +1,9 @@
+{
+  "expectations": [
+    {"text": "Uses pydantic-settings and nested environment configuration", "passed": true, "evidence": "The baseline uses BaseSettings, SettingsConfigDict, and nested delimiter configuration."},
+    {"text": "Explains and tests source precedence", "passed": true, "evidence": "The baseline explicitly customizes source order and provides precedence tests."},
+    {"text": "Avoids exposing secret values", "passed": true, "evidence": "The baseline uses SecretStr and an allowlisted safe summary."}
+  ],
+  "summary": {"passed": 3, "failed": 0, "total": 3, "pass_rate": 1.0},
+  "timing": {"total_duration_seconds": 0.0}
+}
