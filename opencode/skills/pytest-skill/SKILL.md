@@ -1,230 +1,394 @@
 ---
 name: pytest-skill
 description: >
-  Generates production-grade pytest tests in Python with fixtures, parametrize,
-  markers, mocking, and conftest patterns. Use when user mentions "pytest",
-  "conftest", "@pytest.fixture", "@pytest.mark", "Python test". Triggers on:
-  "pytest", "conftest", "Python test", "parametrize", "Python unit test".
-languages:
-  - Python
-category: unit-testing
+  Production-grade pytest guidance for Python tests: authoring, fixtures,
+  parametrization, assertions, mocking, markers, discovery, plugins, hooks,
+  debugging, output, warnings, doctests, CI, and migration from unittest.
+  Use this skill whenever a request mentions pytest, conftest.py, fixtures,
+  pytest.mark, parametrization, test discovery, pytest plugins/hooks, or asks
+  how to write, run, debug, organize, or improve Python tests with pytest.
+  For PySpark or Databricks-specific testing, also use pytest-databricks.
 license: MIT
 metadata:
   author: TestMu AI
-  version: "1.0"
+  version: "2.0"
+  source: "https://docs.pytest.org/en/stable/"
 ---
 
-# Pytest Testing Skill
+# Pytest Skill
 
-## Core Patterns
+Use this as an implementation playbook, not as a reason to add dependencies or
+over-engineer a small test. Prefer the smallest pytest feature that gives a
+clear, isolated, behavior-focused test.
 
-### Basic Test
+## Operating workflow
+
+1. **Inspect before editing.** Read the target module, nearby tests,
+   `conftest.py` files, and the active pytest configuration. Check
+   `pytest --version` and installed plugins when behavior may be version- or
+   plugin-dependent.
+2. **Classify the test.** Choose pure unit, integration, subprocess/CLI,
+   async, plugin, doctest, or compatibility testing. Do not use a real network,
+   cloud resource, clock, or random source in a unit test unless that behavior
+   is explicitly the subject of the test.
+3. **Choose the narrowest mechanism.** Use a plain test function and `assert`;
+   fixtures for dependencies/lifecycle; `parametrize` for a known decision
+   table; `subtests` only for cases discovered during execution; and mocks only
+   at an external boundary.
+4. **Make isolation explicit.** Prefer function-scoped fixtures and
+   `tmp_path`. Split state-changing setup into small yield fixtures with
+   teardown immediately after `yield`. Avoid hidden `autouse` state unless it
+   is truly global test policy.
+5. **Verify in layers.** Run collection first, the focused test, the relevant
+   test directory/marker, and then the full suite when practical. Report
+   skipped, xfailed, warnings, and deselected tests rather than hiding them.
+
+Read the reference that matches the task:
+
+| Need | Reference |
+|---|---|
+| Official how-to and examples coverage, newer pytest features | `reference/official-patterns.md` |
+| Deep fixture, assertion, cache, configuration, CI, and plugin playbook | `reference/playbook.md` |
+| Dynamic parametrization, plugin testing, fixture overrides, async patterns | `reference/advanced-patterns.md` |
+
+For Spark, Databricks Connect, `dbutils`, `WorkspaceClient`, or
+`databricks-labs-pytester`, load `pytest-databricks` as well; do not replace its
+environment-specific guidance with generic mocks.
+
+## Core test patterns
+
+### Plain tests and assertion introspection
 
 ```python
 import pytest
 
-def test_addition():
-    assert 2 + 3 == 5
 
-def test_exception():
-    with pytest.raises(ValueError, match="invalid"):
-        int("not_a_number")
+def test_total_includes_tax():
+    assert total(subtotal=10, tax_rate=0.2) == 12
 
-class TestCalculator:
-    def test_add(self):
-        calc = Calculator()
-        assert calc.add(2, 3) == 5
 
-    def test_divide_by_zero(self):
-        with pytest.raises(ZeroDivisionError):
-            Calculator().divide(10, 0)
+def test_invalid_email_reports_the_input():
+    with pytest.raises(ValueError, match=r"invalid email") as exc_info:
+        parse_email("not-an-email")
+    assert exc_info.value.args[0] == "invalid email"
+
+
+def test_float_result():
+    assert calculate_ratio(1, 3) == pytest.approx(1 / 3, rel=1e-6)
 ```
 
-### Fixtures
+Use `assert left == right`, not `self.assertEqual`; pytest rewrites asserts to
+show useful diffs for strings, sequences, mappings, sets, and expressions.
+Add a message only when it adds domain context. Use `pytest.fail()` for a
+failure discovered by control flow, not as a replacement for normal asserts.
+
+For modern Python exception groups, use `pytest.RaisesGroup` and
+`pytest.RaisesExc` when the group structure matters. Do not assert only that an
+exception group contains one expected exception if additional unexpected
+exceptions would make the test unsafe.
+
+### Fixtures: dependency injection and lifecycle
 
 ```python
+import pytest
+
+
 @pytest.fixture
-def calculator():
-    return Calculator()
+def user_factory():
+    created = []
 
-@pytest.fixture
-def db_connection():
-    conn = Database.connect("test_db")
-    yield conn  # teardown after yield
-    conn.rollback()
-    conn.close()
+    def make_user(name="Alice"):
+        user = {"name": name}
+        created.append(user)
+        return user
 
-@pytest.fixture(scope="module")
-def api_client():
-    client = APIClient(base_url="http://localhost:8000")
-    yield client
-    client.logout()
+    yield make_user
+    # Replace this with real cleanup when the fixture creates resources.
+    created.clear()
 
-# conftest.py - shared fixtures
-@pytest.fixture(autouse=True)
-def reset_state():
-    State.reset()
-    yield
-    State.cleanup()
 
-# Usage
-def test_add(calculator):
-    assert calculator.add(2, 3) == 5
+def test_user_factory(user_factory):
+    assert user_factory("Bob") == {"name": "Bob"}
 ```
 
-### Parametrize
+Rules that prevent most fixture bugs:
+
+- A test requests a fixture by naming it as an argument; fixtures can request
+  other fixtures and pytest caches one instance per test/scope.
+- Use `function` scope by default. Use `class`, `module`, `package`, or
+  `session` only when sharing is safe and materially reduces setup cost.
+- A broader-scoped fixture cannot depend on a narrower-scoped fixture
+  (`ScopeMismatch`). A callable `scope=` can select scope from a CLI option.
+- Prefer one state-changing action per yield fixture. Teardown runs in reverse
+  dependency order; `addfinalizer` is useful when cleanup must be registered
+  conditionally after setup succeeds.
+- Use factory fixtures when one test needs multiple independently-created
+  objects. Do not call a fixture function directly; compose it or use
+  `request.getfixturevalue()` only for genuinely dynamic lookup.
+- Use `request.node`, `request.param`, `request.config`, and markers for
+  carefully scoped dynamic behavior. Keep the normal dependency graph explicit.
+- Put shared fixtures in the nearest appropriate `conftest.py`. A closer
+  `conftest.py` can override an upstream fixture; `usefixtures` is for setup
+  whose returned value is not needed by the test.
+
+`autouse=True` is appropriate for narrowly-scoped global policy such as
+resetting process state or installing a safety guard. It is usually a smell for
+data setup because it hides why a test depends on that state.
+
+### Parametrization and test IDs
 
 ```python
-@pytest.mark.parametrize("input,expected", [
-    ("hello", 5), ("", 0), ("pytest", 6),
-])
-def test_string_length(input, expected):
-    assert len(input) == expected
+import pytest
 
-@pytest.mark.parametrize("a,b,expected", [
-    (2, 3, 5), (-1, 1, 0), (0, 0, 0),
-])
-def test_add(calculator, a, b, expected):
-    assert calculator.add(a, b) == expected
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        pytest.param(" Alice ", "Alice", id="trimmed"),
+        pytest.param("", "", id="empty"),
+        pytest.param(None, None, marks=pytest.mark.xfail(reason="pending API decision"), id="none"),
+    ],
+)
+def test_normalize_name(raw, expected):
+    assert normalize_name(raw) == expected
 ```
 
-### Markers
+- Give meaningful `ids` for domain cases; IDs become part of node IDs and make
+  failures/selective reruns understandable.
+- Stack decorators for a Cartesian product only when every combination is
+  meaningful. Prefer explicit case objects when the matrix would explode.
+- Use `indirect=True` to pass a value into a fixture, and fixture
+  `params=[...]` when the fixture itself is the varying dependency.
+- Parameter values are passed as-is, not copied. Never mutate shared list/dict
+  parameters; construct fresh values or use immutable case data.
+- Apply `pytest.param(..., marks=...)` for a single-case skip/xfail.
+- Use `pytest_generate_tests(metafunc)` for collection-time cases from CLI
+  options or checked-in data. Decide and document the empty-case policy.
+
+Use `subtests` (pytest 9+) when cases are discovered only during test
+execution and all failures should be reported in one test. Parametrization is
+better when cases should be collected, selected by node ID, rerun individually,
+or handled by `--last-failed`.
+
+### Mocking and monkeypatching
+
+Patch the name looked up by the system under test, not necessarily the name in
+the dependency's original module:
 
 ```python
-@pytest.mark.slow
-def test_large_dataset(): ...
+def test_fetch_user(mocker):
+    response = mocker.Mock(status_code=200)
+    response.json.return_value = {"id": 7, "name": "Ada"}
+    mocker.patch("myapp.users.requests.get", return_value=response)
 
-@pytest.mark.skip(reason="Not implemented")
-def test_future_feature(): ...
+    assert fetch_user(7)["name"] == "Ada"
 
-@pytest.mark.skipif(sys.platform == "win32", reason="Unix only")
-def test_unix_permissions(): ...
 
-@pytest.mark.xfail(reason="Known bug #123")
-def test_known_bug(): ...
+def test_reads_environment(monkeypatch):
+    monkeypatch.setenv("APP_ENV", "test")
+    monkeypatch.delenv("OPTIONAL_FLAG", raising=False)
+    assert load_settings().environment == "test"
 ```
 
-### Mocking
+- Use `pytest-mock`'s `mocker` for `patch`, `spy`, `stub`, and automatic mock
+  cleanup; use `unittest.mock` when the project already standardizes on it.
+- Use `monkeypatch.setattr/delattr`, `setitem/delitem`, `setenv/delenv`,
+  `syspath_prepend`, `chdir`, and `monkeypatch.context()` for reversible local
+  changes. `raising=False` is intentional only when absence is valid.
+- Prefer dependency injection or a small fake when it makes the boundary
+  clearer. Use `spec`/`autospec` where appropriate so a mock cannot invent an
+  invalid API. Assert important observable calls, not every implementation
+  detail.
+- For async calls use `AsyncMock` and await the system under test; do not make a
+  synchronous mock pretend to be awaitable.
+
+### Markers, skips, and xfails
+
+Register custom markers and run with `--strict-markers`:
+
+```toml
+[tool.pytest.ini_options]
+markers = [
+  "unit: fast isolated tests",
+  "integration: uses a real service or local integration runtime",
+  "slow: takes longer than the normal test budget",
+]
+```
 
 ```python
-from unittest.mock import patch, MagicMock
+import pytest
 
-def test_send_email(mocker):
-    mock_smtp = mocker.patch("myapp.email.smtplib.SMTP")
-    send_welcome_email("user@test.com")
-    mock_smtp.return_value.sendmail.assert_called_once()
 
-def test_api_call(mocker):
-    mock_response = mocker.Mock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = {"users": [{"name": "Alice"}]}
-    mocker.patch("myapp.service.requests.get", return_value=mock_response)
-    users = get_users()
-    assert len(users) == 1
+@pytest.mark.integration
+def test_real_database_round_trip(database):
+    ...
 
-@patch("myapp.service.database")
-def test_save_user(mock_db):
-    mock_db.save.return_value = True
-    assert save_user({"name": "Alice"}) is True
-    mock_db.save.assert_called_once()
+
+@pytest.mark.skipif(not HAS_GPU, reason="requires GPU")
+def test_gpu_path():
+    ...
+
+
+@pytest.mark.xfail(strict=True, raises=KnownBug, reason="issue #123")
+def test_known_bug():
+    ...
 ```
 
-### Assertions
+Use `pytest.importorskip("optional_pkg", minversion="...")` for optional
+dependencies. Use imperative `pytest.skip()`/`pytest.xfail()` only when the
+condition is known during setup or execution. Make xfails strict in CI when an
+unexpected pass should force removal of stale bug metadata. Never use skip or
+xfail to conceal an ordinary failing test.
 
-```python
-assert x == y
-assert x != y
-assert x in collection
-assert isinstance(obj, MyClass)
-assert 0.1 + 0.2 == pytest.approx(0.3)
+### Files, output, logs, and warnings
 
-with pytest.raises(ValueError) as exc_info:
-    raise ValueError("bad")
-assert "bad" in str(exc_info.value)
+- Use `tmp_path` (`pathlib.Path`) for per-test files and `tmp_path_factory` for
+  expensive session-shared artifacts. Use `--basetemp` only with a disposable
+  directory because it is cleared before the run.
+- Use `capsys` for Python-level text output, `capsysbinary` for bytes, `capfd`
+  or `capfdbinary` for subprocess/file-descriptor output, and
+  `capsys.disabled()` for a short intentionally-live block.
+- Use `caplog.at_level()`/`set_level()`, `caplog.records`, `record_tuples`, and
+  `caplog.clear()` to test logging behavior. Configure live/file logging only
+  when it helps the workflow; do not assert on formatting unless formatting is
+  the contract.
+- Use `pytest.warns()` to assert an expected warning and `recwarn` to inspect
+  all warnings. Treat unexpected deprecations as errors in CI, with narrow,
+  documented filters for intentionally legacy behavior.
+
+### Async, CLI, doctest, and unittest compatibility
+
+- For async tests, use the project’s async plugin (commonly `pytest-asyncio`),
+  configure its event-loop policy explicitly, and use async fixtures according
+  to that plugin's current API.
+- For a CLI, prefer invoking the real entry point in a subprocess when process
+  boundaries, exit codes, or stdout/stderr matter; use `capsys` for a direct
+  function-level CLI test.
+- Run docstrings with `--doctest-modules` and text examples with
+  `--doctest-glob`. Use `doctest_optionflags`, `doctest_namespace`,
+  `getfixture('fixture_name')`, and `--doctest-continue-on-failure` deliberately.
+- pytest runs `unittest.TestCase` suites, including their setup methods and
+  skips. During migration, retain compatibility first; do not assume normal
+  pytest fixture arguments or parametrization work inside `TestCase` methods.
+  New pytest tests should normally use fixtures and plain asserts.
+
+## Discovery and command cookbook
+
+```bash
+# Run and select
+python -m pytest                         # current interpreter; adds cwd to sys.path
+pytest tests/                            # directory
+pytest tests/test_api.py::TestUsers::test_create
+pytest 'tests/test_api.py::test_parse[empty]'  # quote [] in shells that expand it
+pytest -k 'login and not slow'
+pytest -m 'unit and not integration'
+pytest --pyargs installed_package.tests
+pytest @tests-to-run.txt                 # one path/node/option per line (pytest 8.2+)
+
+# Understand collection/configuration
+pytest --version
+pytest --collect-only -q
+pytest --fixtures
+pytest --markers
+pytest --trace-config                    # active plugins and conftest files
+pytest --setup-show tests/test_api.py
+pytest --setup-plan                       # inspect fixture plan without running
+
+# Tight feedback loop
+pytest -x --maxfail=3
+pytest --lf                             # only last failures; use --lfnf=none if desired
+pytest --ff                             # failures first, then all tests
+pytest --nf                             # newest files first
+pytest --cache-show
+pytest --cache-clear
+pytest --durations=10 --durations-min=1.0
+
+# Debug/report
+pytest -x --pdb
+pytest --trace
+pytest -l --tb=short
+pytest --full-trace
+pytest -ra --show-capture=all
+pytest --junitxml=reports/junit.xml     # CI report
 ```
 
-### Anti-Patterns
+`-n auto`, `--cov`, `--html`, `--timeout`, `--reruns`, and stepwise options
+come from plugins. Confirm the plugin is installed and active before adding
+them to project defaults. Use `pytest -p no:PLUGIN` or
+`PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` to diagnose plugin interference.
 
-| Bad | Good | Why |
-|-----|------|-----|
-| `self.assertEqual()` | `assert x == y` | pytest rewrites give better output |
-| Setup in `__init__` | `@pytest.fixture` | Lifecycle management |
-| Global state | Fixture with `yield` | Proper cleanup |
-| Huge test functions | Small focused tests | Easier debugging |
+When invoking from Python, call `pytest.main([...])` with explicit arguments
+and inspect its return value. Avoid calling `pytest.main()` repeatedly in one
+process because imported test modules remain cached.
 
-## Quick Reference
+## Configuration baseline
 
-| Task | Command |
-|------|---------|
-| Run all | `pytest` |
-| Run file | `pytest tests/test_login.py` |
-| Run specific | `pytest tests/test_login.py::test_login_success` |
-| By marker | `pytest -m slow` |
-| By keyword | `pytest -k "login and not invalid"` |
-| Verbose | `pytest -v` |
-| Stop first fail | `pytest -x` |
-| Stop after N failures | `pytest --maxfail=3` |
-| Last failed | `pytest --lf` |
-| Failures first | `pytest --ff` |
-| Stepwise (stop, resume next run) | `pytest --sw` |
-| New files first | `pytest --nf` |
-| Clear cache | `pytest --cache-clear` |
-| Dry-run (list tests, no run) | `pytest --collect-only -q` |
-| List available fixtures | `pytest --fixtures` |
-| Show registered markers | `pytest --markers` |
-| Show fixture setup/teardown order | `pytest --setup-show` |
-| Slowest tests | `pytest --durations=10` |
-| Summary of all non-passed | `pytest -ra` |
-| Debugger on first failure | `pytest -x --pdb` |
-| Debugger at start of every test | `pytest --trace` |
-| Show locals in tracebacks | `pytest -l` |
-| One-line tracebacks | `pytest --tb=line` |
-| Coverage | `pytest --cov=myapp --cov-report=html` |
-| Parallel | `pytest -n auto` (pytest-xdist) |
-| JUnit XML for CI | `pytest --junitxml=results.xml` |
-| Run doctests in docstrings | `pytest --doctest-modules` |
-| Fail if too many warnings | `pytest --max-warnings=20` |
-
-## pyproject.toml
+Prefer the project's existing configuration format. A conservative baseline is:
 
 ```toml
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["slow: slow tests", "integration: integration tests"]
-addopts = "-v --tb=short"
+addopts = ["-ra", "--strict-markers", "--strict-config", "--tb=short"]
+markers = [
+  "unit: fast isolated tests",
+  "integration: tests using external or integration resources",
+  "slow: tests outside the normal runtime budget",
+]
 ```
 
-## Deep Patterns
+Add coverage, async, timeout, logging, doctest, or warning policy only when the
+corresponding dependency and project policy exist. Do not blindly combine
+`-v` and `-q`, or make every local run stop at the first failure. Check the
+actual configuration source with `pytest --help` and the session header; pytest
+configuration files are not merged arbitrarily.
 
-For production-grade patterns, see `reference/playbook.md`:
+## Plugin and hook work
 
-| Section | What's Inside |
-|---------|--------------|
-| §1 Config | pytest.ini + pyproject.toml with markers, coverage |
-| §2 Fixtures | Scoping, factories, teardown, autouse, tmp_path |
-| §3 Parametrize | Basic, with IDs, cartesian, indirect |
-| §4 Mocking | pytest-mock, monkeypatch, spies, env vars |
-| §5 Async | pytest-asyncio, async fixtures, async client |
-| §6 Exceptions | pytest.raises(match=), warnings |
-| §7 Markers & Plugins | Custom markers, collection hooks |
-| §8 Class-Based | Nested classes, autouse setup |
-| §9 CI/CD | GitHub Actions matrix, coverage gates |
-| §10 Debugging Table | 10 common problems with fixes |
-| §11 Best Practices | 15-item production checklist |
-| §12 Output Capture & CLI Testing | capsys/capfd, readouterr, subtests |
-| §13 Monkeypatch Deep Dive | Full monkeypatch API: env, time, cwd, sys.path |
-| §14 Skips, Xfails & Conditional | skipif, importorskip, xfail strict, pytest.param marks |
-| §15 Warnings & Logging | filterwarnings, pytest.warns, recwarn, caplog |
-| §16 Cache & Re-run Workflows | --lf/--ff/--sw/--nf, --cache-clear, config.cache |
-| §17 Selecting & Introspecting | Node IDs, -k/-m expressions, --collect-only, --fixtures |
-| §18 Debugging Failures | --pdb/--trace/-l/--tb, faulthandler, assert rewriting |
-| §19 Assertions Reference | approx, fail, raises variants, warns, deprecated_call |
-| §20 Advanced Fixture Mechanics | request, addfinalizer, usefixtures, dynamic scope |
-| §21 Exit Codes & CI Automation | Exit codes 0-6, PYTEST_ADDOPTS, env vars |
-| §22 Configuration Reference | Config precedence, ini options, import modes |
-| §23 Doctests | --doctest-modules, option flags, doctest_namespace |
-| §24 Plugin Ecosystem | xdist, cov, timeout, randomly, rerunfailures, ... |
+Use a local `conftest.py` for project-only fixtures and hooks. Use a package
+plugin when behavior is reusable across projects. Register a plugin through a
+`pytest11` entry point when it must be installable. Test plugins with the
+built-in `pytester` fixture by creating temporary test files and asserting
+outcomes.
 
-For dynamic parametrization (`pytest_generate_tests`), fixture override
-patterns, and packaging plugins as pip packages, see
-`reference/advanced-patterns.md`.
+Safe hook rules:
+
+- Hook argument names are validated and optional arguments can be omitted.
+- Most non-test-running hooks should not raise; turn user/config errors into a
+  clear `pytest.UsageError` or a controlled report.
+- Use `@pytest.hookimpl(tryfirst=True/trylast=True)` only when ordering is part
+  of the design. Hook wrappers are generator functions that yield exactly once.
+- For custom collection, use public `pytest.File`, `pytest.Item`,
+  `pytest.Directory`, `pytest_collect_file`, or `pytest_collect_directory` APIs;
+  implement `runtest`, `repr_failure`, and `reportinfo` for useful failures.
+- Use `pytest_collection_modifyitems` for collection-time marking/deselection,
+  but keep policy visible and test it. `pytest_assertrepr_compare` and
+  `pytest.register_assert_rewrite()` are advanced tools for shared helpers.
+
+## Quality gates and anti-patterns
+
+- Name tests after behavior and keep Arrange–Act–Assert readable.
+- Test public behavior and contracts, not private call order.
+- Keep tests independent, deterministic, and safe to run in any order or with
+  xdist. Seed or inject randomness and control time rather than sleeping.
+- Separate unit/integration/e2e markers and make external-resource tests opt-in
+  or skip with an explicit reason.
+- Avoid mutable module globals, broad `except Exception`, test ordering,
+  unconditional network calls, hard-coded temp paths, over-mocking, and tests
+  with no meaningful assertion.
+- Treat retries as a last-resort quarantine for diagnosed environmental
+  flakiness; fix the race or isolation problem instead of masking it.
+
+## Official coverage map
+
+The companion reference was refreshed against the current pytest stable docs:
+
+- **How-to:** invocation, assertions, fixtures, marks, parametrization,
+  subtests, temporary paths, monkeypatch, doctests, cache, failures, output,
+  logging, capture, warnings, skip/xfail, plugins, plugin writing/hooks,
+  existing suites, unittest, xunit setup, and bash completion.
+- **Examples:** failure reports, basic patterns, parametrization, custom marks,
+  collection-aware session fixtures, custom discovery, non-Python collectors,
+  and custom directory collectors.
+
+Source index: <https://docs.pytest.org/en/stable/how-to/index.html> and
+<https://docs.pytest.org/en/stable/example/index.html>.

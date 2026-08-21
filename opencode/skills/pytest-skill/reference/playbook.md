@@ -9,7 +9,7 @@ testpaths = tests
 python_files = test_*.py
 python_classes = Test*
 python_functions = test_*
-addopts = -v --strict-markers --tb=short -q
+addopts = -ra --strict-markers --strict-config --tb=short
 markers =
     slow: marks tests as slow (deselect with '-m "not slow"')
     integration: marks integration tests
@@ -588,8 +588,8 @@ CLI: `--log-cli-level=DEBUG`, `--log-file=tests.log`, `--log-file-mode=a`.
 pytest --lf                 # re-run only the last run's failures (full suite if none)
 pytest --ff                 # run everything, last failures first
 pytest --nf                 # run files by mtime, newest first
-pytest --sw                 # stepwise: stop at first failure; next run resumes after it
-pytest --sw-skip            # skip the first failing test, stop at the second
+# `--sw` and `--sw-skip` are provided by a stepwise plugin, not core pytest.
+# Install/verify that plugin before using them.
 pytest --lfnf=none          # with --lf: exit 0 (message) when nothing failed
 pytest --cache-clear        # wipe the cache before running — recommended for CI
 pytest --cache-show         # inspect cache contents (no collection)
@@ -794,7 +794,6 @@ def test_login(username): ...
 | 3 | Internal error during execution |
 | 4 | Command-line usage error |
 | 5 | No tests collected |
-| 6 | Warnings exceeded `--max-warnings=N` (no test failures) |
 
 ```python
 from pytest import ExitCode          # enum: OK, TESTS_FAILED, INTERRUPTED, ...
