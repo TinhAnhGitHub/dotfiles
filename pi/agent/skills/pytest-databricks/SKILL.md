@@ -1,14 +1,22 @@
 ---
 name: pytest-databricks
 description: >-
-  Pytest testing skill for Python, PySpark, and Databricks. Use when writing,
-  reviewing, or debugging tests; setting up conftest.py, fixtures, parametrization,
-  markers, mocks, monkeypatch, tmp_path, or coverage; testing PySpark DataFrames
-  with assertDataFrameEqual, assertSchemaEqual, or chispa; mocking SparkSession,
-  dbutils, or Databricks SDK clients; using Databricks Connect or databricks-labs-pytester
-  fixtures such as ws, acc, spark, make_schema, make_table, make_catalog, make_job,
-  or env_or_skip; refactoring notebooks for testability; running pytest in Databricks;
-  or planning unit, integration, and end-to-end test strategy for Databricks/PySpark code.
+  Comprehensive pytest testing skill for Python, PySpark, and Databricks. Covers the
+  pytest philosophy (fixtures, parametrize, markers, conftest hierarchy, monkeypatch,
+  tmp_path), unit vs integration test design, mocking strategies (unittest.mock, pytest-mock
+  mocker, monkeypatch, sys.modules stubbing), PySpark DataFrame testing (assertDataFrameEqual,
+  assertSchemaEqual, chispa), Databricks Connect testing (DatabricksSession, serverless,
+  profile configuration), databricks-labs-pytester integration fixtures (ws, acc, spark,
+  make_schema, make_table, make_catalog, make_volume, make_job, make_cluster, make_run_as,
+  env_or_skip, and 70+ more), refactoring notebooks for testability, running pytest inside
+  Databricks notebooks, CI/CD test automation, and coverage configuration. Use this skill
+  whenever writing, reviewing, or debugging tests for Python or PySpark/Databricks code,
+  setting up conftest.py, creating test fixtures, mocking Spark sessions or Databricks SDK
+  clients, parametrizing tests, configuring pytest (pyproject.toml, markers, addopts),
+  or planning a testing strategy (unit vs integration vs end-to-end). Also use when the user
+  mentions pytest, conftest, fixture, mock, parametrize, test coverage, SparkSession in tests,
+  dbutils mocking, Databricks Connect, pytester, chispa, assertDataFrameEqual, or any
+  testing-related task for Databricks/PySpark projects.
 ---
 
 # pytest + Databricks Testing Skill
