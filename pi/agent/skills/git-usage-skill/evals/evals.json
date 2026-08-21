@@ -1,0 +1,71 @@
+{
+  "skill_name": "git-usage-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I accidentally ran git reset --hard and now my last commit seems gone. Please tell me how to recover it safely without making things worse.",
+      "expected_output": "A safety-first recovery procedure that inspects reflog, verifies a candidate commit, creates a rescue branch before moving refs, and warns against gc/prune during recovery.",
+      "files": [],
+      "expectations": [
+        "Distinguishes local recovery from destructive reset and starts with git reflog.",
+        "Creates a rescue branch before moving any branch ref.",
+        "Warns that reflogs are local/expiring and says not to run gc or prune during recovery."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to review exactly what my feature branch introduces compared with main. I have staged changes, unstaged changes, and an untracked test file. Which Git commands show each part and the final PR diff?",
+      "expected_output": "A precise status/diff inspection matrix covering staged, unstaged, HEAD, untracked, and merge-base-to-branch comparisons.",
+      "files": [],
+      "expectations": [
+        "Uses git status and distinguishes git diff, git diff --cached, and git diff HEAD.",
+        "Explains that ordinary git diff does not show untracked content and gives a status or explicit-file inspection approach.",
+        "Uses git diff main...HEAD for the normal PR-introduction comparison and explains triple-dot semantics."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "My private feature branch is behind origin/main and has two commits already pushed to my personal branch. I want a clean history, but I must not overwrite someone else's work. Give me the inspect, rebase, range-diff, and safe push workflow.",
+      "expected_output": "A private-topic rebase workflow with fetch, backup ref, range-diff, explicit force-with-lease, and a lease-failure stop condition.",
+      "files": [],
+      "expectations": [
+        "Fetches and inspects branch/upstream state before rebasing.",
+        "Creates a backup branch or equivalent recovery anchor and notes that rebase rewrites commit IDs.",
+        "Uses force-with-lease rather than plain force and tells the user to stop if the lease fails."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A merge conflict happened, and git status says I am in the middle of a rebase. I do not know whether to use ours/theirs, continue, or abort. Show the safe resolution sequence.",
+      "expected_output": "A rebase-specific conflict protocol using status, unmerged-path/index-stage inspection, cautious ours/theirs explanation, staging, testing, continue/skip/abort.",
+      "files": [],
+      "expectations": [
+        "Uses git status and diff/ls-files unmerged diagnostics before editing.",
+        "Warns that ours/theirs meanings can be counterintuitive during rebase.",
+        "Requires resolving, testing, staging, reviewing the cached diff, and then using rebase --continue or --abort."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I am starting a repository from an existing directory. I want the first commit to contain only the application source, not build output or secrets, and I want a focused commit if one file has unrelated edits.",
+      "expected_output": "A new-repository workflow that establishes ignore/attribute policy, inspects status, uses explicit or patch staging, reviews the cached diff, and commits only the intended files.",
+      "files": [],
+      "expectations": [
+        "Creates or verifies the repository and recommends .gitignore before staging.",
+        "Warns against blindly staging secrets/build output and uses explicit paths or git add -p.",
+        "Reviews git diff --cached and git diff --cached --check before commit."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "I need two branches checked out at once and one of them contains a submodule. Explain whether I should use worktrees, how to initialize/inspect the submodule, and what gets committed in the superproject.",
+      "expected_output": "A worktree and submodule explanation with separate-repository boundaries, commands for status/update, and the gitlink commit workflow.",
+      "files": [],
+      "expectations": [
+        "Uses git worktree add/list and warns that worktrees share objects and normally cannot check out the same branch twice.",
+        "Uses git submodule update --init --recursive and status/diff inspection.",
+        "Explains that the superproject commits a submodule commit pointer, while submodule changes are committed/pushed inside the nested repository."
+      ]
+    }
+  ]
+}

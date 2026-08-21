@@ -1,0 +1,23 @@
+{
+  "skill_name": "evaluation-monitoring",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build an MLflow 3 evaluation workflow for a traced RAG support agent. Create a versioned evaluation dataset from production thumbs-down traces, add human expectations, use groundedness/correctness/document recall scorers, and show how failures feed a regression suite.",
+      "expected_output": "A complete environment-aware workflow with dataset, feedback/expectations, predict_fn or trace-only choice, trace-aware scorers, code, governance, and a closed production feedback loop.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Write MLflow @mlflow.test regression tests for a tool-calling agent, run them with pytest-xdist, and provide a GitHub Actions gate. Explain how to reduce LLM judge flakiness and keep all workers in one MLflow run.",
+      "expected_output": "Runnable pytest/plugin/conftest/CI code with pass/fail semantics, parallelism, model pinning, deterministic-vs-judge layering, and cost/privacy guidance.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "On Azure Databricks, instrument a multi-turn agent, store OTel traces in Unity Catalog, redact PII before export, attach session/user/request context, collect user feedback, and schedule production scorers with a historical backfill.",
+      "expected_output": "A Databricks-specific architecture with current MLflow/version gates, UC/warehouse/privileges, tracing code, redaction, context, secure feedback, managed monitoring constraints, backfill, and cross-routing to Databricks skills.",
+      "files": []
+    }
+  ]
+}

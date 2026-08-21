@@ -1,0 +1,29 @@
+{
+  "skill_name": "databricks-llmops",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a Git-to-production workflow for a Databricks ResponsesAgent. A prompt, tool schema, retrieval index configuration, and Python orchestration change should all be traceable from a production request back to Git. Include the repository layout, CI/CD gates, release manifest, and the Lakeflow/DAB job split.",
+      "expected_output": "A concrete LLMOps workflow that treats code, prompts, tools, retrieval, evaluation, infrastructure, and deployment as one release; includes immutable identities, PR gates, separate context/release/monitoring lanes, and a release manifest.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Explain how to version and roll out a custom MLflow ResponsesAgent on a stable Databricks Model Serving endpoint. Compare MLflow model versions, aliases, served entities, endpoint config versions, canary traffic, readiness checks, and rollback. Do not assume moving a UC alias updates the endpoint.",
+      "expected_output": "A precise separation of version identities with an explicit evaluate/register/resolve/update/readiness/smoke-test/rollback workflow and trace metadata for the served entity.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Create an evaluation and prompt-operations strategy for a RAG agent that uses Databricks AI Search, MCP tools, and a custom serving endpoint. Cover seed datasets, negative cases, code/model/human scorers, judge alignment, prompt versioning, retrieval metrics, tiered production evaluation, and how failures return to regression tests.",
+      "expected_output": "A trace-aware evaluation strategy with versioned prompts and context components, deterministic gates, calibrated sampled judges, human review, retrieval metrics, and a closed production feedback loop.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Give a production readiness checklist for a Databricks LLM application covering lineage, cost attribution, safety, secrets, least privilege, human oversight, monitoring, documentation, and rollback. Use the local LLMOps book patterns but verify API-sensitive claims against current documentation.",
+      "expected_output": "A practical checklist that links governance evidence to Git, MLflow, Unity Catalog, traces, Model Serving, usage policies/billing, secure identities, human approvals, and operational rollback, with explicit API/preview caveats.",
+      "files": []
+    }
+  ]
+}

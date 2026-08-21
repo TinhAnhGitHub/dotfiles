@@ -1,0 +1,23 @@
+{
+  "skill_name": "mcp-registry",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a secure MLflow MCP Registry CI pipeline that imports a server.json, discovers tools, detects schema drift, evaluates a consuming agent, and promotes a production alias.",
+      "expected_output": "An experimental/version-gated draft-to-active workflow with controlled egress, source integrity, dry-run discovery, security/schema diff, traced eval gate, alias rollout, and rollback.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Register two versions of an MCP server and create one version-pinned and one alias-following access endpoint. Explain when each is safe and how to audit runtime resolution.",
+      "expected_output": "Correct MLflow APIs plus semver/status/alias behavior, endpoint transports, immutable release evidence, runtime auth separation, and latest-alias warning.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "A Databricks-served agent silently changed behavior even though its code and UC model version did not change. Diagnose how an MCP alias or tool snapshot could be responsible and close the regression loop.",
+      "expected_output": "Cross-layer diagnosis using resolved MCP semver, endpoint/tool digest and traces, coordinated rollback, dataset curation, regression tests, and Databricks serving evidence.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "model-boundary-and-strict-items",
+  "prompt": "Create request and response models for a user API. nickname may be null but must be present in the request, IDs must reject strings, and every tag must be a non-empty string. Include focused tests.",
+  "assertions": [
+    {"text": "Distinguishes required-but-nullable from optional fields", "passed": null, "evidence": ""},
+    {"text": "Uses strict ID validation and item-level constraints", "passed": null, "evidence": ""},
+    {"text": "Includes focused tests for valid and invalid input", "passed": null, "evidence": ""}
+  ]
+}

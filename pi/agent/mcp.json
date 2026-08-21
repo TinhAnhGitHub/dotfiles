@@ -1,0 +1,37 @@
+{
+  "settings": {
+    "toolPrefix": "server",
+    "idleTimeout": 10
+  },
+  "mcpServers": {
+    "codebase-memory-mcp": {
+      "command": "/home/uag3hc/.local/bin/codebase-memory-mcp",
+      "lifecycle": "eager"
+    },
+    "context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      },
+      "lifecycle": "eager"
+    },
+    "ast-grep": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ast-grep/ast-grep-mcp",
+        "--with",
+        "mcp<2",
+        "ast-grep-server"
+      ],
+      "lifecycle": "eager"
+    },
+    "exa": {
+      "url": "https://mcp.exa.ai/mcp",
+      "headers": {
+        "x-api-key": "${EXA_API_KEY}"
+      },
+      "lifecycle": "eager"
+    }
+  }
+}

@@ -243,3 +243,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Pi runtime state
+pi/agent/sessions/
+pi/agent/npm/
+pi/agent/models-store.json
