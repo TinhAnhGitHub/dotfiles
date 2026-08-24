@@ -1,0 +1,61 @@
+model = "gpt-5.6-luna"
+model_reasoning_effort = "xhigh"
+plan_mode_reasoning_effort = "xhigh"
+[projects."/home/tinhanhnguyen"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/HK8/Capstone/CAPSTONE_PROJECT"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/HK8/Cloud/Seminar"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/HK8/Cloud/Seminar/SRE-agent"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/HK8/Cloud/assignment/cloud-databrick"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/agentic_lib/Memento"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/aicity/aicity"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/aicity"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/agentic_lib/vllm-custom"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/bosch/news-monitoring"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/bosch/news-monitoring-project"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/bosch/news-monitoring-project/news-monitoring"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/reference"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/reference/llama-agents"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/reference/langgraph"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/agentic-app"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 1
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+env_vars = ["ctx7sk-8b96fd04-af99-426c-9247-22b955fa9387"]
+
+

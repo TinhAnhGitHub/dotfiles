@@ -11,8 +11,18 @@ logs/
 **/*accounts*.bak
 **/credentials.json
 **/auth.json
+**/installation_id
 **/.env
 **/.env.*
+
+# Codex runtime state
+.codex/cache/
+.codex/log/
+.codex/*.sqlite
+.codex/*.sqlite-shm
+.codex/*.sqlite-wal
+.codex/history.jsonl
+.codex/models_cache.json
 
 # Backups and local copies
 **/*.bak
@@ -243,3 +253,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Codex runtime state (real state lives in ~/.codex; only config/rules/skills are symlinked)
+.codex/*
+!.codex/config.toml
+!.codex/rules/
+!.codex/skills/
