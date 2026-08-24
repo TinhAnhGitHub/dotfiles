@@ -1,22 +1,15 @@
 ---
 name: pytest-databricks
 description: >-
-  Comprehensive pytest testing skill for Python, PySpark, and Databricks. Covers the
-  pytest philosophy (fixtures, parametrize, markers, conftest hierarchy, monkeypatch,
-  tmp_path), unit vs integration test design, mocking strategies (unittest.mock, pytest-mock
-  mocker, monkeypatch, sys.modules stubbing), PySpark DataFrame testing (assertDataFrameEqual,
-  assertSchemaEqual, chispa), Databricks Connect testing (DatabricksSession, serverless,
-  profile configuration), databricks-labs-pytester integration fixtures (ws, acc, spark,
-  make_schema, make_table, make_catalog, make_volume, make_job, make_cluster, make_run_as,
-  env_or_skip, and 70+ more), refactoring notebooks for testability, running pytest inside
-  Databricks notebooks, CI/CD test automation, and coverage configuration. Use this skill
-  whenever writing, reviewing, or debugging tests for Python or PySpark/Databricks code,
-  setting up conftest.py, creating test fixtures, mocking Spark sessions or Databricks SDK
-  clients, parametrizing tests, configuring pytest (pyproject.toml, markers, addopts),
-  or planning a testing strategy (unit vs integration vs end-to-end). Also use when the user
-  mentions pytest, conftest, fixture, mock, parametrize, test coverage, SparkSession in tests,
-  dbutils mocking, Databricks Connect, pytester, chispa, assertDataFrameEqual, or any
-  testing-related task for Databricks/PySpark projects.
+  Production-grade pytest guidance for Python, PySpark, and Databricks testing. Use this
+  skill whenever writing, reviewing, debugging, or planning tests; configuring pytest,
+  conftest.py, fixtures, markers, parametrization, mocking, coverage, or CI. Covers unit,
+  integration, and end-to-end design; pytest fixtures and plugins; monkeypatch, unittest.mock,
+  and pytest-mock; PySpark DataFrame assertions and SparkSession fixtures; Databricks Connect;
+  databricks-labs-pytester fixtures; dbutils and SDK mocking; notebook refactoring; running
+  pytest in Databricks; and test strategy. Trigger for pytest, conftest, fixture, mock,
+  parametrize, test coverage, SparkSession, dbutils, Databricks Connect, pytester, chispa,
+  assertDataFrameEqual, PySpark, or Databricks testing requests.
 ---
 
 # pytest + Databricks Testing Skill

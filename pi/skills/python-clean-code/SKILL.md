@@ -1,27 +1,24 @@
 ---
 name: python-clean-code
 description: >-
-  Apply Python clean-code best practices distilled from Fluent Python (2nd ed.) and verified
-  against real production code in CPython, Django, Flask, Starlette, FastAPI, NumPy, pandas,
-  scikit-learn, SQLAlchemy, Celery, pip, pytest, requests, botocore and more. Covers the
-  functional-programming patterns of Chapters 7–10: first-class functions, type-hint contracts,
-  closures/decorators, registries, dispatch tables, hooks, and strategy-via-functions. Includes
-  100+ verified examples across standard Python, agentic/LLM frameworks, Hugging Face, MLflow,
-  vLLM, verl, ms-swift, and GUI-agent repositories.
-  TRIGGER THIS SKILL whenever the user writes, reviews, refactors, or asks for advice on Python
-  code involving lambdas, sorted/max/min keys, map/filter/reduce, operator functions, partial,
-  __call__ classes, registries, dispatch tables, plugin/hook systems, Protocol, Annotated, Literal,
-  ParamSpec, decorators, closures, or any "clean up this Python code" request — even if they don't
-  mention the skill by name. Also triggers for style questions like "is a lambda better here", "how
-  do pros sort this", "why would anyone use itemgetter", or "how should I structure my Python project".
+  Apply Python clean-code practices distilled from Fluent Python 2e and verified against production
+  Python, data, and agentic/LLM code. Covers Chapters 7–10 plus reference bundles for 11–15 and
+  17–24: first-class functions, decorators, protocols, generators, context managers, match/case,
+  concurrency, asyncio, properties, descriptors, and metaprogramming. Trigger whenever Python
+  code involves lambdas, key functions, map/filter/reduce, partial, __call__, registries, Protocol,
+  decorators, iterators, yield, yield from, itertools, with, contextmanager, match, threading,
+  multiprocessing, concurrent.futures, asyncio, async generators, properties, __getattr__,
+  cached_property, descriptors, __set_name__, __init_subclass__, metaclasses, or
+  __class_getitem__. Also trigger for “clean up Python code”, “is a lambda better?”, “why use
+  itemgetter?”, or “how should I structure this project?”.
 ---
 
-# python-clean-code — Functional Patterns (Fluent Python Ch. 7–10)
+# python-clean-code — Functional Patterns, Control Flow, and Metaprogramming (Fluent Python Ch. 7–24)
 
-A living skill that turns Fluent Python's Chapters 7–10 into concrete, verified, production-grade
-coding rules. Every pattern below is backed by real code from famous open-source projects. Start
-with the chapter module that matches the problem, then use the repository field guides for concrete
-comparisons.
+A living skill that turns Fluent Python chapters into concrete, verified, production-grade coding
+rules. Every pattern below is backed by local book examples or real code from famous open-source
+projects. Start with the chapter module that matches the problem, then use the repository field
+guides for concrete comparisons.
 
 ## The one idea
 
@@ -199,6 +196,56 @@ operation, or when a central function contains growing dispatch branches. The ke
 - observer/hook collections;
 - callable pipelines and setup-time strategy binding.
 
+## Chapter 17 — iterators, generators, and classic coroutines
+
+Read **`references/chapters/ch17/iterators-generators-coroutines.md`** when the code handles
+iterables, lazy streams, generator functions/expressions, `yield from`, `itertools`, or generator
+control methods such as `send`, `throw`, and `close`. The bundled runnable examples are in
+**`references/chapters/ch17/examples/`**.
+
+The key rules are:
+
+- accept `Iterable[T]` when the caller need not provide a concrete collection;
+- return `Iterator[T]` when output is lazy and single-pass;
+- keep reusable iterables separate from their cursor/iterator objects;
+- use generator functions for lazy stateful production and generator expressions for short
+  transformations;
+- prefer standard `itertools` composition before inventing another stream helper;
+- use `yield from` for recursive/delegated generators and to preserve bidirectional control;
+- reserve classic coroutines for explicit state-machine protocols; use native `async`/`await` for
+  modern asynchronous I/O;
+- make early-stop cleanup explicit with `try/finally`, `close`, and resource context managers.
+
+## Chapters 18–24 — control flow, concurrency, and metaprogramming
+
+Use the focused reference bundle that matches the code under review:
+
+| Chapter | Read when the code involves | Guide and examples |
+|---|---|---|
+| 18 | `with`, `contextmanager`, `match`/`case`, `for`/`else`, exception boundaries | [`ch18/with-match.md`](references/chapters/ch18/with-match.md) |
+| 19 | threads, processes, `Event`, queues, workload/concurrency choices | [`ch19/concurrency-models.md`](references/chapters/ch19/concurrency-models.md) |
+| 20 | `Executor`, `Future`, `submit`, `map`, `as_completed` | [`ch20/concurrent-executors.md`](references/chapters/ch20/concurrent-executors.md) |
+| 21 | `asyncio`, `async def`, async generators, cancellation, streams | [`ch21/asynchronous-programming.md`](references/chapters/ch21/asynchronous-programming.md) |
+| 22 | `property`, `__getattr__`, `__new__`, `cached_property`, dynamic façades | [`ch22/dynamic-attributes-properties.md`](references/chapters/ch22/dynamic-attributes-properties.md) |
+| 23 | `__get__`, `__set__`, `__set_name__`, data/non-data descriptors | [`ch23/attribute-descriptors.md`](references/chapters/ch23/attribute-descriptors.md) |
+| 24 | `__init_subclass__`, class decorators, `__prepare__`, metaclasses, `__class_getitem__` | [`ch24/class-metaprogramming.md`](references/chapters/ch24/class-metaprogramming.md) |
+
+Every bundle contains dependency-free examples and tests. **Agentic repository evidence is
+required:** consult [`case-studies/agentic-repos-analysis.md`](references/case-studies/agentic-repos-analysis.md)
+for concrete LangGraph, LlamaIndex, AG2/AutoGen, Agent-S, ClawGUI, DeerFlow, TuriX-CUA, and other
+inspected repository patterns. If no meaningful repository implementation was verified, say so
+instead of inventing one.
+
+Cross-chapter rules:
+
+- Make ownership and cleanup lexical; restore global state in `finally`.
+- Keep blocking work out of the event loop; distinguish thread, process, executor, and async
+  lifecycles.
+- Await every future/task whose completion or exception matters.
+- Prefer properties/descriptors only for stable, reusable attribute behavior.
+- Prefer class decorators or `__init_subclass__` before a metaclass.
+- Keep dynamic behavior narrow, typed, testable, and explicit at the boundary.
+
 ## Repository field guides
 
 - **`references/case-studies/library-repos-analysis.md`** — verified patterns and conservative refactor targets
@@ -206,6 +253,8 @@ operation, or when a central function contains growing dispatch branches. The ke
 - **`references/case-studies/gui-repos-analysis.md`** — usage and “current problem → functional fix” findings
   across the GUI repositories under `~/Desktop/project/reference`, including agent-s, ClawGUI,
   CogAgent, dart-gui, deer-flow-agent, SCALE-CUA, ShowUI, TongUI-agent, and TuriX-CUA.
+- **`references/case-studies/agentic-repos-analysis.md`** — required source evidence for Chapters
+  18–24 from agentic/LLM repositories and explicit “no verified example” findings.
 
 Use the field guides as review examples, not as automatic refactoring instructions. Check whether a
 branch is in a hot path, whether registration order is semantic, and whether a class owns state or
@@ -213,5 +262,5 @@ invariants before replacing it with a function.
 
 ## Roadmap (future chapters)
 
-Chapters 7–10 are now covered. Planned next modules:
-- ch. 5/11/12+ — data classes, pythonic objects, sequence hacking
+Chapters 7–10 and the Chapter 11–15/17–24 reference bundles are available. Chapter 16 remains a
+separate operator-overloading follow-up from the previous investigation.

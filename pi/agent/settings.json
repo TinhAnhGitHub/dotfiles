@@ -1,13 +1,16 @@
 {
   "lastChangelogVersion": "0.84.2",
-  "theme": "dark",
+  "theme": "rainbow-prism",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-luna",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:@shuv1337/pi-mcp-adapter",
     "npm:@narumitw/pi-python-lsp",
-    "npm:pi-effort"
+    "npm:pi-effort",
+    "npm:awesome-pi-themes",
+    "npm:pi-background-tasks",
+    "npm:pi-subagents"
   ],
-  "hideThinkingBlock": false
+  "hideThinkingBlock": true
 }
