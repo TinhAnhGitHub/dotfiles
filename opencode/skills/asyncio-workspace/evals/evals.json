@@ -1,0 +1,23 @@
+{
+  "skill_name": "asyncio",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have this Python code that fetches 50 URLs sequentially and it's way too slow:\n\n```python\nresults = []\nfor url in urls:\n    results.append(fetch_url(url))  # async def fetch_url(url) -> str\n```\n\nMake it concurrent, but if one fetch fails I don't want it to kill everything else — collect whatever succeeded. Also make sure we never have more than 10 requests in flight at once because the API rate-limits us.",
+      "expected_output": "Code using Semaphore(10) around each fetch plus either TaskGroup or gather(return_exceptions=True), with correct handling so failures don't cancel siblings; explanation of why gather alone without return_exceptions would leave other tasks running.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review this asyncio snippet for bugs:\n\n```python\nimport asyncio, time\n\nasync def worker(q):\n    while True:\n        item = await q.get()\n        time.sleep(item)\n        print('done', item)\n\nasync def main():\n    q = asyncio.Queue()\n    for i in range(5):\n        q.put_nowait(i)\n    t = asyncio.create_task(worker(q))\n    await asyncio.sleep(0.1)\n    # assume program ends here\n\nasyncio.run(main())\n```",
+      "expected_output": "Identifies: (1) time.sleep blocks the event loop — should be asyncio.sleep or to_thread; (2) missing queue.task_done(); (3) fire-and-forget task not awaited/strongly referenced; (4) no graceful shutdown of the infinite worker loop.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write a Python asyncio producer/consumer system: one producer generates jobs into a bounded queue (max 100 items for backpressure), 4 consumers process them, and when production finishes the whole thing shuts down cleanly — consumers exit after draining remaining items. Target Python 3.12. Show me the full runnable script.",
+      "expected_output": "Bounded Queue(maxsize=100); 4 consumer tasks; clean shutdown either via sentinel-per-worker or (better) noting shutdown() is 3.13+ and using sentinels/cancellation for 3.12; task_done/join bookkeeping or equivalent; workers reaped properly.",
+      "files": []
+    }
+  ]
+}

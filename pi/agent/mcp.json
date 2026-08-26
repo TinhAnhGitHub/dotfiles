@@ -5,10 +5,13 @@
   },
   "mcpServers": {
     "codebase-memory-mcp": {
-      "command": "/home/uag3hc/.local/bin/codebase-memory-mcp",
+      "command": "sh",
+      "args": ["-c", "exec \"${CODEBASE_MEMORY_MCP_PATH}\""],
+      "requestTimeoutMs": 10000,
       "lifecycle": "eager"
     },
     "context7": {
+      "transport": "streamable-http",
       "url": "https://mcp.context7.com/mcp",
       "headers": {
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
@@ -19,7 +22,14 @@
       "command": "/home/uag3hc/.local/bin/ast-grep-server-cached",
       "lifecycle": "eager"
     },
+    "grep-app": {
+      "command": "node",
+      "args": ["${GREP_APP_MCP_PATH}"],
+      "requestTimeoutMs": 30000,
+      "lifecycle": "eager"
+    },
     "exa": {
+      "transport": "streamable-http",
       "url": "https://mcp.exa.ai/mcp",
       "headers": {
         "x-api-key": "${EXA_API_KEY}"

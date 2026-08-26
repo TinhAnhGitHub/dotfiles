@@ -1,0 +1,11 @@
+{
+  "eval_id": 3,
+  "eval_name": "producer-consumer-shutdown",
+  "prompt": "Write a Python asyncio producer/consumer system: one producer generates jobs into a bounded queue (max 100 items for backpressure), 4 consumers process them, and when production finishes the whole thing shuts down cleanly \u2014 consumers exit after draining remaining items. Target Python 3.12. Show me the full runnable script.",
+  "assertions": [
+    "Bounded queue with maxsize=100 providing backpressure",
+    "1 producer and 4 consumer tasks",
+    "Consumers exit cleanly after draining remaining items on Python 3.12 (sentinels or join+cancel; NOT 3.13-only Queue.shutdown())",
+    "Correct task_done()/join() bookkeeping (task_done in finally)"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "asyncio-bug-review",
+  "prompt": "Review this asyncio snippet for bugs:\n\n```python\nimport asyncio, time\n\nasync def worker(q):\n    while True:\n        item = await q.get()\n        time.sleep(item)\n        print('done', item)\n\nasync def main():\n    q = asyncio.Queue()\n    for i in range(5):\n        q.put_nowait(i)\n    t = asyncio.create_task(worker(q))\n    await asyncio.sleep(0.1)\n    # assume program ends here\n\nasyncio.run(main())\n```",
+  "assertions": [
+    "Identifies time.sleep() blocking the event loop inside a coroutine",
+    "Identifies missing queue.task_done() call",
+    "Identifies fire-and-forget task issues (not awaited / no strong reference / never shut down)",
+    "Provides corrected working code"
+  ]
+}

@@ -1,5 +1,5 @@
-model = "gpt-5.6-luna"
-model_reasoning_effort = "xhigh"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "xhigh"
 [projects."/home/tinhanhnguyen"]
 trust_level = "trusted"
@@ -53,9 +53,37 @@ trust_level = "trusted"
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 1
 
+# Shared MCP servers. Secrets stay in environment variables; do not commit values.
 [mcp_servers.context7]
-command = "npx"
-args = ["-y", "@upstash/context7-mcp"]
-env_vars = ["ctx7sk-8b96fd04-af99-426c-9247-22b955fa9387"]
+url = "https://mcp.context7.com/mcp"
+env_http_headers = { "CONTEXT7_API_KEY" = "CONTEXT7_API_KEY" }
+
+[mcp_servers.codebase-memory-mcp]
+# Relay the stdio stream to keep startup framing reliable for Codex.
+command = "/home/tinhanhnguyen/.local/bin/codex-codebase-memory-mcp"
+startup_timeout_sec = 30
+tool_timeout_sec = 10
+
+[mcp_servers.ast-grep]
+command = "uvx"
+args = [
+  "--from",
+  "git+https://github.com/ast-grep/ast-grep-mcp",
+  "--with",
+  "mcp<2",
+  "ast-grep-server",
+]
+
+[mcp_servers.grep-app]
+# Disabled in Codex: this server writes startup logs to stdout, corrupting stdio MCP frames.
+enabled = false
+command = "sh"
+args = ["-c", "exec node \"${GREP_APP_MCP_PATH}\""]
+env_vars = ["GREP_APP_MCP_PATH"]
+tool_timeout_sec = 30
+
+[mcp_servers.exa]
+url = "https://mcp.exa.ai/mcp"
+env_http_headers = { "x-api-key" = "EXA_API_KEY" }
 
 

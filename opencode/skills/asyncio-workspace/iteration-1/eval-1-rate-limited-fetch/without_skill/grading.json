@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Caps concurrency with asyncio.Semaphore(10) around each fetch",
+      "passed": true,
+      "evidence": "semaphore = asyncio.Semaphore(concurrency); async with semaphore: return await fetch_with_error(url)"
+    },
+    {
+      "text": "One failure does not cancel siblings",
+      "passed": true,
+      "evidence": "Per-task try/except wrapper plus gather(return_exceptions=True)"
+    },
+    {
+      "text": "Successfully collects results of successful fetches",
+      "passed": true,
+      "evidence": "Filters outcomes to successful (url, body) pairs"
+    },
+    {
+      "text": "Runnable async code with asyncio.run entry point",
+      "passed": true,
+      "evidence": "Usage shown in comments: results = asyncio.run(fetch_all_concurrently(urls)) \u2014 no executable __main__ block though"
+    }
+  ]
+}

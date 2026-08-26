@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "rate-limited-fetch",
+  "prompt": "I have this Python code that fetches 50 URLs sequentially and it's way too slow:\n\n```python\nresults = []\nfor url in urls:\n    results.append(fetch_url(url))  # async def fetch_url(url) -> str\n```\n\nMake it concurrent, but if one fetch fails I don't want it to kill everything else \u2014 collect whatever succeeded. Also make sure we never have more than 10 requests in flight at once because the API rate-limits us.",
+  "assertions": [
+    "Caps concurrency with asyncio.Semaphore(10) around each fetch",
+    "One failure does not cancel siblings: uses gather(return_exceptions=True) or equivalent per-task error handling",
+    "Successfully collects results of successful fetches",
+    "Provides runnable async code with an asyncio.run entry point"
+  ]
+}

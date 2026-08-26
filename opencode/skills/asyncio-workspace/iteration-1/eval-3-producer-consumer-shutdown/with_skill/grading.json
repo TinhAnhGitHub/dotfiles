@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Bounded queue with maxsize=100 providing backpressure",
+      "passed": true,
+      "evidence": "Queue(maxsize=QUEUE_MAXSIZE) with QUEUE_MAXSIZE=100; await queue.put blocks when full"
+    },
+    {
+      "text": "1 producer and 4 consumer tasks",
+      "passed": true,
+      "evidence": "produce(queue, TOTAL_JOBS); NUM_CONSUMERS=4 consumer tasks"
+    },
+    {
+      "text": "Clean shutdown after draining on Python 3.12 (not 3.13-only API)",
+      "passed": true,
+      "evidence": "join() -> cancel -> gather(return_exceptions=True); notes.md explicitly rejects Queue.shutdown() as 3.13+"
+    },
+    {
+      "text": "Correct task_done()/join() bookkeeping (task_done in finally)",
+      "passed": true,
+      "evidence": "queue.task_done() inside finally block paired with get()"
+    }
+  ]
+}

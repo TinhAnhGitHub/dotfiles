@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Identifies time.sleep() blocking the event loop inside a coroutine",
+      "passed": true,
+      "evidence": "Bug #1 marked critical; suggests asyncio.sleep or to_thread"
+    },
+    {
+      "text": "Identifies missing queue.task_done() call",
+      "passed": true,
+      "evidence": "Bug #4; fixed with task_done() in finally"
+    },
+    {
+      "text": "Identifies fire-and-forget task issues",
+      "passed": true,
+      "evidence": "Bug #2 covers never-awaited exceptions, weak-reference GC risk, pending-task warning at shutdown"
+    },
+    {
+      "text": "Provides corrected working code",
+      "passed": true,
+      "evidence": "Full corrected script using join -> cancel -> reap canonical pattern"
+    }
+  ]
+}

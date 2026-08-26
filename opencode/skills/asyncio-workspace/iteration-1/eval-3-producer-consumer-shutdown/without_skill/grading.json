@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Bounded queue with maxsize=100 providing backpressure",
+      "passed": true,
+      "evidence": "Queue(maxsize=QUEUE_MAXSIZE)=100; put() suspends when full"
+    },
+    {
+      "text": "1 producer and 4 consumer tasks",
+      "passed": true,
+      "evidence": "producer task + 4 consume_jobs tasks"
+    },
+    {
+      "text": "Clean shutdown after draining on Python 3.12 (not 3.13-only API)",
+      "passed": true,
+      "evidence": "Sentinel-per-consumer pattern; notes.md correctly notes shutdown() is 3.13+"
+    },
+    {
+      "text": "Correct task_done()/join() bookkeeping (task_done in finally)",
+      "passed": true,
+      "evidence": "task_done() in finally; join() before awaiting consumers"
+    }
+  ]
+}
