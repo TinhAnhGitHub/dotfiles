@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "settings-sources-and-secrets",
+  "prompt": "Build application settings from APP_DB__HOST, a .env file, and a mounted secrets directory. Show precedence tests and do not print secret values.",
+  "assertions": [
+    {"text": "Uses pydantic-settings and nested environment configuration", "passed": null, "evidence": ""},
+    {"text": "Explains and tests source precedence", "passed": null, "evidence": ""},
+    {"text": "Avoids exposing secret values", "passed": null, "evidence": ""}
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "metadata": {
+    "skill_name": "pydantic-skill",
+    "skill_path": "/home/tinhanhnguyen/.config/opencode/skills/pydantic-skill",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-08-08T16:11:14Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Distinguishes required-but-nullable from optional fields",
+          "passed": true,
+          "evidence": "The answer uses an annotation without a None default and tests omission versus explicit None."
+        },
+        {
+          "text": "Uses strict ID validation and item-level constraints",
+          "passed": true,
+          "evidence": "The answer uses strict integer validation and Annotated non-empty tag items."
+        },
+        {
+          "text": "Includes focused tests for valid and invalid input",
+          "passed": true,
+          "evidence": "The answer includes pytest cases for missing, null, coercion, and invalid tag values."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Uses pydantic-settings and nested environment configuration",
+          "passed": true,
+          "evidence": "The answer uses BaseSettings, SettingsConfigDict, APP_ prefix, and __ nested parsing."
+        },
+        {
+          "text": "Explains and tests source precedence",
+          "passed": true,
+          "evidence": "The answer covers init, environment, dotenv, secrets, and defaults with precedence tests."
+        },
+        {
+          "text": "Avoids exposing secret values",
+          "passed": true,
+          "evidence": "The answer uses SecretStr and explicitly avoids logging or debug source dumps."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Recognizes the target version does not support validate_by_name",
+          "passed": true,
+          "evidence": "The answer gates validate_by_name/validate_by_alias at Pydantic 2.11+."
+        },
+        {
+          "text": "Uses the compatible v2.6-v2.10 alias configuration",
+          "passed": true,
+          "evidence": "The answer uses ConfigDict(populate_by_name=True)."
+        },
+        {
+          "text": "States the compatibility caveat without upgrading dependencies",
+          "passed": true,
+          "evidence": "The answer keeps the pinned range and explains the later migration."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Distinguishes required-but-nullable from optional fields",
+          "passed": true,
+          "evidence": "The baseline answer explains that omission is invalid while None is accepted."
+        },
+        {
+          "text": "Uses strict ID validation and item-level constraints",
+          "passed": true,
+          "evidence": "The baseline uses StrictInt and Annotated item constraints."
+        },
+        {
+          "text": "Includes focused tests for valid and invalid input",
+          "passed": true,
+          "evidence": "The baseline includes pytest cases for requiredness, tags, and IDs."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Uses pydantic-settings and nested environment configuration",
+          "passed": true,
+          "evidence": "The baseline uses BaseSettings, SettingsConfigDict, and nested delimiter configuration."
+        },
+        {
+          "text": "Explains and tests source precedence",
+          "passed": true,
+          "evidence": "The baseline explicitly customizes source order and provides precedence tests."
+        },
+        {
+          "text": "Avoids exposing secret values",
+          "passed": true,
+          "evidence": "The baseline uses SecretStr and an allowlisted safe summary."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Recognizes the target version does not support validate_by_name",
+          "passed": true,
+          "evidence": "The baseline notes validate_by_name is introduced in 2.11."
+        },
+        {
+          "text": "Uses the compatible v2.6-v2.10 alias configuration",
+          "passed": true,
+          "evidence": "The baseline uses ConfigDict(populate_by_name=True)."
+        },
+        {
+          "text": "States the compatibility caveat without upgrading dependencies",
+          "passed": true,
+          "evidence": "The baseline keeps the dependency range and documents the newer alternative."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.00",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}

@@ -253,6 +253,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Pi runtime state
+pi/agent/sessions/
+pi/agent/npm/
+pi/agent/models-store.json
+
 
 # Codex runtime state (real state lives in ~/.codex; only config/rules/skills are symlinked)
 .codex/*

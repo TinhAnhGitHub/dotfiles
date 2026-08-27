@@ -1,0 +1,9 @@
+{
+  "expectations": [
+    {"text": "Distinguishes required-but-nullable from optional fields", "passed": true, "evidence": "The baseline answer explains that omission is invalid while None is accepted."},
+    {"text": "Uses strict ID validation and item-level constraints", "passed": true, "evidence": "The baseline uses StrictInt and Annotated item constraints."},
+    {"text": "Includes focused tests for valid and invalid input", "passed": true, "evidence": "The baseline includes pytest cases for requiredness, tags, and IDs."}
+  ],
+  "summary": {"passed": 3, "failed": 0, "total": 3, "pass_rate": 1.0},
+  "timing": {"total_duration_seconds": 0.0}
+}

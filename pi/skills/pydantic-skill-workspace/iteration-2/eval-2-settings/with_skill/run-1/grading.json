@@ -1,0 +1,9 @@
+{
+  "expectations": [
+    {"text": "Uses pydantic-settings and nested environment configuration", "passed": true, "evidence": "The answer uses BaseSettings, SettingsConfigDict, APP_ prefix, and __ nested parsing."},
+    {"text": "Explains and tests source precedence", "passed": true, "evidence": "The answer covers init, environment, dotenv, secrets, and defaults with precedence tests."},
+    {"text": "Avoids exposing secret values", "passed": true, "evidence": "The answer uses SecretStr and explicitly avoids logging or debug source dumps."}
+  ],
+  "summary": {"passed": 3, "failed": 0, "total": 3, "pass_rate": 1.0},
+  "timing": {"total_duration_seconds": 0.0}
+}

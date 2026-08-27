@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "eval_name": "migration-and-version-gating",
+  "prompt": "The project is pinned to pydantic>=2.6,<2.11, but a patch uses validate_by_name. Replace it with a compatible approach and state the version caveat.",
+  "assertions": [
+    {"text": "Recognizes the target version does not support validate_by_name", "passed": null, "evidence": ""},
+    {"text": "Uses the compatible v2.6-v2.10 alias configuration", "passed": null, "evidence": ""},
+    {"text": "States the compatibility caveat without upgrading dependencies", "passed": null, "evidence": ""}
+  ]
+}
