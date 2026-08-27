@@ -1,0 +1,30 @@
+{
+  "providers": {
+    "bosch-vllm": {
+      "baseUrl": "http://hc1-hpc-0001a.hc.apac.bosch.com:8088/v1",
+      "api": "openai-completions",
+      "apiKey": "vllm",
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "thinkingFormat": "qwen-chat-template"
+      },
+      "models": [
+        {
+          "id": "Qwen/Qwen3.6-35B-A3B-FP8",
+          "name": "Qwen 3.6 35B A3B FP8 (Bosch vLLM)",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 262144,
+          "maxTokens": 32768,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    }
+  }
+}

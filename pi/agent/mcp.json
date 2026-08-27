@@ -16,14 +16,7 @@
       "lifecycle": "eager"
     },
     "ast-grep": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/ast-grep/ast-grep-mcp",
-        "--with",
-        "mcp<2",
-        "ast-grep-server"
-      ],
+      "command": "/home/uag3hc/.local/bin/ast-grep-server-cached",
       "lifecycle": "eager"
     },
     "exa": {
