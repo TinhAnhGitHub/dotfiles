@@ -11,7 +11,6 @@ Use the child skill that matches the workspace task:
 - [codebase-memory](codebase-memory/SKILL.md) — structural codebase knowledge and queries.
 - [find-skills](find-skills/SKILL.md) — discover and install relevant skills.
 - [git-usage-skill](git-usage-skill/SKILL.md) — Git workflows and repository operations.
-- [graphify](graphify/SKILL.md) — codebase graphing and documentation.
 - [pydantic-skill-workspace](pydantic-skill-workspace/) — workspace evaluation artifacts for Pydantic.
 - [skill-creator](skill-creator/SKILL.md) — create and update Codex skills.
 
