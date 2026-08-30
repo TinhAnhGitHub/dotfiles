@@ -1,6 +1,6 @@
 ---
 name: framework
-description: Route framework-specific development tasks to the appropriate framework skill.
+description: Route framework-specific development and troubleshooting tasks to the most appropriate child skill. Use this skill whenever a user asks about building, debugging, testing, deploying, operating, or integrating a Python framework, data platform, workflow engine, database, vector store, or ML/GenAI framework covered by the child skills—even when the user does not name the framework explicitly. Identify the framework from the request, read the matching child skill before acting, and use the child skill's instructions as the authoritative workflow.
 ---
 
 # Framework Skills

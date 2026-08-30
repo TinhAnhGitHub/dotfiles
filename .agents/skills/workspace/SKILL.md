@@ -1,6 +1,6 @@
 ---
 name: workspace
-description: Route repository, workspace, and skill-management tasks to the appropriate workspace skill.
+description: Route repository, workspace, codebase-understanding, Git, and Codex skill-management tasks to the most appropriate child skill. Use this skill whenever a user asks to inspect or modify a repository, understand code structure or file relationships, manage Git changes, discover or install skills, create or improve a skill, or work with workspace-specific artifacts—even when the request is phrased as a general file or project task. Select the matching child skill, read it completely before acting, and follow its workflow; do not treat evaluation-artifact directories as executable skills.
 ---
 
 # Workspace Skills

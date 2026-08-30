@@ -1,6 +1,6 @@
 ---
 name: python
-description: Route Python development tasks to the appropriate Python skill.
+description: Route Python development, maintenance, testing, packaging, dependency-management, and code-quality tasks to the most appropriate child skill. Use this skill whenever a request involves Python code, Python projects, Pydantic models, pytest, PySpark/Databricks testing, clean-code improvements, or uv—even if the user describes the task in general software terms without explicitly saying “Python skill.” Determine the primary concern, read the matching child skill before acting, and follow that child skill's guidance.
 ---
 
 # Python Skills
