@@ -1,0 +1,65 @@
+{
+  "skill_name": "python-design-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "This Python service has subclasses for every combination of provider, retry policy, and response format. Explain the problem and refactor direction.",
+      "expected_output": "Selects composition plus Adapter/Decorator or Strategy, explains when and why, and warns about wrapper ordering and lifecycle.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to support OpenAI, vLLM, and LiteLLM behind one typed interface. Which patterns should I use and what should the interface preserve?",
+      "expected_output": "Selects a typed Protocol with Adapter/Facade and dependency injection, covering streaming, retries, cancellation, errors, and provider-specific escape hatches.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Design a plugin system for tools and model backends that can be extended by separate modules and tested with fakes.",
+      "expected_output": "Selects Registry plus dependency injection, defines duplicate/missing registration behavior, and includes isolated contract tests.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "A LangGraph-like workflow must pause for approval, resume later, retry safely, and survive a process restart. Give me a Python design.",
+      "expected_output": "Selects explicit State/Workflow plus checkpoint or memento semantics, addresses idempotency, legal transitions, persistence, and cancellation.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Should I introduce a factory, strategy, and registry for a function that only has two fixed branches and is called in one module?",
+      "expected_output": "Rejects unnecessary abstraction, explains the simpler conditional/function choice, and states the conditions that would justify a pattern later.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Compare the useful Python design lessons from faif/python-patterns with Python's callable factories, protocols, and composition style in an AI system.",
+      "expected_output": "Uses the sources as rationale, distinguishes GoF labels from Python-specific idioms, and gives framework-grounded examples without copying unverified APIs.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "A request-processing service has many independent rules that can be enabled, ordered, and configured from settings. Should I use a policy pipeline?",
+      "expected_output": "Selects callable policies composed in an explicit ordered pipeline, explains registry/configuration boundaries, validation, unknown-policy behavior, and when a simple conditional is enough.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "A payment workflow has legal transitions and events, but state behavior is mostly data lookup. Should I use state subclasses or a table-driven state machine?",
+      "expected_output": "Chooses an explicit transition table when behavior is simple, validates transitions before actions, keeps context state per instance, and explains when class-based states are warranted.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Review this Python design using SRP, OCP, LSP, ISP, and DIP. How can I keep the boundaries Pythonic without building an abstract base class for everything?",
+      "expected_output": "Uses change pressure as the diagnostic, prefers small Protocols/callables and injected dependencies, preserves substitutability, and gives a simpler alternative.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "A function accepts an optional value from an API and then branches on None throughout the domain. What clean-code design should replace that?",
+      "expected_output": "Normalizes at the boundary using a default, validated value, explicit lifecycle state, Null Object, or sentinel according to semantics, with tests for omitted versus explicit None.",
+      "files": []
+    }
+  ]
+}

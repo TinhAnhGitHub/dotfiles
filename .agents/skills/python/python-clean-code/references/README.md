@@ -1,62 +1,16 @@
-# python-clean-code references
+# Python clean-code references
 
-This directory is organized by **chapter** and **case-study source**. The installed entry point is
-the parent `../SKILL.md`; these files are supporting material, not additional opencode skills.
+The active reference set is organized by reusable implementation pattern:
 
-## Start here
+- [`patterns/README.md`](patterns/README.md) — functional, decorator, typing, OOP, iteration,
+  concurrency, dynamic-class, parameter-object, absence-value, and boundary guidance.
+- [`frameworks/README.md`](frameworks/README.md) — cross-links to the canonical framework matrix.
+- [`provenance/zedr-clean-code-python-map.md`](provenance/zedr-clean-code-python-map.md) — maps the supplied zedr clean-code source into the pattern taxonomy.
+- [`provenance/fluent-python-map.md`](provenance/fluent-python-map.md) — maps the old Fluent Python
+  chapter organization to the new pattern families.
+- [`../../../python-design-patterns/references/provenance/arjancodes-2026-map.md`](../../../python-design-patterns/references/provenance/arjancodes-2026-map.md)
+  — audits the complete ArjanCodes 2026 tree; concrete adapted examples remain on the relevant
+  clean-code pages.
 
-| Need | Read |
-|---|---|
-| Quick ch. 7 pattern decision | [`chapters/ch07/patterns-cheatsheet.md`](chapters/ch07/patterns-cheatsheet.md) |
-| Full ch. 7 catalog | [`chapters/ch07/functional-patterns.md`](chapters/ch07/functional-patterns.md) |
-| Type hints at callable boundaries | [`chapters/ch08/type-hints.md`](chapters/ch08/type-hints.md) |
-| Closures and decorators | [`chapters/ch09/closures-decorators.md`](chapters/ch09/closures-decorators.md) |
-| Strategy/registry/dispatch patterns | [`chapters/ch10/design-patterns.md`](chapters/ch10/design-patterns.md) |
-| Chapters 11–15 | [`chapters/ch11-15/README.md`](chapters/ch11-15/README.md) |
-| Iterators, generators, and classic coroutines | [`chapters/ch17/README.md`](chapters/ch17/README.md) |
-| `with`, `match`, and `else` | [`chapters/ch18/README.md`](chapters/ch18/README.md) |
-| Concurrency models | [`chapters/ch19/README.md`](chapters/ch19/README.md) |
-| Concurrent executors | [`chapters/ch20/README.md`](chapters/ch20/README.md) |
-| Asynchronous programming | [`chapters/ch21/README.md`](chapters/ch21/README.md) |
-| Dynamic attributes and properties | [`chapters/ch22/README.md`](chapters/ch22/README.md) |
-| Attribute descriptors | [`chapters/ch23/README.md`](chapters/ch23/README.md) |
-| Class metaprogramming | [`chapters/ch24/README.md`](chapters/ch24/README.md) |
-| Framework/library evidence | [`case-studies/library-repos-analysis.md`](case-studies/library-repos-analysis.md) |
-| GUI-repository review | [`case-studies/gui-repos-analysis.md`](case-studies/gui-repos-analysis.md) |
-| Agentic-repository evidence | [`case-studies/agentic-repos-analysis.md`](case-studies/agentic-repos-analysis.md) |
-
-## Layout
-
-```text
-references/
-├── README.md
-├── chapters/
-│   ├── ch07/
-│   │   ├── functional-patterns.md
-│   │   └── patterns-cheatsheet.md
-│   ├── ch08/type-hints.md
-│   ├── ch09/closures-decorators.md
-│   ├── ch10/design-patterns.md
-│   ├── ch11-15/
-│   │   ├── README.md
-│   │   ├── pythonic-objects.md
-│   │   ├── sequence-protocols.md
-│   │   ├── protocols-abcs.md
-│   │   ├── inheritance.md
-│   │   ├── more-type-hints.md
-│   │   ├── framework-patterns.md
-│   │   └── review-checklist.md
-│   ├── ch17/ … ch24/    # one README, guide, examples, and tests per chapter
-└── case-studies/
-    ├── library-repos-analysis.md
-    └── gui-repos-analysis.md
-```
-
-## Naming convention
-
-- `chapters/chNN/` contains material distilled from Fluent Python chapter `NN`.
-- `case-studies/` contains evidence gathered from external repositories and concrete review targets.
-- Agentic repository examples are required evidence when a chapter pattern appears in LangGraph,
-  LlamaIndex, AG2/AutoGen, Agent-S, ClawGUI, DeerFlow, TuriX-CUA, or another inspected agent repo;
-  absence of a pattern is recorded instead of being invented.
-- Keep one focused topic per file; add an index entry here when adding a new reference bundle.
+The former chapter bundles and repository case studies remain under `provenance/` for reference;
+they are not the active navigation surface.

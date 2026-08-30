@@ -1,0 +1,481 @@
+[
+  {
+    "url": "https://github.com/faif/python-patterns#readme",
+    "source_type": "reference-repository",
+    "framework": null,
+    "revision_or_version": "master",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["catalog.all"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://python-patterns.guide/",
+    "source_type": "reference-guide",
+    "framework": null,
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["principles.composition", "construction.factory", "python-specific.sentinel"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://verl.readthedocs.io/en/latest/examples/ppo_code_architecture.html",
+    "source_type": "official-docs",
+    "framework": "verl",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["architecture.ai-boundaries", "lifecycle.state-workflow"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://huggingface.co/docs/huggingface_hub/package_reference/hf_api",
+    "source_type": "official-docs",
+    "framework": "huggingface-hub",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.facade", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://github.com/huggingface/huggingface_hub/blob/main/src/huggingface_hub/utils/_validators.py",
+    "source_type": "official-repository",
+    "framework": "huggingface-hub",
+    "revision_or_version": "main",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.decorator", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://huggingface.co/docs/transformers/en/custom_models",
+    "source_type": "official-docs",
+    "framework": "transformers",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["construction.factory", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://github.com/huggingface/transformers/blob/main/docs/source/en/trainer_callbacks.md",
+    "source_type": "official-repository",
+    "framework": "transformers",
+    "revision_or_version": "main",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["behavior.observer", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://pydantic.dev/docs/ai/core-concepts/dependencies/",
+    "source_type": "official-docs",
+    "framework": "pydantic-ai",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["extensibility.registry-di", "architecture.ai-boundaries"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://pydantic.dev/docs/ai/core-concepts/capabilities/",
+    "source_type": "official-docs",
+    "framework": "pydantic-ai",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.composite", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.langchain.com/oss/python/langchain/structured-output",
+    "source_type": "official-docs",
+    "framework": "langchain",
+    "revision_or_version": "1.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["behavior.strategy", "composition.adapter"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.langchain.com/oss/python/langchain/agents",
+    "source_type": "official-docs",
+    "framework": "langchain",
+    "revision_or_version": "1.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.composite", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.langchain.com/oss/python/langgraph/graph-api",
+    "source_type": "official-docs",
+    "framework": "langgraph",
+    "revision_or_version": "v1",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["lifecycle.state-workflow", "architecture.ai-boundaries"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.langchain.com/oss/python/langgraph/persistence",
+    "source_type": "official-docs",
+    "framework": "langgraph",
+    "revision_or_version": "v1",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["lifecycle.state-workflow"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.agno.com/teams/overview",
+    "source_type": "official-docs",
+    "framework": "agno",
+    "revision_or_version": "2.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.composite", "architecture.ai-boundaries"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.agno.com/sdk/introduction",
+    "source_type": "official-docs",
+    "framework": "agno",
+    "revision_or_version": "2.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["construction.factory", "architecture.ai-boundaries"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://adk.dev/agents/workflow-agents/",
+    "source_type": "official-docs",
+    "framework": "google-adk",
+    "revision_or_version": "2.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.composite", "lifecycle.state-workflow"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://adk.dev/sessions/state/",
+    "source_type": "official-docs",
+    "framework": "google-adk",
+    "revision_or_version": "2.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["lifecycle.state-workflow"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.vllm.ai/en/stable/serving/offline_inference/",
+    "source_type": "official-docs",
+    "framework": "vllm",
+    "revision_or_version": "stable",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["behavior.command", "architecture.ai-boundaries"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.vllm.ai/en/stable/design/arch_overview/",
+    "source_type": "official-docs",
+    "framework": "vllm",
+    "revision_or_version": "stable",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["architecture.ai-boundaries", "behavior.command"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://github.com/openai/openai-python",
+    "source_type": "official-repository",
+    "framework": "openai-python",
+    "revision_or_version": "main",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.facade", "lifecycle.state-workflow"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://github.com/openai/openai-python/blob/main/helpers.md",
+    "source_type": "official-repository",
+    "framework": "openai-python",
+    "revision_or_version": "main",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.decorator", "lifecycle.state-workflow"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://mlflow.org/docs/latest/genai/tracing/app-instrumentation/manual-tracing",
+    "source_type": "official-docs",
+    "framework": "mlflow",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.decorator", "behavior.observer"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://mlflow.org/docs/latest/api_reference/python_api/mlflow.pyfunc.html",
+    "source_type": "official-docs",
+    "framework": "mlflow",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.adapter", "composition.facade"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://github.com/QwenLM/Qwen-Agent/blob/main/qwen-agent-docs/website/content/en/guide/core_moduls/agent.md",
+    "source_type": "official-repository",
+    "framework": "qwen-agent",
+    "revision_or_version": "main",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.composite", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://github.com/QwenLM/Qwen-Agent/blob/main/qwen-agent-docs/website/content/en/guide/core_moduls/llm.md",
+    "source_type": "official-repository",
+    "framework": "qwen-agent",
+    "revision_or_version": "main",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["construction.factory", "composition.adapter"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://openrlhf.readthedocs.io/en/latest/agent_training.html",
+    "source_type": "official-docs",
+    "framework": "openrlhf",
+    "revision_or_version": "0.10.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["architecture.ai-boundaries", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://thudm.github.io/slime/get_started/customization.html",
+    "source_type": "official-docs",
+    "framework": "slime",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["extensibility.registry-di", "architecture.ai-boundaries"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://thudm.github.io/slime/get_started/quick_start.html",
+    "source_type": "official-docs",
+    "framework": "slime",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["architecture.ai-boundaries", "behavior.command"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://dspy.ai/api/modules/",
+    "source_type": "official-docs",
+    "framework": "dspy",
+    "revision_or_version": "3.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.composite", "behavior.strategy"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://dspy.ai/api/signatures/",
+    "source_type": "official-docs",
+    "framework": "dspy",
+    "revision_or_version": "3.x",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["extensibility.registry-di", "behavior.strategy"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/sft_trainer",
+    "source_type": "official-docs",
+    "framework": "trl",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["construction.builder", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/grpo_trainer",
+    "source_type": "official-docs",
+    "framework": "trl",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["behavior.strategy", "extensibility.registry-di"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.litellm.ai/docs/observability/custom_callback",
+    "source_type": "official-docs",
+    "framework": "litellm",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.adapter", "behavior.observer", "behavior.strategy"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://docs.litellm.ai/",
+    "source_type": "official-docs",
+    "framework": "litellm",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.adapter", "behavior.strategy"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=RqcEK7sWesQ",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": [
+      "principles.composition",
+      "composition.delegation",
+      "construction.factory",
+      "extensibility.registry-di",
+      "anti-patterns.singleton-inheritance"
+    ],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2026/oop",
+    "source_type": "official-repository",
+    "framework": null,
+    "revision_or_version": "main; inspected 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": [
+      "principles.composition",
+      "composition.delegation",
+      "construction.factory",
+      "extensibility.registry-di",
+      "anti-patterns.singleton-inheritance"
+    ],
+    "evidence_status": "adapted-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=43sDzyanzR0",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["construction.parameter-object", "python-clean-code.parameter-objects"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2026/param",
+    "source_type": "official-repository",
+    "framework": null,
+    "revision_or_version": "main; inspected 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["construction.parameter-object", "python-clean-code.parameter-objects"],
+    "evidence_status": "adapted-examples"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2026",
+    "source_type": "official-repository",
+    "framework": null,
+    "revision_or_version": "main; inspected 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["arjancodes-2026.coverage"],
+    "evidence_status": "audited-directory-map"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=wYeDGkdMi3g",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["behavior.policy-pipeline", "extensibility.registry-di"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2026/policy",
+    "source_type": "official-repository",
+    "framework": null,
+    "revision_or_version": "main; inspected 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["behavior.policy-pipeline", "extensibility.registry-di"],
+    "evidence_status": "adapted-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=OeirQdzYdnc",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["lifecycle.state-machine", "lifecycle.state-workflow"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2026/state",
+    "source_type": "official-repository",
+    "framework": null,
+    "revision_or_version": "main; inspected 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["lifecycle.state-machine", "lifecycle.state-workflow"],
+    "evidence_status": "adapted-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=g7EGMWvJ1fI",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["extensibility.registry-di", "python-clean-code.functional"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=uxwjXLjJOoM",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["principles.solid", "extensibility.protocols", "composition.adapter"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=ss6je4-nDx8",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["composition.composite"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=h8ZwhU3PpVw",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["python-specific.sentinel", "construction.value-object"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=xns3InDkAiA",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["anti-patterns.unnecessary-abstraction", "composition.adapter", "behavior.strategy"],
+    "evidence_status": "adapted-summary"
+  },
+  {
+    "url": "https://github.com/zedr/clean-code-python#table-of-contents",
+    "source_type": "reference-repository",
+    "framework": null,
+    "revision_or_version": "master; inspected 2026-08-30",
+    "fetched": "2026-08-30",
+    "pattern_ids": [
+      "python-clean-code.functional",
+      "python-clean-code.parameter-objects",
+      "python-clean-code.typing",
+      "python-clean-code.oop",
+      "python-clean-code.iteration-resources",
+      "python-clean-code.absence-values",
+      "python-clean-code.solid-boundaries"
+    ],
+    "evidence_status": "adapted-taxonomy"
+  },
+  {
+    "url": "https://mlflow.org/docs/latest/ml/tracking/",
+    "source_type": "official-docs",
+    "framework": "mlflow",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["architecture.cqrs"],
+    "evidence_status": "verified"
+  },
+  {
+    "url": "https://pydantic.dev/docs/ai/core-concepts/output/",
+    "source_type": "official-docs",
+    "framework": "pydantic-ai",
+    "revision_or_version": "latest",
+    "fetched": "2026-08-30",
+    "pattern_ids": ["construction.value-object"],
+    "evidence_status": "verified"
+  }
+]
