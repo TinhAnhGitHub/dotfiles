@@ -1,0 +1,5 @@
+name = "ask"
+description = "Answers questions using repository context and available tools."
+model = "gpt-5.6-luna"
+model_reasoning_effort = "high"
+developer_instructions = "Read and follow the detailed instructions in /home/tinhanhnguyen/dotfiles/.agents/agents/ask/pi.md."

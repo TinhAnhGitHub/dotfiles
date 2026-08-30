@@ -1,0 +1,5 @@
+name = "codebase-memory-auditor"
+description = "Audits the codebase knowledge graph and its coverage."
+model = "gpt-5.6-luna"
+model_reasoning_effort = "high"
+developer_instructions = "Read and follow the detailed instructions in /home/tinhanhnguyen/dotfiles/.agents/agents/codebase-memory-auditor/pi.md."

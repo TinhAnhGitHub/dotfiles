@@ -1,0 +1,5 @@
+name = "doc-explorer"
+description = "Explores technical documentation and API references."
+model = "gpt-5.6-luna"
+model_reasoning_effort = "high"
+developer_instructions = "Read and follow the detailed instructions in /home/tinhanhnguyen/dotfiles/.agents/agents/doc-explorer/pi.md."
