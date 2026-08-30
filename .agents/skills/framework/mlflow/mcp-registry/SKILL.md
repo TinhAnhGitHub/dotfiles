@@ -4,20 +4,21 @@ description: >
   MLflow MCP Registry for registering, versioning, discovering, governing, and connecting
   Model Context Protocol servers, including server.json, semantic versions, statuses,
   aliases, access endpoints, tool snapshots, refresh workflows, CI/CD, and agent lineage.
-  Use whenever users mention MLflow MCP Registry, MCP server catalogs, tool discovery,
+  Use whenever users mention MLflow MCP Registry, server catalogs, tool discovery,
   MCP version promotion, or governed agent tool dependencies. Load parent `mlflow` first.
 compatibility: MLflow 3.15.0+; MCP Registry is experimental and tool discovery requires the mcp extra
 metadata:
-  version: "0.1.0"
-  docs-reviewed: "2026-08-01"
+  version: "0.2.0"
+  docs-reviewed: "2026-08-30"
 ---
 
 # MLflow MCP Registry
 
 The registry is a **catalog and lifecycle plane**, not an MCP runtime, proxy, authorization
 system, or evaluation engine. It records server definitions, immutable semantic versions, tool
-snapshots, aliases, and connection endpoints. The live server still enforces runtime security and
-availability.
+snapshots, aliases, and connection endpoints. The live server still enforces runtime security
+and availability. Use `mcp-server` for the separate MLflow MCP Server that exposes MLflow trace
+operations to coding agents.
 
 ## Mandatory preflight
 
@@ -87,6 +88,13 @@ preview = mlflow.genai.refresh_mcp_server_version_tools(
 
 Never put a literal bearer token in committed code. Supply short-lived headers at execution time
 from an approved secret/identity mechanism and ensure logs redact them.
+
+## Registry/runtime boundary
+
+An access endpoint can resolve a pinned version for reproducibility or an alias for deliberate
+live switching. Store the resolved version, tool-schema digest, endpoint identity, and consuming
+app version in release evidence. A registry snapshot does not prove the remote server is healthy,
+authorized, or unchanged at runtime; refresh and observe it.
 
 ## Reference router
 

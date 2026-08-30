@@ -1,6 +1,6 @@
 # Version tracking source ledger
 
-Reviewed 2026-08-01. Treat `/latest/` as moving documentation and verify the installed API.
+Reviewed 2026-08-30. Treat `/latest/` as moving documentation and verify the installed API.
 
 | Official source | Purpose/status |
 |---|---|
@@ -16,13 +16,18 @@ Reviewed 2026-08-01. Treat `/latest/` as moving documentation and verify the ins
 | https://mlflow.org/docs/latest/genai/eval-monitor/ | Evaluation-driven development and monitoring |
 | https://mlflow.org/docs/latest/genai/datasets/ | Evaluation dataset curation and versioning |
 | https://mlflow.org/docs/latest/genai/flavors/ | Packaging an application snapshot as an executable model |
+| https://mlflow.org/docs/latest/genai/governance/ai-gateway/ | Stable Gateway endpoint names versus resolved provider/model routes |
+| https://mlflow.org/docs/latest/genai/serving/agent-server/ | Agent Server runtime and optional Git-based trace linkage |
+| https://mlflow.org/docs/latest/genai/mcp-registry/ | MCP server/version/alias identity for tool dependencies |
 | https://docs.databricks.com/aws/en/mlflow3/genai/ | Databricks managed MLflow 3 GenAI integration |
 
 ## Status notes
 
 - The root guide states MLflow 3.x and Python prerequisites; minor-version gates must be checked.
 - `mlflow.genai.enable_git_model_versioning()` is experimental and documented for newer MLflow 3
-  releases; it has limitations in Databricks Git Folders.
+  releases; it captures Git branch/commit/dirty state and has limitations in Databricks Git Folders.
 - Examples on some overview pages may still use legacy `mlflow.evaluate()`. For current GenAI
   workflows use `mlflow.genai.evaluate()` and the `evaluation-monitoring` skill.
 - Model Registry lifecycle stages are legacy/deprecated for new designs; prefer aliases.
+- An app version, prompt version, packaged model, Gateway route, MCP tool snapshot, and serving
+  endpoint config are separate identities; record each when it can change behavior.

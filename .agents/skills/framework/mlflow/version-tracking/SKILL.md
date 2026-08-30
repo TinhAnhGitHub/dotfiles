@@ -4,12 +4,13 @@ description: >
   MLflow GenAI application and agent version tracking with LoggedModel, active-model
   contexts, Git-linked versions, trace lineage, configuration snapshots, and systematic
   version comparison. Use whenever users ask which app version produced a trace, how to
-  version an agent or prompt-driven application, how to compare commits, or how to connect
-  GenAI versions to evaluation and deployment. Load the parent `mlflow` skill first.
+  version an agent or prompt-driven application, how to track Git/dirty state, compare
+  application versions, or connect GenAI versions to evaluation and deployment. Load the
+  parent `mlflow` skill first.
 compatibility: MLflow 3.x; automatic Git model versioning is experimental and requires a compatible newer minor release
 metadata:
-  version: "0.1.0"
-  docs-reviewed: "2026-08-01"
+  version: "0.2.0"
+  docs-reviewed: "2026-08-30"
 ---
 
 # MLflow GenAI Version Tracking
@@ -38,9 +39,12 @@ version.
 | Packaged executable | MLflow Model/LoggedModel artifact | model URI | What code and environment can run? |
 | Governed deployable model | Registered Model Version | registered model alias | Which immutable artifact is approved? |
 | Databricks deployment | served entity + endpoint config version | traffic routes | Which UC model version receives traffic? |
+| Provider runtime | Gateway endpoint/model route | traffic split/fallback | Which provider/model actually answered? |
 
 An alias move in the Model Registry does **not** automatically prove that a Databricks serving
 endpoint changed; endpoint configs pin `entity_version` and must be inspected or updated.
+Likewise, an AI Gateway endpoint name can remain stable while its provider/model route changes;
+capture the resolved route in trace/release evidence.
 
 ## Canonical workflow
 
@@ -91,9 +95,26 @@ with mlflow.genai.enable_git_model_versioning() as git_context:
     print(git_context.info.branch, git_context.info.commit, git_context.info.dirty)
 ```
 
-This API is experimental. Feature-detect it, pin MLflow, and use the manual pattern when it is
-unavailable or when Git metadata cannot be read, including affected Databricks Git Folder
-workflows.
+This API is experimental and current docs identify it for newer MLflow 3 releases. It captures
+branch/commit/dirty state and links traces to an application `LoggedModel`. Feature-detect it,
+pin MLflow, and use the manual pattern when it is unavailable or when Git metadata cannot be
+read, including affected Databricks Git Folder workflows.
+
+## Compare application versions
+
+Compare candidates on the same dataset, scorer definitions, judge model/configuration, and
+traffic slices. Include:
+
+- quality and pass/fail deltas, not only aggregate averages;
+- latency, token usage, cost, error/tool failure rates;
+- prompt/model/tool/retriever/Gateway route identity;
+- Git commit and dirty-state status;
+- trace examples and assessment provenance;
+- deployment endpoint/entity/config revision.
+
+The version-comparison UI/workflow helps inspect trace and performance differences, but it is
+evidence collection rather than an automatic release approval. Define explicit gates in CI or
+the deployment system and preserve the selected artifact plus rollback target.
 
 ## Reference router
 
@@ -109,4 +130,5 @@ workflows.
 Every implementation should state environment and MLflow version assumptions, use a stable
 source identifier, capture all behavior-changing dependencies, trace before comparing, evaluate
 candidates on the same dataset/scorers, preserve dirty-state provenance, and record the exact
-deployed endpoint/entity version. Never label a moving alias or `latest` as reproducible evidence.
+deployed endpoint/entity/Gateway route version. Never label a moving alias or `latest` as
+reproducible evidence.

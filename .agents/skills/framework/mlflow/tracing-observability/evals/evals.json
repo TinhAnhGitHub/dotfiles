@@ -1,0 +1,17 @@
+{
+  "skill_name": "tracing-observability",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Instrument a Python multi-turn RAG agent with MLflow automatic and manual tracing, OpenTelemetry export, session/user metadata, typed retriever/tool spans, PII masking, token/cost tracking, and a production sampling policy. Explain what must be version-gated.",
+      "expected_output": "A runnable environment-aware tracing design using current MLflow APIs, meaningful span types and context propagation, explicit privacy/sampling/async controls, OTel endpoint semantics, and version checks.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Diagnose why an MLflow trace shows only a final answer for an agent that uses a retriever and tools. Show how to combine autologging with manual spans, inspect the UI/search path, preserve feedback and expectations, and avoid leaking secrets.",
+      "expected_output": "A trace-quality diagnosis with correct manual APIs, nested span semantics, trace-aware evaluation implications, search/UI operations, and privacy/retention safeguards.",
+      "files": []
+    }
+  ]
+}

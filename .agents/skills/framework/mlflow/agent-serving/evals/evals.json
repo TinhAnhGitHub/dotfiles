@@ -1,0 +1,17 @@
+{
+  "skill_name": "agent-serving",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build an MLflow Agent Server for a Responses API-compatible support agent with @invoke, optional streaming, automatic tracing, Git-linked version tracking, /invocations testing, and a safe tool allow-list. Include the MLflow version gate.",
+      "expected_output": "A correct Agent Server structure with imports, request/response validation, streaming contract, server run configuration, version/tracing setup, security controls, and current version caveats.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Decide between Agent Server, ResponsesAgent, and generic custom PyFunc for deploying an agent. Show how to package/evaluate the selected design, test sync and streaming behavior, and preserve model/trace/deployment lineage.",
+      "expected_output": "A clear interface decision with ResponsesAgent/Models-from-Code and custom-app boundaries, evaluation code shape, contract tests, dependencies/secrets, and rollout/rollback evidence.",
+      "files": []
+    }
+  ]
+}

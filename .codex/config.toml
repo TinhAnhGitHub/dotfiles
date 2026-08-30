@@ -1,5 +1,8 @@
+# Added by `mlflow-codex setup` — forwards each Codex turn to MLflow Tracing.
+notify = ["mlflow-codex", "notify-hook"]
+
 model = "gpt-5.6-luna"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "max"
 plan_mode_reasoning_effort = "max"
 service_tier = "default"
 [projects."/home/tinhanhnguyen"]
@@ -59,6 +62,9 @@ default_subagent_model = "gpt-5.6-luna"
 default_subagent_reasoning_effort = "high"
 
 [projects."/home/tinhanhnguyen/dotfiles"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/mlflow"]
 trust_level = "trusted"
 
 [tui.model_availability_nux]

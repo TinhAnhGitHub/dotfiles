@@ -1,0 +1,17 @@
+{
+  "skill_name": "ai-assistant",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Set up the beta MLflow AI Assistant for a local tracking server and a coding agent. Explain the setup wizard, experiment-page requirement, supported backend caveat, and a least-privilege permission policy.",
+      "expected_output": "A current local-only/beta-aware setup with backend and permission boundaries, data/privacy cautions, and no claim that the Assistant provides remote-server access.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Use MLflow Assistant to add tracing and evaluation to an existing agent project. Show how to review the generated changes, protect credentials and trace data, and route the resulting work to the right MLflow skills.",
+      "expected_output": "A reviewable workflow using agent setup/Assistant, explicit permission and privacy controls, Git/version checks, and routing to tracing/evaluation/prompt skills with human approval.",
+      "files": []
+    }
+  ]
+}

@@ -4,13 +4,16 @@ description: >
   MLflow Prompt Registry lifecycle and optimization: register and load immutable
   prompt versions, manage aliases and tags, format text/chat/Jinja prompts,
   attach model configuration and structured-output metadata, link prompts to
-  traces/runs/LoggedModels, evaluate and optimize prompts, and rewrite prompts
-  for model migration. Use whenever a user mentions Prompt Registry, prompt
-  versioning, `prompts:/` URIs, prompt aliases, prompt optimization, GEPA,
-  MetaPromptOptimizer, prompt migration, or prompt lineage.
+  traces/runs/LoggedModels, evaluate and optimize prompts, use Prompt Engineering
+  UI and LLM Playground, and rewrite prompts for model migration. Use whenever a
+  user mentions Prompt Registry, prompt versioning, `prompts:/` URIs, prompt
+  aliases, prompt optimization, GEPA, MetaPromptOptimizer, prompt migration,
+  prompt lineage, or Gateway-backed prompt testing.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
+  docs-reviewed: "2026-08-30"
   parent: mlflow
+compatibility: MLflow 3.x; optimization, rewrite, UI, and Playground capabilities are version/AI-Gateway gated
 ---
 
 # MLflow Prompt Registry
@@ -28,7 +31,7 @@ API:
 
 | Concern | Official page |
 |---|---|
-| Concepts and caching | [Prompt Registry](https://mlflow.org/docs/latest/genai/prompt-registry/) |
+| Concepts, versions, aliases, and caching | [Prompt Registry](https://mlflow.org/docs/latest/genai/prompt-registry/) |
 | Create/edit/version | [Create and edit](https://mlflow.org/docs/latest/genai/prompt-registry/create-and-edit-prompts/) |
 | Promote with aliases | [Prompt lifecycle aliases](https://mlflow.org/docs/latest/genai/prompt-registry/manage-prompt-lifecycles-with-aliases/) |
 | Load/use in applications | [Use prompts in apps](https://mlflow.org/docs/latest/genai/prompt-registry/use-prompts-in-apps/) |
@@ -37,7 +40,9 @@ API:
 | Offline evaluation | [Evaluate prompts](https://mlflow.org/docs/latest/genai/prompt-registry/evaluate-prompts/) |
 | Optimization | [Optimize prompts](https://mlflow.org/docs/latest/genai/prompt-registry/optimize-prompts/) |
 | Model migration | [Rewrite prompts](https://mlflow.org/docs/latest/genai/prompt-registry/rewrite-prompts/) |
+| Prompt Engineering UI | [Prompt Engineering UI](https://mlflow.org/docs/latest/genai/prompt-registry/prompt-engineering/) |
 | Interactive testing | [LLM Playground](https://mlflow.org/docs/latest/genai/prompt-registry/playground/) |
+| Local source ledger | [Prompt Registry source ledger](references/source-ledger.md) |
 
 For Databricks-managed MLflow, also load `databricks` and the current Databricks
 MLflow 3 documentation because storage, permissions, managed monitoring, AI
@@ -104,8 +109,9 @@ tags for release/evaluation metadata. Keep values searchable and low-cardinality
 Do not store secrets or raw private user content in tags.
 
 `model_config` records inference parameters alongside a prompt and may be
-updated independently of the immutable template. This asymmetry is important:
-if changing model configuration changes behavior, create a new application
+updated independently of the immutable template. Use `set_prompt_model_config`
+and `delete_prompt_model_config` only with an explicit release/evaluation policy.
+If changing model configuration changes behavior, create a new application
 release and evaluation record even if the Prompt Registry template version is
 unchanged. Record model config digests and provider-specific `extra_params`.
 
@@ -126,9 +132,17 @@ unchanged. Record model config digests and provider-specific `extra_params`.
 
 ## Caching and release semantics
 
-Version URIs are immutable and safe to cache longer than mutable alias loads.
-Alias loads must respect the documented cache TTL because an alias can move.
-For production, either:
+Version URIs are immutable and can use the documented long-lived cache. Alias
+loads are mutable and have a short default cache window (currently documented as
+60 seconds). Configure per-call `cache_ttl_seconds` or the documented environment
+variables when release propagation requires a different tradeoff:
+
+```text
+MLFLOW_ALIAS_PROMPT_CACHE_TTL_SECONDS
+MLFLOW_VERSION_PROMPT_CACHE_TTL_SECONDS
+```
+
+Tag/alias changes invalidate relevant cache entries. For production, either:
 
 1. resolve the alias at release time, record the version, and load the exact
    version; or
@@ -198,27 +212,39 @@ Guidance:
   zero-shot or few-shot pass. Record reflection model/config, optimizer,
   metric-call budget, scorer versions, and data digest.
 - Multi-prompt optimization can change several registered prompts together;
-  release them as one coherent candidate with a manifest.
-- Optimized prompts are registered as new versions. Inspect initial/final
-  metrics and rerun the independent holdout/regression/safety suite before
-  assigning an alias or deploying.
-- Prompt optimization requires a sufficiently recent MLflow release; check the
-  installed version and current page before using it (the latest documentation
-  identifies MLflow 3.5.0+ for this API).
+  release them as one coherent candidate with a manifest. Custom optimizers can
+  extend `BasePromptOptimizer`, and aggregation should make scorer weights explicit.
+- Optimized prompts are registered as new versions. Inspect initial/final metrics
+  and rerun the independent holdout/regression/safety suite before assigning an
+  alias or deploying.
+- Prompt optimization requires a sufficiently recent MLflow release; current
+  documentation identifies MLflow 3.5.0+ for this API.
 
 ## Rewrite prompts for a model migration
 
-When switching providers or model families:
+The rewrite workflow is experimental and is useful when switching providers or
+model families. It can be trace-aware when existing outputs/traces provide the
+training signal, so a reference answer is not always required.
 
-1. capture representative traces and outputs from the current model;
-2. build a versioned dataset from those traces;
-3. switch only the target model in a candidate environment;
-4. optimize/rewrite the prompt against an equivalence or task-specific scorer;
-5. inspect safety, correctness, cost, latency, and critical slices;
-6. register the new prompt version and release it with the new model identity.
+1. Capture representative traces and outputs from the current model.
+2. Build a versioned dataset from those traces.
+3. Switch only the target model in a candidate environment.
+4. Optimize/rewrite the prompt against an equivalence or task-specific scorer.
+5. Inspect safety, correctness, cost, latency, and critical slices.
+6. Register the new prompt version and release it with the new model identity.
 
 Do not treat output equivalence as sufficient for safety or access-control
 validation; add explicit policy and tool/retrieval checks.
+
+## Prompt Engineering UI and Playground
+
+The Prompt Engineering UI is an experimental, Gateway-backed workflow for
+trying prompts, recording configurations as runs, and producing an MLflow Model.
+The LLM Playground provides in-browser prompt/model testing with multi-turn chat,
+sampling parameters, tools, structured output, variables, Prompt Registry versions,
+and model configuration. These are interactive development surfaces, not approval
+or deployment gates; export exact prompt/model/config identities into a tested
+release workflow.
 
 ## Status and currentness gates
 
@@ -227,17 +253,18 @@ validation; add explicit policy and tool/retrieval checks.
 - `response_format` is documentation/tracking metadata; validate runtime output.
 - Prompt model configuration can be mutable; include it in the application
   release manifest and evaluation evidence.
-- Optimization and Playground capabilities can require newer MLflow or AI
-  Gateway support. Verify the installed version, backend, permissions, and
-  current official docs before using them in production.
+- Optimization, rewrite, Prompt Engineering UI, and Playground capabilities can
+  require newer MLflow or AI Gateway support. Verify the installed version,
+  backend, permissions, and current official docs before using them in production.
 - Never represent an OSS example as a Databricks-managed feature without
   checking the workspace/cloud release and preview status.
 
 ## Related skills
 
-- `mlflow-evaluation-monitoring` for datasets, scorers, judges, feedback, and
+- `evaluation-monitoring` for datasets, scorers, judges, feedback, and
   production traces.
-- `mlflow-version-tracking` for Git/LoggedModel identity and app versions.
-- `mlflow-genai-flavors` for model packaging and prompt dependencies.
-- `mlflow-model-registry` for UC versions and promotion.
+- `version-tracking` for Git/LoggedModel identity and app versions.
+- `genai-flavors` for model packaging and prompt dependencies.
+- `ai-gateway` for Gateway endpoints used by judges, UI, and Playground.
+- `model-registry` for UC versions and promotion.
 - `databricks-llmops` for the full Git-to-production workflow.

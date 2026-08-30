@@ -1,0 +1,17 @@
+{
+  "skill_name": "ai-gateway",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design an MLflow AI Gateway for OpenAI and Anthropic with encrypted reusable connections, unified and passthrough APIs, traffic splitting, fallbacks, usage/cost tracking, budgets, and a guarded production rollout. Include backend and key-rotation requirements.",
+      "expected_output": "A current Gateway architecture with SQL/FastAPI prerequisites, stable endpoint/query contracts, credential and KEK rotation, route-aware evaluation, budgets, guardrails, observability, and rollback.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Migrate an OpenAI client to an MLflow AI Gateway endpoint while preserving streaming, tools, structured output, and provider-specific Responses API features. Explain unified versus passthrough routes and how to measure Gateway overhead.",
+      "expected_output": "Correct endpoint/base URL patterns, capability and streaming caveats, unified/passthrough tradeoffs, secret handling, trace/route identity, and benchmark methodology without treating sample numbers as an SLO.",
+      "files": []
+    }
+  ]
+}

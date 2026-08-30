@@ -1,0 +1,17 @@
+{
+  "skill_name": "mcp-server",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Configure the MLflow MCP Server for a coding agent to analyze traces in one experiment, with MLflow 3.5.1+, field selection, a minimal tool allow-list, secure authentication, and no destructive operations by default.",
+      "expected_output": "A current MCP client configuration with the mcp extra, tracking/experiment scope, MLFLOW_MCP_TOOLS, extract_fields, least-privilege guidance, and the distinction from MCP Registry.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Use the MLflow MCP Server to investigate a production regression: search failed/slow traces, inspect selected spans, log human-approved feedback and expectations, and turn a verified case into an evaluation dataset without overwriting audit history.",
+      "expected_output": "A safe trace-analysis workflow naming the relevant tools, field paths, privacy boundary, feedback-versus-expectation semantics, and evaluation-monitoring handoff.",
+      "files": []
+    }
+  ]
+}

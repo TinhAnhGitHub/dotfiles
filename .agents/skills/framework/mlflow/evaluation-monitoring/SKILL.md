@@ -4,19 +4,25 @@ description: >
   MLflow GenAI evaluation and monitoring. Use whenever a task involves evaluation
   datasets, feedback, expectations, scorers, LLM-as-a-judge, `mlflow.genai.evaluate`,
   `predict_fn`, prompt or agent evaluation, trace evaluation, RAG/tool/multi-turn quality,
-  judge alignment, `@mlflow.test`, regression CI, automatic issue detection, automatic
-  evaluation, production monitoring, or Databricks MLflow 3 tracing and Unity Catalog.
-  Load the parent `mlflow` skill first. This skill should trigger even when the user asks
-  generally how to test, measure, monitor, or improve an LLM app or agent with MLflow.
+  judge alignment, scorer versioning, Judge Builder, review queues, conversation simulation,
+  `@mlflow.test`, regression CI, automatic issue detection, automatic evaluation, production
+  monitoring, or Databricks MLflow 3 tracing and Unity Catalog. Load the parent `mlflow` skill
+  first. This skill should trigger even when the user asks generally how to test, measure,
+  monitor, or improve an LLM app or agent with MLflow.
 compatibility: MLflow 3.x; some workflows require newer minor versions or Databricks managed MLflow
 metadata:
-  version: "0.1.0"
-  docs-reviewed: "2026-07-31"
+  version: "0.2.0"
+  docs-reviewed: "2026-08-30"
 ---
 
 # MLflow GenAI Evaluation & Monitoring
 
 Use this skill to build an **evaluation-driven development loop**, not a one-off score.
+
+The current GenAI evaluation index spans offline evaluation, trace/session-based automatic
+evaluation, built-in and custom judges, scorer registration/versioning, evaluation datasets,
+conversation simulation, review queues, regression testing, and AI-assisted issue discovery.
+Keep each capability behind its documented MLflow/Databricks version and preview status.
 
 ```text
 app/agent
@@ -41,7 +47,9 @@ Before writing implementation code:
    outputs/traces (no `predict_fn`).
 5. Define the release decision: exploratory metrics, comparison, regression gate, or
    continuous monitoring.
-6. For Databricks, load `databricks` plus the relevant companion skill before proposing
+6. Decide whether automatic evaluation will score new traces/sessions and configure an AI
+   Gateway judge endpoint, or whether `mlflow.genai.evaluate()` will score a fixed dataset.
+7. For Databricks, load `databricks` plus the relevant companion skill before proposing
    credentials, Unity Catalog, SQL warehouse, serving endpoint, Job, or bundle code.
 
 Run the bundled capability inspector when a local environment is available:
@@ -71,7 +79,7 @@ Read only the files relevant to the request.
 | Databricks tracing, manual/auto instrumentation, UC storage, PII | [`references/databricks-tracing.md`](references/databricks-tracing.md) |
 | Databricks evaluation, permissions, Review App, backfill, cross-skill routing | [`references/databricks-integration.md`](references/databricks-integration.md) |
 | Version gates, source-of-truth order, known documentation drift | [`references/version-source-guardrails.md`](references/version-source-guardrails.md) |
-| Exhaustive Azure Databricks documentation URL inventory and cross-map | [`references/azure-databricks-source-ledger.md`](references/azure-databricks-source-ledger.md) |
+| Exhaustive current OSS evaluation index and subpages | [`references/source-ledger.md`](references/source-ledger.md) |
 
 ## Canonical evaluation contract
 
@@ -91,9 +99,11 @@ data = [
     }
 ]
 
+
 def predict_fn(question: str) -> str:
     # Parameter names must match keys in data[i]["inputs"].
     return app(question)
+
 
 result = mlflow.genai.evaluate(
     data=data,
@@ -124,7 +134,9 @@ print(result.result_df)
 | Prompt/model/tool comparison | Same dataset and scorer suite; separate evaluation runs; compare deltas and failures |
 | Existing production behavior | Search traces; evaluate them directly without `predict_fn`; annotate failures |
 | Known regression | One focused `@mlflow.test`; assert `result.passed`; run on every PR |
-| Continuous quality | Register LLM judges for OSS automatic evaluation; on Databricks use managed production monitoring and optional code scorers |
+| Continuous quality | Register LLM judges with sampling/filtering for OSS automatic evaluation; on Databricks use managed production monitoring and optional code scorers |
+| Multi-turn product behavior | Preserve session IDs; use conversation simulation for reproducible scenarios and session judges for trace-level monitoring |
+| Human labeling at scale | Use a review queue/annotation workflow; approve expectations before adding release dataset records |
 | Unknown failure modes | Run automatic issue detection, verify clusters, then translate validated failures into expectations/scorers/tests |
 
 ## Scorer design order
@@ -135,7 +147,8 @@ print(result.result_df)
 3. Use `Guidelines` for simple domain rules.
 4. Use `make_judge` for custom categorical/numeric criteria or trace exploration.
 5. Calibrate against human labels; align and version judges when disagreement matters.
-6. Never treat a single non-deterministic judge score as unquestionable ground truth.
+6. Register only stable LLM judges for automatic evaluation; code-based scorers remain offline-only in OSS.
+7. Never treat a single non-deterministic judge score as unquestionable ground truth.
 
 ## Automation pattern
 
@@ -161,6 +174,8 @@ Automate the stable parts of the loop:
 - Automatic evaluation does not support code-based scorers.
 - Automatic issue detection is available through the UI; the MCP/CLI AI issue discovery
   flow is separate.
+- Newly enabled judges evaluate only eligible recent traces/sessions and do not backfill old
+  assessments automatically; configure sampling/filtering and session inactivity deliberately.
 
 ### Databricks managed MLflow
 
@@ -171,6 +186,20 @@ Automate the stable parts of the loop:
   addition to LLM judges, with notebook serialization constraints.
 - UC traces may require a SQL warehouse; monitoring may require a serverless budget
   policy; privileges and feature availability are workspace-dependent.
+
+## Current feature gates
+
+- Expectations: current docs identify MLflow 3.2+.
+- `make_judge`: current docs identify MLflow 3.4+; trace-based judges need an explicit model.
+- Prompt optimization/rewrite: route to `prompt-registry`, where current docs identify 3.5+.
+- Multi-turn built-in judges are experimental; the full conversation-simulation workflow is newer
+  and requires a compatible recent MLflow release.
+- Judge Builder UI: current docs identify MLflow 3.9+.
+- `@mlflow.test` regression workflow: current CI docs use MLflow 3.14+.
+- Review queues: current docs identify the feature as experimental and added in MLflow 3.14.0.
+- Automatic evaluation and issue detection are operational/preview-sensitive; inspect the target
+  server, endpoint, permissions, and installed signatures rather than assuming parity with offline
+  evaluation.
 
 ## Quality bar for answers and implementations
 

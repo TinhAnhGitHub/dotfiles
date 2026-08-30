@@ -238,7 +238,7 @@ https://learn.microsoft.com/en-us/azure/databricks/mlflow3/genai/tracing/integra
 - https://mlflow.org/docs/latest/genai/eval-monitor/running-evaluation/agents/
 - https://mlflow.org/docs/latest/genai/eval-monitor/running-evaluation/traces/
 - https://mlflow.org/docs/latest/genai/eval-monitor/running-evaluation/multi-turn/
-- https://mlflow.org/docs/latest/genai/eval-monitor/running-evaluation/conversation-simulation/
+- https://mlflow.org/docs/latest/genai/datasets/conversation-simulation/
 - https://mlflow.org/docs/latest/genai/eval-monitor/scorers/
 - https://mlflow.org/docs/latest/genai/eval-monitor/scorers/llm-judge/predefined/
 - https://mlflow.org/docs/latest/genai/eval-monitor/scorers/custom/

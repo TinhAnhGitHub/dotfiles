@@ -1,6 +1,7 @@
 # GenAI flavors source ledger
 
-Reviewed 2026-08-01. Verify `/latest/` examples against installed package signatures.
+Reviewed 2026-08-30. Verify `/latest/` examples against installed package signatures and
+framework/provider versions.
 
 | Official source | Coverage/status |
 |---|---|
@@ -21,6 +22,9 @@ Reviewed 2026-08-01. Verify `/latest/` examples against installed package signat
 | https://mlflow.org/docs/latest/genai/flavors/responses-agent-intro/ | Preferred MLflow 3 agent interface, tools, streaming, migration |
 | https://mlflow.org/docs/latest/genai/flavors/chat-model-intro/ | ChatModel background; ResponsesAgent preferred in current docs |
 | https://mlflow.org/docs/latest/genai/flavors/chat-model-guide/ | ChatModel authoring/migration context |
+| https://mlflow.org/docs/latest/genai/serving/agent-server/ | FastAPI Agent Server, `@invoke`, `@stream`, `/invocations` |
+| https://mlflow.org/docs/latest/genai/serving/responses-agent/ | ResponsesAgent serving contract and stream events |
+| https://mlflow.org/docs/latest/genai/serving/custom-apps/ | Generic custom-app serving boundary |
 | https://mlflow.org/docs/latest/ml/model/models-from-code/ | Source-based model logging, execution, security, config |
 | https://mlflow.org/docs/latest/ml/model/signatures/ | Input/output/params signatures and type hints |
 | https://mlflow.org/docs/latest/api_reference/python_api/mlflow.langchain.html | LangChain flavor API |
@@ -40,4 +44,5 @@ Reviewed 2026-08-01. Verify `/latest/` examples against installed package signat
 - LlamaIndex Workflow support requires LlamaIndex 0.11.0+ and MLflow 2.17.0+.
 - DSPy streaming requires a compatible DSPy release, logged signature, and string outputs.
 - ResponsesAgent requires Pydantic 2 and is preferred over ChatModel/ChatAgent in MLflow 3 docs.
+- Agent Server examples currently use MLflow 3.6.0+ and a compatible `openai-agents` release.
 - Unity Catalog model versions require signatures.
