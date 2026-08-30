@@ -1,5 +1,5 @@
 model = "gpt-5.6-luna"
-model_reasoning_effort = "max"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "max"
 service_tier = "default"
 [projects."/home/tinhanhnguyen"]
@@ -53,6 +53,9 @@ trust_level = "trusted"
 [projects."/home/tinhanhnguyen/Desktop/project/personal-paper-blog"]
 trust_level = "trusted"
 
+[projects."/home/tinhanhnguyen/dotfiles"]
+trust_level = "trusted"
+
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 1
@@ -73,8 +76,6 @@ command = "uvx"
 args = [
   "--from",
   "git+https://github.com/ast-grep/ast-grep-mcp",
-  "--with",
-  "mcp<2",
   "ast-grep-server",
 ]
 
