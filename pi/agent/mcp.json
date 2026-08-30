@@ -19,7 +19,12 @@
       "lifecycle": "eager"
     },
     "ast-grep": {
-      "command": "/home/uag3hc/.local/bin/ast-grep-server-cached",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/ast-grep/ast-grep-mcp",
+        "ast-grep-server"
+      ],
       "lifecycle": "eager"
     },
     "grep-app": {

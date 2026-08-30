@@ -1,6 +1,7 @@
-model = "gpt-5.6-sol"
-model_reasoning_effort = "low"
-plan_mode_reasoning_effort = "xhigh"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "max"
+plan_mode_reasoning_effort = "max"
+service_tier = "default"
 [projects."/home/tinhanhnguyen"]
 trust_level = "trusted"
 
@@ -47,6 +48,9 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/home/tinhanhnguyen/Desktop/project/agentic-app"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/personal-paper-blog"]
 trust_level = "trusted"
 
 [tui.model_availability_nux]
