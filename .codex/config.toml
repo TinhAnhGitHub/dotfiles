@@ -67,6 +67,9 @@ trust_level = "trusted"
 [projects."/home/tinhanhnguyen/mlflow"]
 trust_level = "trusted"
 
+[projects."/media/tinhanhnguyen/sub/system/models/qwen_36"]
+trust_level = "trusted"
+
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 1

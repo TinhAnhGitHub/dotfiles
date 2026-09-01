@@ -8,6 +8,7 @@ description: Route repository, workspace, codebase-understanding, Git, and Codex
 Use the child skill that matches the workspace task:
 
 - [asyncio-workspace](asyncio-workspace/) — workspace evaluation artifacts for asyncio.
+- [book-to-skill](book-to-skill/SKILL.md) — convert books and documents into structured agent skills.
 - [codebase-memory](codebase-memory/SKILL.md) — structural codebase knowledge and queries.
 - [find-skills](find-skills/SKILL.md) — discover and install relevant skills.
 - [git-usage-skill](git-usage-skill/SKILL.md) — Git workflows and repository operations.
