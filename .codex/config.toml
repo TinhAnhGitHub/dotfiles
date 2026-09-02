@@ -1,8 +1,8 @@
 # Added by `mlflow-codex setup` — forwards each Codex turn to MLflow Tracing.
 notify = ["mlflow-codex", "notify-hook"]
 
-model = "gpt-5.6-luna"
-model_reasoning_effort = "max"
+model = "gpt-5.6-terra"
+model_reasoning_effort = "xhigh"
 plan_mode_reasoning_effort = "max"
 service_tier = "default"
 [projects."/home/tinhanhnguyen"]
@@ -68,6 +68,12 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/media/tinhanhnguyen/sub/system/models/qwen_36"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/agentic-app-worktree/agentic-app"]
+trust_level = "trusted"
+
+[projects."/home/tinhanhnguyen/Desktop/project/agentic-app-worktree"]
 trust_level = "trusted"
 
 [tui.model_availability_nux]
