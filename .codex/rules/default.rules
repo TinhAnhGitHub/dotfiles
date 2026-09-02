@@ -432,3 +432,7 @@ prefix_rule(pattern=["/bin/bash", "-lc", "find /home/tinhanhnguyen/Desktop/proje
 prefix_rule(pattern=["/bin/bash", "-lc", "find /home/tinhanhnguyen/Desktop/project/reference/deepseek-harness/{arch,docs,packages,python,native} -type f \\( -name '*.md' -o -name '*.ts' -o -name '*.tsx' \\) -print 2>/dev/null | rg -i '(architecture|plugin|event|session|run|agent|tool|middleware|lifecycle)' | sort | head -180"], decision="allow")
 prefix_rule(pattern=["/bin/bash", "-lc", "find /home/tinhanhnguyen/Desktop/project/reference/{dart-gui,ClawGUI,OpenGUI,agent-s,UI-TARS-desktop} -maxdepth 4 -type f \\( -name '*.md' -o -name '*.py' -o -name '*.ts' \\) -print 2>/dev/null | rg -i '(environment|observation|trajectory|rollout|action|agent|tool|controller|event)' | sort | head -220"], decision="allow")
 prefix_rule(pattern=["head", "-180"], decision="allow")
+prefix_rule(pattern=["command", "-v", "ffmpeg"], decision="allow")
+prefix_rule(pattern=["pgrep"], decision="allow")
+prefix_rule(pattern=["mkdir", "-p", "/home/tinhanhnguyen/Desktop/mlops"], decision="allow")
+prefix_rule(pattern=["screen", "-ls"], decision="allow")

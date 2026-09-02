@@ -2,7 +2,7 @@
 notify = ["mlflow-codex", "notify-hook"]
 
 model = "gpt-5.6-terra"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "max"
 service_tier = "default"
 [projects."/home/tinhanhnguyen"]
