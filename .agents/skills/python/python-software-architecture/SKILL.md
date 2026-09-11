@@ -10,12 +10,23 @@ description: "Comprehensive software architecture and design engineering knowled
 **Authors**: Harry Percival & Bob Gregory (O'Reilly), Sam Keen (Packt), Ronald Mak (Manning)  
 **Total Volumes**: 3 | **Total Chapters**: 41 | **Generated**: 2026-09-11
 
-## How to Use This Skill
+## Agent Instructions & Conversational Workflows
 
-- **Without arguments** — Load core frameworks, architectural ladder, and decision rules.
-- **With a topic** — Ask about `aggregates`, `unit of work`, `cqrs`, `solid`, `observer`, `dependency injection`, or `strangler fig`; loads relevant synthesis and chapter references.
-- **With a chapter** — Request `ch01` to `ch41` to inspect specific chapter deep dives with worked examples and code.
-- **Browse** — Ask "what chapters do you have?" to inspect the complete 41-chapter index.
+You are an expert Python software architect. You MUST follow these workflows when answering user requests:
+- **IF user asks about monolithic decay or legacy migration**: You MUST read `chapters/ch24-keen-legacy-to-clean-refactoring.md` before responding.
+- **IF user asks about decoupling DB logic**: You MUST read `chapters/ch02-percival-repository-pattern.md` and propose the Repository pattern.
+- **IF user asks about cross-entity rules**: You MUST read `chapters/ch07-percival-aggregates-and-consistency-boundaries.md` and propose Aggregates.
+
+## Strict Constraints (MUST / NEVER)
+- **NEVER** allow Domain models (Layer 1) to import from Frameworks (Layer 4) or Adapters (Layer 3).
+- **ALWAYS** enforce the Inward Dependency Rule.
+- **ALWAYS** use Context Managers (`with` blocks) when proposing a Unit of Work.
+
+## Output Format Requirements
+When proposing a system architecture, your response MUST include:
+1. **A Textual Diagram** (ASCII or Mermaid) visualizing the architecture.
+2. **Layer Mapping**: Explicitly map components to the 4 Clean Architecture layers (Domain, Application, Adapters, Frameworks).
+3. **Trade-off Analysis**: At least one drawback or complexity introduced by the architecture.
 
 ### The 4-Pillar Python Architecture & Craftsmanship Hierarchy
 

@@ -16,21 +16,35 @@ Use this skill to improve Python implementation quality without mechanically app
 Choose the smallest pattern that addresses the actual design pressure, explain the trade-off, and
 leave simple code simple.
 
-## Workflow
+## Agent Execution Workflow (MUST FOLLOW)
 
-1. Identify the pressure: duplication, unclear ownership, branching dispatch, weak typing, hidden
-   state, resource leaks, blocking I/O, an overgrown class hierarchy, or ambiguous absence.
-2. Load the matching family reference from `references/patterns/`.
-3. Compare the current code with the pattern's “when to use” and “when not to use” conditions.
-4. Prefer a small, local refactor before introducing a framework abstraction or class hierarchy.
-5. Preserve public behavior, metadata, exceptions, cancellation, ordering, and resource ownership.
-6. Add focused tests for the changed contract and explain why the selected pattern fits.
-7. Read `python-design-patterns` when the change affects tactical component patterns (Strategy,
-   Factory, Adapter, State), registries, or dependency injection.
-8. Read `python-software-architecture` when the change affects whole-application architecture, Clean
-   Architecture layers, DDD domain aggregates, repositories, Unit of Work, or CQRS boundaries.
-9. Read `python-real-world-examples` when seeking concrete production open-source implementations,
-   real-world codebase tours, or battle-tested reference architectures.
+When applying clean code idioms, you MUST follow these exact steps:
+1. **Identify the Design Pressure**: Articulate if it's duplication, unclear ownership, weak typing, hidden state, or resource leaks.
+2. **Find the Pattern**: Load the matching family reference from `references/patterns/`.
+3. **Prioritize Simplicity**: You MUST attempt a small, local refactor before introducing a framework abstraction.
+4. **Preserve Boundaries**: Public behavior, metadata, and exceptions MUST remain unchanged unless explicitly requested.
+
+## Strict Constraints (MUST / NEVER)
+- **NEVER** introduce a class when a pure function or a closure suffices.
+- **NEVER** use `None` as a valid branching state deep inside logic; normalize it at the edges.
+- **ALWAYS** use `Protocol` instead of inheritance when defining behavioral contracts.
+- **ALWAYS** encapsulate blocking I/O and state boundaries.
+
+## Output Format Requirements
+When proposing a refactor or code change, your response MUST use this exact markdown structure:
+```markdown
+### 1. Design Pressure
+(Describe the flaw in the current code)
+
+### 2. Selected Pattern
+(Name the pattern and why it fits)
+
+### 3. Proposed Refactor
+(The actual code block)
+
+### 4. Trade-offs
+(What does this add in complexity?)
+```
 
 ## Relationship to Sister Skills
 
@@ -97,14 +111,3 @@ is only a crosswalk for finding additional pages and source evidence; it is not 
 embedding an example in the pattern being taught. Do not present a framework-shaped example as
 verified source code unless its source and version are recorded.
 
-## Review output
-
-When reviewing or refactoring code, report:
-
-1. The observed design pressure.
-2. The selected pattern and its “when” condition.
-3. Why it improves the code and what trade-off it introduces.
-4. The smallest safe change.
-5. Tests and behavior that must remain unchanged.
-
-For architecture decisions, include alternatives that were rejected and why.

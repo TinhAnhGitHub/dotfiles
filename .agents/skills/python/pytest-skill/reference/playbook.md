@@ -21,14 +21,33 @@ filterwarnings =
 ```
 
 ```toml
-# pyproject.toml (alternative)
+# pyproject.toml (modern production standard)
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v --strict-markers --tb=short"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+    "--import-mode=importlib",
+]
+xfail_strict = true
+verbosity_assertions = 2
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
 markers = [
-    "slow: marks tests as slow",
-    "integration: integration tests",
-    "smoke: smoke tests",
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: integration tests requiring services or databases",
+    "smoke: fast smoke checks for deployment verification",
+    "api: HTTP/REST endpoint tests",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
 ]
 
 [tool.coverage.run]
@@ -44,44 +63,56 @@ show_missing = true
 
 ```python
 # conftest.py — shared fixtures
+from collections.abc import Generator
+from typing import Protocol
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
-# Session-scoped: created once per test session
+# Session-scoped: created once per test session (runs migrations/schema setup)
 @pytest.fixture(scope="session")
 def engine():
-    engine = create_engine("sqlite:///test.db")
-    Base.metadata.create_all(engine)
+    engine = create_engine("postgresql+psycopg://user:pass@localhost:5432/test_db")
+    Base.metadata.create_all(bind=engine)
     yield engine
-    Base.metadata.drop_all(engine)
+    Base.metadata.drop_all(bind=engine)
+    engine.dispose()
 
-# Function-scoped: created per test (default), auto-cleanup
+# Function-scoped: savepoint rollback isolation (application commits do NOT leak)
 @pytest.fixture
-def db_session(engine):
+def db_session(engine) -> Generator[Session, None, None]:
     connection = engine.connect()
-    transaction = connection.begin()
-    session = Session(bind=connection)
+    outer_tx = connection.begin()
+    
+    # In SQLAlchemy 2.0+, join_transaction_mode="create_savepoint" ensures
+    # application session.commit() calls only flush to savepoints.
+    SessionMaker = sessionmaker(bind=connection, join_transaction_mode="create_savepoint")
+    session = SessionMaker()
+
     yield session
+
     session.close()
-    transaction.rollback()
+    outer_tx.rollback()
     connection.close()
 
-# Factory fixture — create multiple instances
+# Strongly-Typed Factory fixture
+class UserFactory(Protocol):
+    def __call__(self, name: str = "Test User", email: str | None = None, role: str = "viewer") -> User: ...
+
 @pytest.fixture
-def user_factory(db_session):
+def user_factory(db_session: Session) -> UserFactory:
     created = []
-    def _create_user(name="Test User", email=None, role="viewer"):
+
+    def _create_user(name: str = "Test User", email: str | None = None, role: str = "viewer") -> User:
         email = email or f"{name.lower().replace(' ', '.')}@test.com"
         user = User(name=name, email=email, role=role)
         db_session.add(user)
         db_session.commit()
         created.append(user)
         return user
+
     yield _create_user
-    for user in created:
-        db_session.delete(user)
-    db_session.commit()
+    # Teardown is automatically rolled back by the outer db_session transaction
 
 # Autouse fixture — runs for every test in module
 @pytest.fixture(autouse=True)
@@ -178,25 +209,25 @@ def test_config(monkeypatch):
     assert config.debug is True
 ```
 
-## §5 — Async Testing
+## §5 — Modern Async Testing (`pytest-asyncio` 0.24+)
 
 ```python
 # pip install pytest-asyncio
+# Ensure pyproject.toml has:
+# asyncio_default_fixture_loop_scope = "function"
+# asyncio_default_test_loop_scope = "function"
 
+import asyncio
 import pytest
+from pytest import RaisesGroup, RaisesExc
 
 @pytest.mark.asyncio
 async def test_async_fetch():
     result = await fetch_data("https://api.example.com/data")
     assert result["status"] == "ok"
 
-@pytest.mark.asyncio
-async def test_async_exception():
-    with pytest.raises(ConnectionError):
-        await fetch_data("https://invalid.example.com")
-
-# Async fixtures
-@pytest.fixture
+# Async fixtures with explicit loop_scope
+@pytest.fixture(loop_scope="function")
 async def async_client():
     async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
@@ -206,6 +237,71 @@ async def test_api_endpoint(async_client):
     response = await async_client.get("/api/users")
     assert response.status_code == 200
     assert len(response.json()) > 0
+
+# Exception group & TaskGroup testing
+@pytest.mark.asyncio
+async def test_concurrent_errors():
+    with pytest.RaisesGroup(RaisesExc(ValueError, match="fail 1"), RaisesExc(RuntimeError)):
+        async with asyncio.TaskGroup() as tg:
+            tg.create_task(faulty_task_1())
+            tg.create_task(faulty_task_2())
+```
+
+## §5b — Deterministic Clock Testing (`time-machine`)
+
+```python
+# pip install time-machine
+from datetime import datetime, timezone, timedelta
+import pytest
+
+def test_token_expiration(time_machine):
+    # C-level clock interception: O(1) performance and handles cached defaults
+    target = datetime(2026, 1, 1, 12, 0, tzinfo=timezone.utc)
+    time_machine.move_to(target, tick=False)
+
+    token = create_expiring_token(valid_hours=1)
+    assert not is_token_expired(token)
+
+    # Shift clock forward past expiration
+    time_machine.shift(timedelta(hours=2))
+    assert is_token_expired(token)
+```
+
+## §5c — Property-Based Testing (`hypothesis`)
+
+```python
+# pip install hypothesis
+from hypothesis import given, assume, strategies as st
+import pytest
+
+@given(st.lists(st.integers()), st.integers())
+def test_list_append_length(lst, val):
+    initial_len = len(lst)
+    lst.append(val)
+    assert len(lst) == initial_len + 1
+
+@given(st.text())
+def test_encoding_roundtrip(text):
+    assume("\x00" not in text)
+    encoded = text.encode("utf-8")
+    assert encoded.decode("utf-8") == text
+```
+
+## §5d — Snapshot Testing (`syrupy` & `inline-snapshot`)
+
+```python
+# External snapshots with syrupy (pytest --snapshot-update to regenerate)
+def test_api_payload_snapshot(snapshot):
+    payload = generate_complex_user_schema(user_id=123)
+    # Sanitize dynamic values before snapshot
+    payload["timestamp"] = "<TIMESTAMP>"
+    assert payload == snapshot
+
+# Inline snapshots (pytest --inline-snapshot=create)
+from inline_snapshot import snapshot
+
+def test_inline_summary():
+    assert summarize_metrics([10, 20]) == snapshot({"total": 30, "count": 2})
 ```
 
 ## §6 — Testing Exceptions & Warnings
@@ -895,7 +991,12 @@ def add_numpy_to_doctests(doctest_namespace):
 | pytest-cov | `pip install pytest-cov` | Coverage: `--cov=src --cov-report=term-missing --cov-fail-under=80` |
 | pytest-xdist | `pip install pytest-xdist` | Parallel: `-n auto` (physical cores), `-n logical` (needs psutil), `--dist loadscope/loadfile/worksteal` |
 | pytest-mock | `pip install pytest-mock` | `mocker` fixture (see §4) |
-| pytest-asyncio | `pip install pytest-asyncio` | Async tests, `asyncio_mode = auto` (see §5) |
+| pytest-asyncio | `pip install pytest-asyncio` | Async tests, `asyncio_mode = auto`, `loop_scope` (see §5) |
+| time-machine | `pip install time-machine` | Fast C-level deterministic clock freezing & shifting (replaces freezegun) |
+| hypothesis | `pip install hypothesis` | Property-based testing and stateful invariant testing (`@given`) |
+| syrupy | `pip install syrupy` | Extensible snapshot testing with automatic baseline updates (`--snapshot-update`) |
+| inline-snapshot | `pip install inline-snapshot` | Golden master snapshot testing formatted directly in test source |
+| pytest-subtests | `pip install pytest-subtests` | Subtests for loop isolation in pytest < 9 (built-in in pytest 9+) |
 | pytest-timeout | `pip install pytest-timeout` | `@pytest.mark.timeout(5)` — kill hanging tests |
 | pytest-randomly | `pip install pytest-randomly` | Randomize order with a reproducible seed |
 | pytest-sugar | `pip install pytest-sugar` | Progress bar + nicer failure output |
@@ -905,7 +1006,8 @@ def add_numpy_to_doctests(doctest_namespace):
 | pytest-playwright | `pip install pytest-playwright` | End-to-end browser tests with Playwright |
 | pytest-django | `pip install pytest-django` | Django test integration |
 | pytest-benchmark | `pip install pytest-benchmark` | Performance benchmarks with statistics |
-| pytest-socket | `pip install pytest-socket` | Block all network access in tests |
+| pytest-socket | `pip install pytest-socket` | Block all network access in tests (`--disable-socket`) |
+| filelock | `pip install filelock` | Cross-process file locking for xdist session fixtures |
 | pytest-check | `pip install pytest-check` | Multiple assertions per test, all reported |
 | pytest-bdd | `pip install pytest-bdd` | Behavior-driven tests from Gherkin features |
 | pytest-ordering | `pip install pytest-ordering` | `@pytest.mark.order(1)` explicit ordering |

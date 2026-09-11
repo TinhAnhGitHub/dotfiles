@@ -59,23 +59,29 @@ Real-world production systems map cleanly across the 4-layer Clean Architecture 
 
 ---
 
-## 3. Workflow for Answering Requests
+## 3. Agent Instructions & Workflow (MUST FOLLOW)
 
-When a developer or user asks how to implement a pattern in a production environment:
+When citing or presenting real-world implementations, you MUST follow these explicit steps:
+1. **Identify Abstraction Level**: Pick Micro, Meso, or Macro.
+2. **Load Case Study**: You MUST read the relevant markdown file inside `projects/` (e.g., `projects/openviking.md`).
+3. **Cite the Source**: You MUST explicitly name the open-source repository and link to the source file path.
+4. **Contrast Theory vs. Practice**: Provide the textbook theoretical ideal followed by the pragmatic, battle-tested compromise made in the repository.
 
-1. **Identify Abstraction Level**:
-   - *Micro* (syntax, typing, context managers) $\rightarrow$ Consult [`python-clean-code`](../python-clean-code/SKILL.md) and examine micro-craftsmanship sections.
-   - *Meso* (component design, registries, factories, DI) $\rightarrow$ Consult [`python-design-patterns`](../python-design-patterns/SKILL.md) and examine meso pattern sections.
-   - *Macro* (system boundaries, DDD, layering) $\rightarrow$ Consult [`python-software-architecture`](../python-software-architecture/SKILL.md) and examine macro architecture sections.
-2. **Find the Matching Case Study**:
-   - Check the [Pattern-to-Repository Matrix](cheatsheet.md#1-pattern-to-repository-matrix) for relevant open-source projects.
-3. **Present Real-World Mechanics**:
-   - Quote concrete directory layouts, class seams (`typing.Protocol`), and composition root wiring.
-   - Point out pragmatic trade-offs (where the real project adapted textbook theory to meet production performance or library constraints).
-4. **Provide Dual Perspective**:
-   - Provide the textbook theoretical ideal (from sister skills) followed by the battle-tested open-source implementation.
+## Strict Constraints (MUST / NEVER)
+- **NEVER** invent or hallucinate code patterns for these repositories. Rely ONLY on the documented `projects/*.md` files.
+- **ALWAYS** provide exact markdown file paths when quoting architecture features from the `projects/` directory.
 
----
+## Output Format Requirements
+Your reference to a real-world case study MUST be structured as:
+```markdown
+### Theoretical Ideal
+(How the book/skill describes the pattern)
+
+### Production Pragmatism: [Repo Name]
+(How the open-source project actually implemented it)
+- **Source**: [projects/repo_name.md](file:///.../projects/repo_name.md)
+- **Trade-off**: (Why they broke the rule or adapted the pattern)
+```
 
 ## 4. Ingesting New Open-Source Projects
 
@@ -93,11 +99,13 @@ To add an open-source project to this skill:
 
 ## 5. Active Case Studies Catalog
 
-*Case studies are being populated based on user-selected open-source repositories.*
-
-| Repository | Domain | Primary Architectural Patterns | Key Highlights |
+| Repository / Project | Domain | Primary Architectural Patterns | Key Highlights |
 | :--- | :--- | :--- | :--- |
-| *Awaiting user input* | *TBD* | *Repository, Unit of Work, Clean Onion, Registries* | *Will be populated upon repo ingestion* |
+| [**OpenViking**](projects/openviking.md) | Agent Context Database & Memory | Virtual Filesystem (`viking://`), Storage Adapter (`CollectionAdapter`), Layered Context Ladder (L0/L1/L2) | Hierarchical directory-recursive retrieval, sidecar metadata files, 36.7k+ stars. |
+| [**CowAgent**](projects/cowagent.md) | Multi-Agent Harness & Super Assistant | Agent Harness Decoupling, Mediator Team Pattern, 3-Tier Memory Lifecycle | Multi-channel normalization (WeChat/Feishu/Web), Deep Dream memory distillation, native MCP integration. |
+| [**Agent-Reach**](projects/agent-reach.md) | Agent Web Access & Tool Layer | Contract-Based Channel Strategy (`BaseChannel`), Multi-Backend Fallback Gateway | Resilient social site extraction (Twitter/Reddit/Bilibili), self-healing diagnostics (`doctor.py`). |
+| [**Graphify**](projects/graphify.md) | Multimodal Codebase Knowledge Graph | Staged Processing Pipeline, Deterministic AST vs Semantic Extraction, Multi-Format Exporter | Tree-Sitter AST parsing, SHA256 content-addressable cache, 71.5x token reduction for agent navigation. |
+| [**Canonical AI Frameworks**](projects/framework-canonical.md) | Serving, RL, Agent Workflows & Fine-Tuning | Dynamic Registry (`AutoModel.register`), Typed DI (`Agent[DepsT, OutputT]`), Universal Adapter (`Router`) | 17 verified production frameworks (Transformers, PydanticAI, LangGraph, vLLM, LiteLLM, Agno, verl, etc.). |
 
 ---
 

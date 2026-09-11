@@ -52,18 +52,22 @@ Choose the child skill that matches the primary concern. Read it before acting.
   - Context managers, fail-fast guard clauses, exception boundaries, Pythonic OOP
 ```
 
-## Routing rules
+## Triage Workflow (MUST FOLLOW)
 
-- **Micro level**: Use `python-clean-code` for “make this Pythonic”, local refactors, typing, decorator,
-  generator, resource management, guard clauses, or absence of value questions.
-- **Meso level**: Use `python-design-patterns` for component-level design patterns (Strategy, Factory,
-  Registry, State, Adapter, Observer), plugin boundaries, or modern DI with Dishka.
-- **Macro level**: Use `python-software-architecture` for whole-application architecture, Clean Architecture
-  layering, DDD aggregates/invariants, Repository/Unit of Work, Message Bus, CQRS, or monolith migration.
-- **Reference & Case Studies**: Use `python-real-world-examples` when seeking real-world production implementations
-  of patterns, concrete open-source case studies, or comparing architectural trade-offs in battle-tested projects.
-- **Combined workflows**:
-  - When designing a system end-to-end, start with `python-software-architecture` for layer boundaries and aggregates,
-    use `python-design-patterns` for internal adapter/strategy patterns, use `python-clean-code` for
-    implementation-level idioms and typing, and consult `python-real-world-examples` for concrete reference codebases.
-- Prefer the most specific child skill when the task is primarily Pydantic, pytest, Databricks, or uv.
+When evaluating a Python request, you MUST execute this exact workflow:
+1. **Analyze the Request**: Determine if the problem is at the micro, meso, or macro level.
+2. **Select ONE Primary Skill**: Pick the most specific child skill from the routing rules below.
+3. **Read the Child Skill**: You MUST read the child skill's `SKILL.md` file before proposing any code.
+
+## Agent Routing Rules (STRICT INSTRUCTIONS)
+
+You are STRICTLY REQUIRED to route requests to the following child skills based on these constraints:
+- **IF** the request involves "make this Pythonic", local refactors, typing, decorators, generators, or guard clauses -> **YOU MUST** read `python-clean-code`.
+- **IF** the request involves component-level GoF patterns (Strategy, Factory, Registry), plugin boundaries, or DI containers -> **YOU MUST** read `python-design-patterns`.
+- **IF** the request involves full system architecture, Clean Architecture, DDD aggregates, Unit of Work, Message Bus, or refactoring monoliths -> **YOU MUST** read `python-software-architecture`.
+- **IF** you need to see a real-world open-source production example of any pattern -> **YOU MUST** read `python-real-world-examples`.
+
+- **COMBINED WORKFLOWS**:
+  - **Start System Design** -> Read `python-software-architecture` first.
+  - **Internal Component Design** -> Read `python-design-patterns`.
+  - **Implementation/Syntax** -> Read `python-clean-code`.

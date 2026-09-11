@@ -25,13 +25,20 @@ pytest 'tests/test_api.py::test_parse[empty]'  # one parameter case
 pytest -k 'user and not slow'           # name/node keyword expression
 pytest -m 'integration and not slow'    # marker expression
 pytest --pyargs mypackage.tests         # import package, then collect there
-pytest @selected-tests.txt              # paths/node IDs/options, one per line
+pytest @selected-tests.txt              # argument file: paths, node IDs, options (one per line, pytest 8.2+)
+pytest --import-mode=importlib          # modern recommended import mode (never touches sys.path)
 ```
 
 Useful collection controls include `--ignore PATH`, `--ignore-glob PATTERN`,
 `--deselect NODEID`, `--keep-duplicates`, and `--collect-only`. Configure
 `testpaths`, `python_files`, `python_classes`, `python_functions`, and
 `norecursedirs` rather than relying on a large accidental search tree.
+Use `--import-mode=importlib` for new projects and `src/` layouts to avoid
+accidental `sys.path` pollution and package name collision issues.
+
+The `@argument-file` syntax (pytest 8.2+) allows CI systems, changed-file detectors,
+or test-splitters to pipe arbitrary test lists without shell command-length limits:
+each line in the file is parsed as a CLI argument or test node.
 
 `python -m pytest` is almost the same as `pytest`, but adds the current working
 directory to `sys.path`. `pytest --version`, `pytest -h`, `pytest --fixtures`,
@@ -52,9 +59,10 @@ test modules imported by the first call remain in Python's import cache.
 
 ## 2. Assertions and failure reports
 
-Use ordinary Python `assert` statements. Assertion rewriting provides focused
-comparisons for values, calls, attributes, strings, lists, dictionaries, sets,
-and membership expressions. Prefer this:
+Use ordinary Python `assert` statements. Pytest 8.0+ features enhanced assertion
+rewriting with colored inline diffs (`-vv`), syntax-highlighted code snippets in
+tracebacks, and improved comparisons for `!=`, `<`, `<=`, `>`, `>=`.
+Fine-tune report detail via `verbosity_assertions = 2` in configuration. Prefer:
 
 ```python
 assert response.status_code == 201
@@ -76,15 +84,55 @@ with pytest.warns(DeprecationWarning, match="use parse_email"):
 
 `pytest.raises` accepts subclasses. If an exact type is part of the contract,
 also assert `info.type is ExpectedError`. Use its `check=` predicate when a
-small structured condition is clearer than inspecting a message. Do not put
-too much code inside a `raises` block: an exception from the wrong statement
-can make a test pass for the wrong reason.
+small structured condition is clearer than inspecting a message:
 
-For Python exception groups, `pytest.RaisesGroup` checks the group structure and
-`pytest.RaisesExc` describes an individual expected exception. Use
-`flatten_subgroups` or `allow_unwrapped` only when the contract allows those
-shapes. `ExceptionInfo.group_contains()` is convenient for presence checks but
-must not be used alone to prove that no unexpected exception is present.
+```python
+with pytest.raises(HTTPError, check=lambda exc: exc.status_code == 404):
+    fetch_item(999)
+```
+
+Do not put too much code inside a `raises` block: an exception from an unintended
+statement can make a test pass for the wrong reason.
+
+### Exception groups and `asyncio.TaskGroup` (`RaisesGroup`, `RaisesExc`)
+
+For modern Python 3.11+ `ExceptionGroup` and concurrent `asyncio.TaskGroup` tasks,
+use `pytest.RaisesGroup` and `pytest.RaisesExc`. They match group contents
+regardless of order:
+
+```python
+import pytest
+from pytest import RaisesGroup, RaisesExc
+
+# 1. Matching multiple exception types within a group (order-independent)
+def test_taskgroup_failures():
+    with pytest.RaisesGroup(ValueError, TypeError):
+        raise ExceptionGroup("batch error", [ValueError("bad val"), TypeError("bad type")])
+
+# 2. Granular regex message matching with RaisesExc
+def test_detailed_group_matching():
+    with pytest.RaisesGroup(
+        RaisesExc(ValueError, match=r"^invalid id:\s+\d+$"),
+        RaisesExc(KeyError, match=r"missing key"),
+    ):
+        raise ExceptionGroup("worker failures", [
+            ValueError("invalid id: 42"),
+            KeyError("missing key"),
+        ])
+
+# 3. Recursive inspection with excinfo.group_contains()
+def test_nested_group_inspection():
+    with pytest.raises(ExceptionGroup) as exc_info:
+        raise ExceptionGroup("outer", [
+            ExceptionGroup("inner", [RuntimeError("database timeout")])
+        ])
+    # Recursively searches through nested ExceptionGroup layers:
+    assert exc_info.group_contains(RuntimeError, match=r"database timeout")
+```
+
+Do not assert only that an exception group contains one expected exception if
+additional unexpected exceptions would make the test unsafe; `RaisesGroup` verifies
+that *all* grouped exceptions match the expected specifications.
 
 For shared assertion helpers, add `pytest.register_assert_rewrite("pkg.helpers")`
 from a package entry point or root `conftest.py`. A helper can implement
@@ -155,6 +203,22 @@ Avoid direct calls to fixture functions. Avoid broad `autouse` fixtures: they
 make dependencies invisible. Autouse is reasonable for narrow global safety or
 cleanup policy.
 
+### Imperative fixture registration (pytest 8.3+)
+
+For plugin authors and programmatic fixture creation where declarative
+`@pytest.fixture` decorators are unsuitable, pytest 8.3+ introduces
+`pytest.register_fixture(func, name=None, scope="function")`:
+
+```python
+# In a plugin hook or conftest setup:
+def register_dynamic_clients(config):
+    for client_name in config.getoption("--enabled-clients"):
+        def make_client_fixture(name=client_name):
+            return connect_to(name)
+
+        pytest.register_fixture(make_client_fixture, name=f"client_{client_name}", scope="session")
+```
+
 ## 4. Marks, parametrization, and subtests
 
 Register custom marks in configuration and use `--strict-markers` to catch
@@ -215,20 +279,36 @@ def pytest_generate_tests(metafunc):
 Document the behavior when the generated list is empty (`skip`, `xfail`, or
 collection failure according to the project's policy).
 
-### Subtests
+### Subtests (pytest 9+ built-in or `pytest-subtests`)
 
-Core subtests are available starting in pytest 9 and are still experimental:
+Subtests allow multiple distinct checks inside a loop or workflow without
+aborting the entire test function when one check fails:
 
 ```python
-def test_all_supported_formats(subtests):
-    for fmt in discover_formats():
-        with subtests.test(format=fmt):
-            assert can_round_trip(fmt)
+def test_all_supported_formats(subtests, document_parser):
+    # Dynamic runtime discovery where combinations are not known at collection time
+    for fmt in document_parser.discover_formats():
+        with subtests.test(msg=f"testing format {fmt}", format=fmt):
+            output = document_parser.parse(fmt)
+            assert output.status == "valid", f"Failed parsing {fmt}"
 ```
 
-Subtests run during execution, so individual cases cannot be selected by node
-ID or independently rerun by `--last-failed`; failures do not stop later cases.
-Use parametrization for known decision tables and subtests for dynamic cases.
+#### Decision Matrix: `@pytest.mark.parametrize` vs `subtests`
+
+| Dimension | `@pytest.mark.parametrize` (Default) | `subtests` (pytest 9+) |
+|---|---|---|
+| **Discovery Time** | Statically known at collection time | Discovered dynamically during test execution |
+| **Test Identity** | Separate test node per parameter case | Single test node containing nested sub-outcomes |
+| **CLI Selection** | Selectable by node ID or `-k` expression | Cannot select individual subtests from CLI |
+| **Failure Mode** | Fails only its own node; runs others | Continues executing remaining subtests in the loop |
+| **Reruns (`--lf`)** | Re-executes only the failed parameter case | Must re-execute the entire test function |
+| **xdist Parallelism** | Fully distributed across worker processes | Executes within one worker on one thread |
+| **Cost Profile** | Runs full fixture lifecycle per case | Shares outer fixture setup/teardown for the loop |
+
+**Rule of Thumb**: Default to `@pytest.mark.parametrize`. Use `subtests` only
+when the parameter set is dynamic (runtime introspection, database records) or
+when fixture setup is so expensive that running the entire suite under a single
+shared setup with non-fatal assertions is required.
 
 ## 5. Temporary files and monkeypatching
 

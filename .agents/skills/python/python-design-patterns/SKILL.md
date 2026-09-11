@@ -17,20 +17,34 @@ Use this skill as a decision guide, not as a catalog of classes to copy. Start f
 pressure, choose the least powerful design that solves it, and explain why the pattern is worth its
 complexity.
 
-## Workflow
+## Agent Instructions & Workflow (MUST FOLLOW)
 
-1. Describe the current problem, independent variation axes, ownership, lifecycle, and constraints.
-2. Search [`references/index.md`](references/index.md) by symptom, family, or framework.
-3. Read the selected pattern page and its related alternatives.
-4. Compare a simple function/module design with composition and class-based alternatives.
-5. Use the selected page's embedded framework example when one is relevant; do not substitute a
-   separate framework reference for the example attached to the pattern.
-6. Implement the smallest stable interface, then test behavior, lifecycle, failure, and
-   observability.
-7. State the rejected alternatives and the conditions that would make the recommendation change.
-8. Read `python-clean-code` for code-level idioms, typing details, and guard clauses; read
-   `python-software-architecture` when patterns combine into application layers, aggregates, or CQRS;
-   read `python-real-world-examples` for battle-tested open-source reference implementations.
+When applying a tactical design pattern, you MUST follow these explicit steps:
+1. **State the Constraints**: List the independent variation axes, ownership, and lifecycle.
+2. **Search the Index**: Find the pattern in `references/index.md`.
+3. **Compare Alternatives**: You MUST contrast a simple module/function approach against the chosen pattern.
+4. **Apply with Restraint**: Do not over-engineer. Use the least powerful abstraction that satisfies the constraint.
+
+## Strict Constraints (MUST / NEVER)
+- **NEVER** introduce a named GoF pattern when a small function or dataclass is sufficient.
+- **ALWAYS** prefer Composition over Inheritance.
+- **MUST** explicitly state the Gang of Four (GoF) category when introducing a pattern.
+
+## Output Format Requirements
+Your architectural/pattern proposal MUST use this markdown structure:
+```markdown
+### 1. Problem & Constraints
+(Describe the pressure points)
+
+### 2. Evaluated Alternatives
+- (Alternative A): (Why it was rejected)
+
+### 3. Selected Pattern (GoF Category)
+(Name the pattern and its category)
+
+### 4. Participants & Implementation
+(Code blocks showing the pattern, explicit typing, and composition root)
+```
 
 ## Relationship to Sister Skills
 
@@ -59,12 +73,6 @@ This skill represents the **Meso (Tactical Patterns)** tier of the Python archit
 | Architecture | How should agents, model providers, workers, and workflows compose? | [`architecture/`](references/architecture/) (see also [`python-software-architecture`](../python-software-architecture/SKILL.md)) |
 | Python-specific | What Python idiom replaces a traditional pattern? | [`python-specific/`](references/python-specific/) |
 | Anti-patterns | When is a familiar pattern harmful or unnecessary? | [`anti-patterns/`](references/anti-patterns/) |
-
-## Required reasoning
-
-For every recommendation, include the condition that triggered it, the problem it solves, why it
-fits Python, the main trade-off, and at least one simpler alternative. Do not introduce a named
-pattern when a small function, module, dataclass, or dependency parameter is sufficient.
 
 ## Embedded framework examples
 

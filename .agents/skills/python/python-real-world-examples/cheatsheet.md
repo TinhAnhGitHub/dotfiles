@@ -6,20 +6,21 @@ Quick-reference guide for identifying, comparing, and applying architectural and
 
 ## 1. Pattern-to-Repository Matrix
 
-| Pattern Category | Pattern Name | Key Problem Solved | Key Seams / Mechanics | Sister Skill Reference |
-| :--- | :--- | :--- | :--- | :--- |
-| **Macro (DDD)** | **Repository & UoW** | Decouple persistence from domain logic | Abstract protocol `Protocol`, DB session context manager | [`python-software-architecture`](../python-software-architecture/SKILL.md) |
-| **Macro (DDD)** | **Aggregate Root** | Maintain transactional consistency invariants | Entity enforcing business rules on child objects | [`python-software-architecture`](../python-software-architecture/SKILL.md) |
-| **Macro (Clean)** | **Use Case Interactor** | Isolate single business workflow from delivery | Input DTO $\rightarrow$ Interactor $\rightarrow$ Output Port | [`python-software-architecture`](../python-software-architecture/SKILL.md) |
-| **Macro (Clean)** | **Anti-Corruption Layer**| Protect new domain from legacy/external models | Translating adapter between two distinct domain models | [`python-software-architecture`](../python-software-architecture/SKILL.md) |
-| **Macro (Events)**| **In-Memory Message Bus**| Decouple side effects (emails, notifications) | Handler dictionary: `dict[type[Event], list[Callable]]` | [`python-software-architecture`](../python-software-architecture/SKILL.md) |
-| **Meso (GoF)** | **Command Registry** | Decouple dispatch without nested `if/elif` | Dict/decorator mapping: `@registry.register(name)` | [`python-design-patterns`](../python-design-patterns/SKILL.md) |
-| **Meso (GoF)** | **Strategy / Policy** | Swap execution algorithms dynamically | Structural `@runtime_checkable` `Protocol` | [`python-design-patterns`](../python-design-patterns/SKILL.md) |
-| **Meso (GoF)** | **Adapter / Gateway** | Bridge incompatible third-party interfaces | Wrapper class adhering to internal port protocol | [`python-design-patterns`](../python-design-patterns/SKILL.md) |
-| **Meso (DI)** | **Composition Root** | Centralize application dependency graph wiring | Single bootstrap module (Dishka container or manual factory) | [`python-design-patterns`](../python-design-patterns/SKILL.md) |
-| **Micro (Idioms)**| **Protocol Seams** | Duck typing with static type checker safety | `typing.Protocol` with method signatures | [`python-clean-code`](../python-clean-code/SKILL.md) |
-| **Micro (Idioms)**| **Resource Lifecycle** | Guarantee deterministic cleanup of sockets/pools | `@contextmanager` generator with `try ... finally` | [`python-clean-code`](../python-clean-code/SKILL.md) |
-| **Micro (Idioms)**| **Sentinel Objects** | Distinguish between missing, unset, and `None` | `MISSING = object()` or singleton enum | [`python-clean-code`](../python-clean-code/SKILL.md) |
+| Pattern Category | Pattern Name | Key Problem Solved | Key Seams / Mechanics | Production OSS Reference | Sister Skill |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Macro (Storage)** | **Storage Adapter Seam** | Decouple vector DB from filesystem logic | `CollectionAdapter` (`ICollection`) | [`OpenViking`](projects/openviking.md#3-b-storage-decoupling-via-collectionadapter) | [`architecture`](../python-software-architecture/SKILL.md) |
+| **Macro (Context)** | **Tiered Context Ladder**| Eliminate LLM token waste | L0 Abstract $\rightarrow$ L1 Overview $\rightarrow$ L2 Detail | [`OpenViking`](projects/openviking.md#3-a-the-3-tier-progressive-loading-ladder) | [`architecture`](../python-software-architecture/SKILL.md) |
+| **Macro (Harness)** | **Agent Harness Decoupling**| Decouple IM platforms from reasoning core | Channel Gateway $\leftrightarrow$ Core $\leftrightarrow$ Models | [`CowAgent`](projects/cowagent.md#1-executive-architecture-summary) | [`architecture`](../python-software-architecture/SKILL.md) |
+| **Macro (Memory)** | **3-Tier Memory Lifecycle** | Distill daily conversations into core knowledge | Context $\rightarrow$ Daily $\rightarrow$ Core (Deep Dream) | [`CowAgent`](projects/cowagent.md#3-a-the-3-tier-memory--deep-dream-distillation) | [`architecture`](../python-software-architecture/SKILL.md) |
+| **Meso (Routing)** | **Contract Channel Strategy**| Unified interface across diverse social sites | `BaseChannel` (`can_handle`, `read`, `check`) | [`Agent-Reach`](projects/agent-reach.md#3-a-contract-based-channel-seam) | [`patterns`](../python-design-patterns/SKILL.md) |
+| **Meso (Resilience)**| **Multi-Backend Fallback** | Automatic failover when web endpoints break | Ordered trial with fallback catching | [`Agent-Reach`](projects/agent-reach.md#3-b-multi-backend-fallback-strategy) | [`patterns`](../python-design-patterns/SKILL.md) |
+| **Meso (Pipeline)** | **Staged Ingestion Pipeline**| Decouple code parsing from artifact export | Scan $\rightarrow$ Cache $\rightarrow$ AST $\rightarrow$ Semantic $\rightarrow$ Export | [`Graphify`](projects/graphify.md#3-a-the-staged-ingestion--extraction-pipeline) | [`patterns`](../python-design-patterns/SKILL.md) |
+| **Meso (Cache)** | **Content-Addressable Cache**| Zero recomputation on unchanged files | SHA256 chunked file hash index | [`Graphify`](projects/graphify.md#3-b-content-addressable-sha256-incremental-cache) | [`clean-code`](../python-clean-code/SKILL.md) |
+| **Meso (Registry)** | **Dynamic Extension Registry**| Third-party model/tool registration | `@registry.register()`, `AutoModel.register()` | [`Canonical Frameworks`](projects/framework-canonical.md#3-a-factory--registry-hugging-face-automodelregister) | [`patterns`](../python-design-patterns/SKILL.md) |
+| **Meso (DI)** | **Typed Dependency Injection**| Type-safe runtime resource wiring | `Agent[DepsT, OutputT]`, `RunContext` | [`Canonical Frameworks`](projects/framework-canonical.md#3-b-typed-dependency-injection-pydanticai-agentdepst-outputt) | [`patterns`](../python-design-patterns/SKILL.md) |
+| **Meso (Adapter)** | **Universal Provider Adapter**| Normalize 100+ LLM API differences | Provider-normalized `completion()`, `Router` | [`Canonical Frameworks`](projects/framework-canonical.md#3-c-the-universal-adapter--fallback-router-litellm) | [`patterns`](../python-design-patterns/SKILL.md) |
+| **Micro (Idioms)** | **Protocol Seams** | Duck typing with static type checker safety | `@runtime_checkable` `typing.Protocol` | [`OpenViking`](projects/openviking.md), [`CowAgent`](projects/cowagent.md) | [`clean-code`](../python-clean-code/SKILL.md) |
+| **Micro (Idioms)** | **Resource Lifecycle** | Guarantee deterministic socket/pool cleanup | Context-managed streams, chunked read buffers | [`Graphify`](projects/graphify.md), [`OpenAI SDK`](projects/framework-canonical.md) | [`clean-code`](../python-clean-code/SKILL.md) |
 
 ---
 

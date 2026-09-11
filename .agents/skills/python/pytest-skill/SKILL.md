@@ -34,13 +34,14 @@ clear, isolated, behavior-focused test.
 3. **Choose the narrowest mechanism.** Organize pytest tests in a dedicated
    `Test*` class for the production function or class under test, and use plain
    `assert` statements within its test methods; use fixtures for
-   dependencies/lifecycle; `parametrize` for a known decision
-   table; `subtests` only for cases discovered during execution; and mocks only
-   at an external boundary.
-4. **Make isolation explicit.** Prefer function-scoped fixtures and
-   `tmp_path`. Split state-changing setup into small yield fixtures with
-   teardown immediately after `yield`. Avoid hidden `autouse` state unless it
-   is truly global test policy.
+   dependencies/lifecycle; `parametrize` for known static decision tables;
+   `subtests` only for dynamic cases discovered during execution; `hypothesis`
+   for invariant fuzzing; and mocks only at an external boundary. Control clocks
+   with `time-machine` rather than `freezegun` or `time.sleep()`.
+4. **Make isolation explicit.** Prefer function-scoped fixtures, `tmp_path`, and
+   transactional rollback savepoints for databases (`join_transaction_mode="create_savepoint"`).
+   Split state-changing setup into small yield fixtures with teardown immediately
+   after `yield`. Avoid hidden `autouse` state unless it is truly global test policy.
 5. **Verify in layers.** Run collection first, the focused test, the relevant
    test directory/marker, and then the full suite when practical. Report
    skipped, xfailed, warnings, and deselected tests rather than hiding them.
@@ -49,9 +50,9 @@ Read the reference that matches the task:
 
 | Need | Reference |
 |---|---|
-| Official how-to and examples coverage, newer pytest features | `reference/official-patterns.md` |
+| Official how-to, pytest 8/9 features (RaisesGroup, subtests, @argument-file, colored diffs) | `reference/official-patterns.md` |
 | Deep fixture, assertion, cache, configuration, CI, and plugin playbook | `reference/playbook.md` |
-| Dynamic parametrization, plugin testing, fixture overrides, async patterns | `reference/advanced-patterns.md` |
+| Advanced architectures: typed factories, SQLAlchemy 2 savepoint rollback, pytest-asyncio 0.24+, time-machine, hypothesis, syrupy snapshots, xdist worker isolation | `reference/advanced-patterns.md` |
 
 For Spark, Databricks Connect, `dbutils`, `WorkspaceClient`, or
 `databricks-labs-pytester`, load `pytest-databricks` as well; do not replace its
@@ -332,9 +333,10 @@ xfail to conceal an ordinary failing test.
 
 ### Async, CLI, doctest, and unittest compatibility
 
-- For async tests, use the project’s async plugin (commonly `pytest-asyncio`),
-  configure its event-loop policy explicitly, and use async fixtures according
-  to that plugin's current API.
+- For async tests, use `pytest-asyncio` (0.24+) with explicit loop scoping:
+  configure `asyncio_default_fixture_loop_scope = "function"` in `pyproject.toml`
+  and align fixture/test `loop_scope` to prevent event loop mismatch errors.
+  Use `pytest.RaisesGroup` to test concurrent task failures inside `asyncio.TaskGroup`.
 - For a CLI, prefer invoking the real entry point in a subprocess when process
   boundaries, exit codes, or stdout/stderr matter; use `capsys` for a direct
   function-level CLI test.

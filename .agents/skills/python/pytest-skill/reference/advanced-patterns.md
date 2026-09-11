@@ -1,44 +1,160 @@
-# Pytest — Advanced Patterns & Playbook
+# Pytest — Advanced Patterns & Architecture
 
-## Fixture Patterns
+## 1. Strongly-Typed Fixture Factories
+
+Avoid returning weakly-typed dictionaries or unannotated lambdas. Use
+`typing.Protocol` or `collections.abc.Callable` so tests get full IDE
+autocompletion, static type checking (mypy/pyright), and deterministic cleanup
+registered via `request.addfinalizer`.
 
 ```python
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Protocol
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
 
-# Scoped fixtures with teardown
-@pytest.fixture(scope="session")
-def db_engine():
-    engine = create_engine("postgresql://localhost/test")
-    Base.metadata.create_all(engine)
-    yield engine
-    Base.metadata.drop_all(engine)
-    engine.dispose()
+
+@dataclass
+class User:
+    id: int
+    name: str
+    email: str
+    role: str
+
+
+class UserFactory(Protocol):
+    def __call__(
+        self,
+        name: str = "Test User",
+        email: str | None = None,
+        role: str = "viewer",
+    ) -> User: ...
+
 
 @pytest.fixture
-def db_session(db_engine):
-    connection = db_engine.connect()
-    transaction = connection.begin()
-    session = Session(bind=connection)
-    yield session
-    session.close()
-    transaction.rollback()
-    connection.close()
+def make_user(request: pytest.FixtureRequest) -> UserFactory:
+    created: list[User] = []
+    counter = 0
 
-# Factory fixture
-@pytest.fixture
-def user_factory(db_session):
-    created = []
-    def _create(name="Alice", email=None):
-        user = User(name=name, email=email or f"{name.lower()}@test.com")
-        db_session.add(user)
-        db_session.flush()
+    def _factory(
+        name: str = "Test User",
+        email: str | None = None,
+        role: str = "viewer",
+    ) -> User:
+        nonlocal counter
+        counter += 1
+        user = User(
+            id=counter,
+            name=name,
+            email=email or f"user{counter}@example.com",
+            role=role,
+        )
         created.append(user)
         return user
-    yield _create
-    for u in created:
-        db_session.delete(u)
 
+    def cleanup() -> None:
+        # Perform real external teardown here (database deletions, remote calls)
+        created.clear()
+
+    request.addfinalizer(cleanup)
+    return _factory
+
+
+class TestUserWorkflow:
+    def test_creates_distinct_users(self, make_user: UserFactory) -> None:
+        admin = make_user(name="Alice", role="admin")
+        viewer = make_user(name="Bob")
+
+        assert admin.id != viewer.id
+        assert admin.role == "admin"
+        assert viewer.role == "viewer"
+```
+
+## 2. Database Savepoint Rollback Pattern (SQLAlchemy 2.0+)
+
+The transactional rollback pattern provides test isolation without dropping and
+recreating tables between tests. In SQLAlchemy 2.0+, `join_transaction_mode="create_savepoint"`
+intercepts inner `session.commit()` calls made by application code: they commit only to
+the savepoint, while the fixture's outer transaction rolls everything back at test end.
+
+### Synchronous Pattern
+
+```python
+from collections.abc import Generator
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
+from myapp.models import Base
+
+
+@pytest.fixture(scope="session")
+def db_engine():
+    engine = create_engine("postgresql+psycopg://user:pass@localhost:5432/test_db")
+    Base.metadata.create_all(bind=engine)
+    yield engine
+    Base.metadata.drop_all(bind=engine)
+    engine.dispose()
+
+
+@pytest.fixture(scope="function")
+def db_session(db_engine) -> Generator[Session, None, None]:
+    connection = db_engine.connect()
+    # Begin outer non-ORM transaction
+    outer_tx = connection.begin()
+    
+    # Bind session to connection; any internal commit becomes a SAVEPOINT
+    SessionMaker = sessionmaker(bind=connection, join_transaction_mode="create_savepoint")
+    session = SessionMaker()
+
+    yield session
+
+    session.close()
+    outer_tx.rollback()
+    connection.close()
+```
+
+### Asynchronous Pattern (`ext.asyncio`)
+
+```python
+from collections.abc import AsyncGenerator
+import pytest
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from myapp.models import Base
+
+
+@pytest_asyncio.fixture(scope="session", loop_scope="session")
+async def async_engine():
+    engine = create_async_engine("postgresql+asyncpg://user:pass@localhost:5432/test_db")
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield engine
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+    await engine.dispose()
+
+
+@pytest_asyncio.fixture(scope="function", loop_scope="function")
+async def async_db_session(async_engine) -> AsyncGenerator[AsyncSession, None]:
+    async with async_engine.connect() as conn:
+        outer_tx = await conn.begin()
+        session_factory = async_sessionmaker(
+            bind=conn,
+            join_transaction_mode="create_savepoint",
+            expire_on_commit=False,
+        )
+        async with session_factory() as session:
+            yield session
+        await outer_tx.rollback()
+```
+
+## 3. Parametrized Fixtures and Indirect Routing
+
+```python
 # Parameterized fixture
 @pytest.fixture(params=["sqlite", "postgres"])
 def database(request):
@@ -172,28 +288,280 @@ markers = [
 filterwarnings = ["error", "ignore::DeprecationWarning"]
 ```
 
-## Async Testing
+## Modern Async Testing (`pytest-asyncio` 0.24+)
+
+Older versions of `pytest-asyncio` relied on an implicit, global `event_loop`
+fixture that frequently triggered `RuntimeError: got Future attached to a different loop`.
+
+Modern `pytest-asyncio` (0.24+) introduces explicit loop scoping. Configure
+default scopes in `pyproject.toml` and align fixture and test loop scopes:
+
+```toml
+# pyproject.toml
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
+```
+
+### Async Fixture Lifecycle and Shared Scope
 
 ```python
 import pytest
-import asyncio
+from httpx import ASGITransport, AsyncClient
+from myapp.asgi import app
 
-@pytest.mark.asyncio
-async def test_concurrent_requests():
-    results = await asyncio.gather(
-        fetch("/api/users"), fetch("/api/products"), fetch("/api/orders")
-    )
-    assert all(r.status == 200 for r in results)
 
+# Function-scoped async fixture (matches test default)
 @pytest.fixture
-async def async_client():
-    async with AsyncClient(app=app, base_url="http://test") as client:
+async def api_client() -> AsyncClient:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://testserver",
+    ) as client:
         yield client
 
-@pytest.mark.asyncio
-async def test_api_endpoint(async_client):
-    response = await async_client.post("/users", json={"name": "Alice"})
-    assert response.status_code == 201
+
+# If a fixture is session-scoped, its loop_scope MUST also be session:
+@pytest.fixture(scope="session", loop_scope="session")
+async def shared_redis():
+    client = await init_redis()
+    yield client
+    await client.aclose()
+
+
+class TestAsyncAPI:
+    async def test_create_order(self, api_client: AsyncClient) -> None:
+        response = await api_client.post("/orders", json={"item": "book", "qty": 1})
+        assert response.status_code == 201
+        assert response.json()["status"] == "confirmed"
+```
+
+### Testing `asyncio.TaskGroup` and Cancellation
+
+```python
+import asyncio
+import pytest
+from pytest import RaisesGroup, RaisesExc
+
+
+async def failing_worker(task_id: int):
+    await asyncio.sleep(0.01)
+    if task_id == 1:
+        raise ValueError("task 1 failed")
+    if task_id == 2:
+        raise KeyError("task 2 failed")
+
+
+class TestConcurrentTaskGroups:
+    async def test_handles_taskgroup_exceptions(self):
+        with pytest.RaisesGroup(RaisesExc(ValueError), RaisesExc(KeyError)):
+            async with asyncio.TaskGroup() as tg:
+                tg.create_task(failing_worker(1))
+                tg.create_task(failing_worker(2))
+```
+
+## Deterministic Time Control (`time-machine`)
+
+`freezegun` works by monkeypatching standard Python library imports at runtime.
+This incurs $O(N)$ module-search overhead on every test and often fails when
+functions cache references to `datetime.now()` (e.g. in default parameter values).
+
+**`time-machine`** operates via C-level interception of the system clock. It
+runs in constant $O(1)$ time, never leaks between tests, and intercepts
+pre-cached C-level references.
+
+```python
+from datetime import datetime, timedelta, timezone
+import pytest
+
+
+def get_token_expiry(hours_valid: int = 24) -> datetime:
+    return datetime.now(timezone.utc) + timedelta(hours=hours_valid)
+
+
+class TestTimeSensitiveToken:
+    def test_expiry_generation(self, time_machine):
+        # Freeze clock deterministically (tick=False prevents time from progressing)
+        frozen_instant = datetime(2026, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+        time_machine.move_to(frozen_instant, tick=False)
+
+        assert datetime.now(timezone.utc) == frozen_instant
+
+        expiry = get_token_expiry(hours_valid=2)
+        assert expiry == datetime(2026, 1, 15, 14, 0, 0, tzinfo=timezone.utc)
+
+        # Fast-forward clock to verify expiration check
+        time_machine.shift(timedelta(hours=3))
+        assert datetime.now(timezone.utc) > expiry
+```
+
+## Property-Based Testing (`hypothesis`)
+
+Example-based tests (`assert add(1, 2) == 3`) only verify scenarios the developer
+anticipated. **Hypothesis** fuzzed inputs against mathematical and behavioral
+invariants, automatically finding edge cases (Unicode characters, null bytes,
+integer overflow, empty strings) and *shrinking* failures to the minimal reproducible case.
+
+```python
+import pytest
+from hypothesis import given, assume, strategies as st
+from myapp.codec import compress, decompress, parse_user_input
+
+
+class TestInvariants:
+    # 1. Round-trip invariant: decompress(compress(x)) == x
+    @given(st.binary(min_size=0, max_size=10_000))
+    def test_compression_roundtrip(self, data: bytes) -> None:
+        compressed = compress(data)
+        decompressed = decompress(compressed)
+        assert decompressed == data
+
+    # 2. Input filtering with assume()
+    @given(st.text(min_size=1, max_size=100))
+    def test_username_sanitization(self, username: str) -> None:
+        assume(not username.isspace())  # Skip inputs that do not meet preconditions
+        result = parse_user_input(username)
+        assert len(result) > 0
+        assert not result.startswith(" ")
+```
+
+## Snapshot Testing (`syrupy` and `inline-snapshot`)
+
+Snapshot testing captures large, structured outputs (API JSON, ASTs, SQL strings,
+HTML templates) and asserts against an external golden master file without
+writing repetitive assertions.
+
+### Syrupy (External Snapshot Files)
+
+```bash
+pip install syrupy
+pytest --snapshot-update   # Regenerate snapshot files when changes are intentional
+```
+
+```python
+import re
+from uuid import UUID
+import pytest
+
+
+def sanitize_payload(payload: dict) -> dict:
+    """Sanitize volatile fields before snapshot comparison."""
+    copy = payload.copy()
+    if "created_at" in copy:
+        copy["created_at"] = "<TIMESTAMP>"
+    if "id" in copy:
+        copy["id"] = "<UUID>"
+    return copy
+
+
+class TestOrderSerialization:
+    def test_order_schema_matches_snapshot(self, snapshot, order_service):
+        result = order_service.build_order_payload(customer_id="cust-123")
+        # syrupy creates and checks __snapshots__/test_order.ambr
+        assert sanitize_payload(result) == snapshot
+```
+
+### Inline Snapshots (`inline-snapshot`)
+
+`inline-snapshot` writes the expected result directly back into your test file
+upon running `pytest --inline-snapshot=create`:
+
+```python
+from inline_snapshot import snapshot
+
+
+def test_calculation():
+    # Running pytest --inline-snapshot=create automatically fills snapshot(...) with actual output
+    assert calculate_summary([10, 20, 30]) == snapshot(
+        {"count": 3, "mean": 20.0, "total": 60}
+    )
+```
+
+## Parallel Execution & Multi-Worker Isolation (`pytest-xdist`)
+
+Running tests across multiple CPU cores (`pytest -n auto`) introduces worker race
+conditions on databases, caches, and files.
+
+### Dynamic Resource Isolation per Worker
+
+Pytest-xdist provides the `worker_id` fixture (`gw0`, `gw1`, or `master` when single-threaded):
+
+```python
+from pathlib import Path
+import pytest
+
+
+@pytest.fixture(scope="session")
+def database_url(worker_id: str) -> str:
+    # Give each worker process its own isolated database schema or database
+    if worker_id == "master":
+        return "postgresql://user:pass@localhost:5432/test_db_master"
+    return f"postgresql://user:pass@localhost:5432/test_db_{worker_id}"
+```
+
+### Shared Initialization with File Locking (`filelock`)
+
+When an expensive operation (such as migrations or downloading a model) must run
+only once across all xdist workers:
+
+```python
+from pathlib import Path
+from filelock import FileLock
+import pytest
+
+
+@pytest.fixture(scope="session", autouse=True)
+def run_migrations_once(tmp_path_factory, worker_id):
+    if worker_id == "master":
+        # Single-worker run: run directly
+        execute_migrations()
+        return
+
+    # Multi-worker run: lock across processes
+    root_tmp = tmp_path_factory.getbasetemp().parent
+    lock_file = root_tmp / "migrations.lock"
+    flag_file = root_tmp / "migrations.done"
+
+    with FileLock(str(lock_file)):
+        if not flag_file.exists():
+            execute_migrations()
+            flag_file.write_text("done")
+```
+
+### Distribution Strategies
+
+- `--dist=load`: Default round-robin by test function.
+- `--dist=loadscope`: Groups tests by module or test class on the same worker.
+  Essential for tests sharing class- or module-scoped transactional setups.
+- `--dist=loadfile`: Ensures all tests in a file run on the same worker process.
+
+## Hermetic Network Isolation (`pytest-socket`)
+
+Prevent accidental network leakage in unit test suites (e.g. third-party API
+calls, analytics tracking, unintended cloud resource hits):
+
+```bash
+pip install pytest-socket
+pytest --disable-socket
+```
+
+```python
+import pytest
+import requests
+
+
+class TestHermeticity:
+    def test_disallows_unmocked_http(self):
+        # Fails immediately with SocketBlockedError
+        with pytest.raises(Exception):
+            requests.get("https://api.github.com")
+
+    @pytest.mark.enable_socket
+    def test_explicit_integration_call(self):
+        # Explicitly opted-in network access for integration tests
+        resp = requests.get("https://httpbin.org/status/200")
+        assert resp.status_code == 200
 ```
 
 ## Anti-Patterns
