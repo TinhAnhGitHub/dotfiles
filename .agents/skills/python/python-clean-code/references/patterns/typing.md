@@ -7,29 +7,36 @@ public boundary whose valid shape should be checked by tools or at runtime.
 
 ## Decision rules
 
-- `Callable` for simple strategies and hooks.
-- `Protocol` for structural behavior and test doubles.
+- `Callable` for single-operation functions, strategies, and hooks; bind configuration via closures or `functools.partial`.
+- `Protocol` for consumer-defined structural contracts, duck typing, and test doubles without import coupling.
+- `ABC` for nominal inheritance when implementations must share default state/helpers or require runtime instantiation enforcement.
 - `ParamSpec` and `Concatenate` for decorators that preserve parameters.
 - `TypeVar` and `Self` for subtype-preserving APIs.
 - `Literal` for closed names; `Annotated` for metadata consumed by a framework.
 - `TypedDict` for wire-shaped dictionaries; Pydantic models when runtime validation is required.
+- `Decimal` over `float` for currencies, prices, and accounting values where floating-point rounding drift corrupts calculations.
 - `overload` when input shape changes the return type.
 
 ## Example
+
+Instead of importing concrete classes and inspecting them with `isinstance`:
 
 ```python
 from typing import Protocol, TypeVar
 
 T = TypeVar("T")
 
+# The consumer defines the structural contract it requires
 class Loader(Protocol[T]):
     def load(self, key: str) -> T: ...
 
 def fetch(loader: Loader[T], key: str) -> T:
+    # No isinstance checks or concrete loader imports needed
     return loader.load(key)
 ```
 
-This solves tight coupling to one concrete loader and makes a fake loader trivial to test.
+This prevents "spaghetti code" by keeping the worker function decoupled from all concrete
+implementations: any object conforming to `load(key)` can be passed directly.
 
 ## When not to use
 
@@ -196,6 +203,29 @@ class EmailAddress:
 
 The type moves the invariant to construction and makes the contract visible to tools and callers.
 Adapted from the [2026 `value/email_address.py`](https://github.com/ArjanCodes/examples/blob/main/2026/value/email_address.py).
+
+### Choose `Decimal` over `float` for monetary and accounting calculations
+
+Binary floating-point types (`float`) cannot accurately represent fractions like $0.1$ or $0.7$, accumulating precision drift that corrupts currency conversions and financial ledgers. Always model monetary amounts, exchange rates, and tax figures with `decimal.Decimal`:
+
+```python
+# ❌ DANGEROUS: Floats accumulate precision drift in monetary calculations
+def convert_naive(amount: float, rate: float) -> float:
+    return amount * rate  # 100.0 * 0.91 can produce 90.99999999999999
+
+# ✅ SAFE: Decimal ensures exact arithmetic and bounded API validation
+from decimal import Decimal
+from fastapi import Query
+
+def convert_production(
+    amount: Decimal = Query(..., gt=Decimal("0")),
+    rate: Decimal = Query(..., gt=Decimal("0")),
+) -> Decimal:
+    return amount * rate  # Exactly Decimal('91.000')
+```
+
+Adapted from the [ArjanCodes Production-Ready video](https://www.youtube.com/watch?v=GMBiCMsEsq8) and
+[`ArjanCodes 2025 production`](https://github.com/ArjanCodes/examples/tree/main/2025/production).
 
 ## zedr clean-code-python diagnostics (adapted)
 

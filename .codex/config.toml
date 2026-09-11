@@ -1,9 +1,9 @@
 # Added by `mlflow-codex setup` — forwards each Codex turn to MLflow Tracing.
 notify = ["mlflow-codex", "notify-hook"]
 
-model = "gpt-5.6-terra"
-model_reasoning_effort = "medium"
-plan_mode_reasoning_effort = "max"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "low"
+plan_mode_reasoning_effort = "low"
 service_tier = "default"
 [projects."/home/tinhanhnguyen"]
 trust_level = "trusted"
@@ -61,6 +61,11 @@ enabled = true
 default_subagent_model = "gpt-5.6-luna"
 default_subagent_reasoning_effort = "high"
 
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 1
+gpt-6-astra = 4
+
 [projects."/home/tinhanhnguyen/dotfiles"]
 trust_level = "trusted"
 
@@ -76,9 +81,8 @@ trust_level = "trusted"
 [projects."/home/tinhanhnguyen/Desktop/project/agentic-app-worktree"]
 trust_level = "trusted"
 
-[tui.model_availability_nux]
-"gpt-5.5" = 4
-"gpt-5.6-sol" = 1
+[projects."/home/tinhanhnguyen/Downloads"]
+trust_level = "trusted"
 
 # Shared MCP servers. Secrets stay in environment variables; do not commit values.
 [mcp_servers.context7]
@@ -90,6 +94,39 @@ env_http_headers = { "CONTEXT7_API_KEY" = "CONTEXT7_API_KEY" }
 command = "/home/tinhanhnguyen/.local/bin/codex-codebase-memory-mcp"
 startup_timeout_sec = 30
 tool_timeout_sec = 10
+
+[mcp_servers.codebase-memory-mcp.tools.list_projects]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.index_status]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.search_graph]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.get_architecture]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.get_graph_schema]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.search_code]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.index_repository]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.detect_changes]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.trace_path]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.get_code_snippet]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.query_graph]
+approval_mode = "approve"
 
 [mcp_servers.ast-grep]
 command = "uvx"
@@ -111,4 +148,7 @@ tool_timeout_sec = 30
 url = "https://mcp.exa.ai/mcp"
 env_http_headers = { "x-api-key" = "EXA_API_KEY" }
 
+
+[sandbox_workspace_write]
+network_access = true
 

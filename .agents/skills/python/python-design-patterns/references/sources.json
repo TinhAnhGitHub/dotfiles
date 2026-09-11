@@ -402,10 +402,171 @@
     "url": "https://www.youtube.com/watch?v=g7EGMWvJ1fI",
     "source_type": "video-transcript",
     "framework": null,
-    "revision_or_version": "published video; auto-caption transcript retrieved 2026-08-30",
-    "fetched": "2026-08-30",
-    "pattern_ids": ["extensibility.registry-di", "python-clean-code.functional"],
-    "evidence_status": "adapted-summary"
+    "revision_or_version": "published video; downloaded via yt-dlp and transcript extracted 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "extensibility.registry-di",
+      "python-clean-code.functional",
+      "python-clean-code.closures-decorators",
+      "python-clean-code.solid-boundaries"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2025/registry",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; fetched and verified 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "extensibility.registry-di",
+      "python-clean-code.functional",
+      "python-clean-code.closures-decorators",
+      "python-clean-code.solid-boundaries"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=SNqwNILX1Gg",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and transcript extracted 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "extensibility.protocols",
+      "principles.composition",
+      "python-clean-code.typing",
+      "python-clean-code.oop"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2025/abstraction",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; fetched and verified 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "extensibility.protocols",
+      "principles.composition",
+      "python-clean-code.typing",
+      "python-clean-code.oop"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=YA0Wq1rcs6U",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and transcript extracted 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "anti-patterns.singleton-inheritance",
+      "python-clean-code.absence-values"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2024/burn",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; fetched and verified 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "anti-patterns.singleton-inheritance",
+      "python-clean-code.absence-values"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=fsB8_79zI_A",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and auto-caption transcript extracted 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "composition.adapter",
+      "python-clean-code.oop",
+      "python-clean-code.functional"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/2022-adapter",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; cloned and verified 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "composition.adapter",
+      "python-clean-code.oop",
+      "python-clean-code.functional"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=0mcP8ZpUR38",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and auto-caption transcript extracted 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "principles.composition",
+      "anti-patterns.singleton-inheritance",
+      "python-clean-code.oop"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/2021-composition-vs-inheritance",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; cloned and verified 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "principles.composition",
+      "anti-patterns.singleton-inheritance",
+      "python-clean-code.oop"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=2ejbLVkCndI",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and official transcript extracted 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "extensibility.registry-di",
+      "principles.solid",
+      "python-clean-code.solid-boundaries"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/2021-dependency-injection-inversion",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; cloned and verified 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "extensibility.registry-di",
+      "principles.solid",
+      "python-clean-code.solid-boundaries"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://dishka.readthedocs.io/",
+    "source_type": "official-docs",
+    "framework": null,
+    "revision_or_version": "latest; inspected 2026-09-10",
+    "fetched": "2026-09-10",
+    "pattern_ids": [
+      "extensibility.registry-di",
+      "python-clean-code.solid-boundaries"
+    ],
+    "evidence_status": "verified"
   },
   {
     "url": "https://www.youtube.com/watch?v=uxwjXLjJOoM",
@@ -477,5 +638,89 @@
     "fetched": "2026-08-30",
     "pattern_ids": ["construction.value-object"],
     "evidence_status": "verified"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=GMBiCMsEsq8",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and transcript extracted 2026-09-11",
+    "fetched": "2026-09-11",
+    "pattern_ids": [
+      "principles.solid",
+      "extensibility.registry-di",
+      "anti-patterns.singleton-inheritance",
+      "python-clean-code.solid-boundaries",
+      "python-clean-code.typing"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2025/production",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; fetched and verified 2026-09-11",
+    "fetched": "2026-09-11",
+    "pattern_ids": [
+      "principles.solid",
+      "extensibility.registry-di",
+      "anti-patterns.singleton-inheritance",
+      "python-clean-code.solid-boundaries",
+      "python-clean-code.typing"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=FXwBWS4qDAA",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and auto-caption transcript extracted 2026-09-11",
+    "fetched": "2026-09-11",
+    "pattern_ids": [
+      "composition.adapter",
+      "principles.solid",
+      "python-clean-code.solid-boundaries",
+      "anti-patterns.singleton-inheritance"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2026/ports",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; fetched and verified 2026-09-11",
+    "fetched": "2026-09-11",
+    "pattern_ids": [
+      "composition.adapter",
+      "principles.solid",
+      "python-clean-code.solid-boundaries",
+      "anti-patterns.singleton-inheritance"
+    ],
+    "evidence_status": "verified-code-examples"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=ENnDxEOAKKc",
+    "source_type": "video-transcript",
+    "framework": null,
+    "revision_or_version": "published video; downloaded via yt-dlp and auto-caption transcript extracted 2026-09-11",
+    "fetched": "2026-09-11",
+    "pattern_ids": [
+      "python-specific.sentinel",
+      "python-clean-code.iteration-resources",
+      "extensibility.registry-di"
+    ],
+    "evidence_status": "verified-video-transcript"
+  },
+  {
+    "url": "https://github.com/ArjanCodes/examples/tree/main/2025/lazy",
+    "source_type": "repository-tree",
+    "framework": null,
+    "revision_or_version": "main; fetched and verified 2026-09-11",
+    "fetched": "2026-09-11",
+    "pattern_ids": [
+      "python-specific.sentinel",
+      "python-clean-code.iteration-resources",
+      "extensibility.registry-di"
+    ],
+    "evidence_status": "verified-code-examples"
   }
 ]

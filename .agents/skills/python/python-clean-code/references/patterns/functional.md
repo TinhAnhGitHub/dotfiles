@@ -26,21 +26,60 @@ Do not create a registry merely to hide a small fixed set of branches.
 
 ## Example
 
+Instead of an overgrown `if/elif` chain:
+
 ```python
-from collections.abc import Callable
-
-Formatter = Callable[[str], str]
-
-def render(value: str, formatter: Formatter) -> str:
-    return formatter(value)
-
-formats: dict[str, Formatter] = {
-    "plain": str,
-    "upper": str.upper,
-}
+# ❌ BEFORE: Sprawling branches, hard to extend
+def export_data(data: Data, format: str) -> None:
+    if format == "pdf":
+        export_pdf(data)
+    elif format == "csv":
+        export_csv(data)
+    elif format == "json":
+        export_json(data)
+    else:
+        raise ValueError(f"unknown format: {format}")
 ```
 
-This solves a growing formatter `if`/`elif` chain while keeping the contract easy to test.
+Use a typed dispatch table with self-registering decorators:
+
+```python
+from collections.abc import Callable
+from functools import wraps
+from typing import Any
+
+type Data = dict[str, Any]
+type ExportFn = Callable[[Data], None]
+
+# Central dispatch table mapping format keys to export handlers
+exporters: dict[str, ExportFn] = {}
+
+def register_exporter(name: str):
+    """Additive decorator that registers an export handler."""
+    def decorator(func: ExportFn) -> ExportFn:
+        if name in exporters:
+            raise ValueError(f"duplicate registration: {name}")
+        @wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+        exporters[name] = wrapper
+        return wrapper
+    return decorator
+
+@register_exporter("json")
+def export_json(data: Data) -> None:
+    ...
+
+def export_data(data: Data, format: str) -> None:
+    """Dispatch dynamically without a sprawling if/elif chain."""
+    exporter = exporters.get(format)
+    if exporter is None:
+        raise ValueError(f"unknown export format: {format}")
+    exporter(data)
+```
+
+This replaces a fragile, growing `if/elif` chain with an additive registration system where new
+formats can be added without mutating existing dispatch logic.
 
 ## Tests and pitfalls
 

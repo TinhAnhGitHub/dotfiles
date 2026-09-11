@@ -1,0 +1,61 @@
+# Glossary of Software Architecture & Design Patterns
+
+An alphabetical reference of key terms across Domain-Driven Design, Clean Architecture, and Gang of Four (GoF) design patterns in Python.
+
+- **Abstract Factory** — Creational pattern providing an interface for creating families of related or dependent objects without specifying concrete classes (Ch 34).
+- **Abstract Repository** — An abstract interface defining data persistence operations (`add`, `get`) mimicking an in-memory collection (Ch 02).
+- **Accidental Complexity** — Complexity introduced by technology choices, framework quirks, or poor architecture rather than business domain needs (Ch 25, Ch 26).
+- **Adapter** — Structural pattern converting an incompatible class interface into an interface expected by clients (Ch 35).
+- **Aggregate** — A cluster of domain entities and value objects treated as a single transactional unit to protect business invariants (Ch 07, Ch 17).
+- **Aggregate Root** — The primary gateway entity through which all outside access and mutations to an aggregate must flow (Ch 07).
+- **Anti-Corruption Layer (ACL)** — A translation boundary isolating a new clean domain model from legacy schemas or third-party APIs (Ch 24, Ch 35).
+- **Application Layer** — The concentric layer orchestrating use cases, coordinating domain entities and infrastructure ports (Ch 18).
+- **Backtracking** — A depth-first search algorithmic technique that incrementally builds candidates and rolls back upon reaching constraint dead ends (Ch 40).
+- **Bootstrapper (Composition Root)** — The single application startup location where adapters, dependencies, and handlers are configured and wired (Ch 13, Ch 20).
+- **Characterization Test** — Automated tests capturing the existing observable behavior of legacy code prior to refactoring (Ch 24).
+- **Cohesion** — The degree to which elements within a single module or class belong together and serve a unified purpose (Ch 26, Ch 29).
+- **Command** — An imperative message requesting a specific action, routed to exactly one handler, capable of failing and raising exceptions (Ch 10).
+- **Command-Query Responsibility Segregation (CQRS)** — Architecture separating the write model (invariant enforcement) from read models (optimized queries) (Ch 12).
+- **Composite** — Structural pattern composing objects into tree structures to treat individual items and composite groups uniformly (Ch 39).
+- **Coupling** — The degree of direct knowledge or interdependence between software components (Ch 03, Ch 29).
+- **CRC Card** — Class-Responsibility-Collaborator brainstorming tool mapping a class's purpose and collaborators on an index card (Ch 29).
+- **Critical Section** — A code segment accessing shared mutable memory that must be executed by at most one thread at a time (Ch 41).
+- **Data Transfer Object (DTO)** — An immutable data structure carrying data across architectural layer boundaries without exposing entity behaviors (Ch 16, Ch 18).
+- **Deadlock** — A synchronization stall where two or more threads hold resources and wait indefinitely for each other (Ch 41).
+- **Decorator** — Structural pattern attaching responsibilities dynamically to objects at runtime without subclassing (Ch 39).
+- **Dependency Inversion Principle (DIP)** — SOLID rule stating that high-level modules should not depend on low-level details; both depend on abstractions (Ch 02, Ch 15).
+- **Dependency Rule** — Clean Architecture rule dictating that source code dependencies must point strictly inward toward business rules (Ch 14).
+- **Domain Event** — An immutable notification recording a significant fact that occurred in the domain in the past (Ch 08, Ch 11).
+- **Domain Model** — A pure object-oriented representation of business rules and state transitions without infrastructure dependencies (Ch 01, Ch 17).
+- **Domain Service** — A standalone business operation spanning multiple domain entities that does not naturally belong to a single entity (Ch 01, Ch 17).
+- **Entity** — A domain object defined by an explicit, persistent unique identifier rather than its mutable attributes (Ch 01, Ch 17).
+- **Event** — A message announcing an indisputable past occurrence, broadcast to zero or many subscribers (Ch 08, Ch 10).
+- **Façade** — Structural pattern providing a simplified, high-level interface to a complex multi-class subsystem (Ch 35).
+- **Factory Method** — Creational pattern delegating object instantiation to subclasses or specialized factory callables (Ch 34).
+- **Fake** — A working in-memory test double (e.g. `FakeRepository`) honoring the interface contract without hitting real I/O (Ch 02, Ch 21).
+- **Finite State Machine (FSM)** — Computational model of discrete states and transition rules, implemented cleanly via the State pattern (Ch 38).
+- **High Gear TDD** — Writing tests against the Service Layer / Use Cases, treating domain entities as refactorable implementation details (Ch 05).
+- **Information Hiding** — Concealing internal implementation decisions behind stable public contracts (Ch 30).
+- **Interface Segregation Principle (ISP)** — SOLID rule stating that clients should not be forced to depend on methods they do not use (Ch 15).
+- **Invariant** — A business rule or constraint that must always remain valid across all state transitions (Ch 07, Ch 17).
+- **Iterator** — Behavioral pattern providing sequential access to aggregate elements without exposing internal node representations (Ch 36).
+- **Liskov Substitution Principle (LSP)** — SOLID rule dictating that subclasses must be fully substitutable for base types without breaking caller expectations (Ch 32).
+- **Low Gear TDD** — Writing fine-grained unit tests directly against domain models while discovering new algorithms (Ch 05).
+- **Message Bus** — An in-process or distributed dispatcher routing commands and events to registered handler functions (Ch 08, Ch 09).
+- **Observer** — Behavioral pattern establishing a 1:N dependency where subject state changes automatically notify registered subscribers (Ch 37).
+- **Open/Closed Principle (OCP)** — SOLID rule stating software entities should be open for extension but closed for modification (Ch 15, Ch 33).
+- **Optimistic Concurrency Control** — Managing concurrent mutations via aggregate version numbers rather than pessimistic database locks (Ch 07).
+- **Port** — An abstract interface declared by the core application specifying an interaction point (input or output) (Ch 02, Ch 18).
+- **Presenter** — An interface adapter converting Use Case response DTOs into display-ready View Models (Ch 19).
+- **Principle of Least Astonishment (POLA)** — Designing components and APIs so their behavior never surprises reasonable developers (Ch 31).
+- **Repository** — An abstraction over persistent storage that presents an interface mimicking an in-memory collection (Ch 02).
+- **Single Responsibility Principle (SRP)** — SOLID rule stating a class or module should have one, and only one, reason to change (Ch 15, Ch 29).
+- **State** — Behavioral pattern encapsulating state-specific behaviors into distinct polymorphic classes, eliminating `if/elif` state switches (Ch 38).
+- **Strangler Fig** — Incremental migration pattern replacing legacy systems route-by-route via an API perimeter (Ch 24).
+- **Strategy** — Behavioral pattern defining a family of interchangeable algorithms, making them swappable at runtime via composition (Ch 33).
+- **Template Method** — Behavioral pattern fixing an algorithm skeleton in a base class method while letting subclasses override steps (Ch 33).
+- **Unit of Work (UoW)** — Transactional pattern maintaining tracked entities and committing atomic changes via Python context managers (Ch 06).
+- **Use Case Interactor** — Application layer component orchestrating input DTOs, domain models, and output ports to achieve a user goal (Ch 18).
+- **Value Object** — An immutable domain object defined entirely by its attribute values with no distinct identity (Ch 01, Ch 17).
+- **ViewModel** — A presentation-ready data bundle containing formatted strings, labels, and colors tailored for UI templates or JSON output (Ch 19).
+- **Visitor** — Behavioral pattern separating algorithms and operations from the heterogeneous composite structures they operate upon (Ch 36).\n

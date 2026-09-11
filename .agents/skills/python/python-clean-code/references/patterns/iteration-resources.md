@@ -158,3 +158,97 @@ def email_clients(clients: Iterable[Client]) -> None:
 
 The generator is reusable and lazy; the sending function owns the side effect. Test the filter
 without a mail service, then test one focused delivery integration.
+
+### The Lazy Loading Pattern: Making Python Applications Feel Instant
+
+In ["The Lazy Loading Pattern: How to Make Python Programs Feel Instant"](https://www.youtube.com/watch?v=ENnDxEOAKKc) and its [companion repository](https://github.com/ArjanCodes/examples/tree/main/2025/lazy), Arjan demonstrates how combining lazy evaluation, generators, caching, and background preloading eliminates sluggish startup times and memory bloat.
+
+#### The 4-step progressive refactoring from eager to responsive
+
+1. **Eliminate Startup Latency (Eager $\to$ Lazy)**: Moving `load_sales()` from the global application startup into the specific action branches guarantees the CLI or API boots in under 10ms.
+2. **Stream with Generators for Bounded Memory ($O(N) \to O(1)$)**: Replace `[row for row in reader]` with a generator that yields rows sequentially. Consumers that only require top-$N$ elements or aggregations can terminate early without loading millions of rows into RAM.
+3. **Prevent Repeated I/O via Caching**:
+   - For pure static computations: use stdlib `functools.cache`.
+   - For volatile external services (e.g. currency rates, remote pricing, auth tokens): use a **TTL (Time-To-Live) cache** to balance instant response with bounded data freshness.
+4. **Preload Proactively in Background**: Spawn a lightweight daemon thread on startup (`threading.Thread(target=..., daemon=True).start()`) to warm expensive caches during interactive user think-time.
+
+#### Generator streaming vs. Eager materialization
+
+```python
+# ❌ EAGER: Allocates millions of dicts in RAM before caller can inspect a single row
+def load_sales_eager(path: str) -> list[dict[str, str]]:
+    with open(path) as f:
+        return list(csv.DictReader(f))  # 💥 High memory consumption and 10s startup stall
+
+# ✅ LAZY STREAMING: Yields row by row; memory remains bounded at O(1)
+def load_sales_stream(path: str) -> Iterator[dict[str, str]]:
+    with open(path) as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            yield row
+
+# ✅ EARLY TERMINATION: Consumes only the required slice, avoiding unwanted I/O
+def sample_total(path: str, limit: int = 10_000) -> float:
+    total = 0.0
+    for i, sale in enumerate(load_sales_stream(path), start=1):
+        total += float(sale["amount"])
+        if i >= limit:
+            break
+    return total
+```
+
+#### The Time-To-Live (TTL) cache pattern for external APIs
+
+```python
+import time
+from functools import wraps
+from typing import Any, Callable
+
+def ttl_cache(seconds: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """Cache function results for a bounded duration to avoid stale API data drift."""
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        cache_data: dict[tuple[Any, ...], Any] = {}
+        cache_time: dict[tuple[Any, ...], float] = {}
+
+        @wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            key = (args, tuple(kwargs.items()))
+            now = time.time()
+            if key in cache_data and (now - cache_time[key]) < seconds:
+                return cache_data[key]
+            result = func(*args, **kwargs)
+            cache_data[key] = result
+            cache_time[key] = now
+            return result
+        return wrapper
+    return decorator
+
+@ttl_cache(seconds=60)
+def get_live_rates() -> dict[str, float]:
+    """Fetched on demand, cached for 60 seconds, then refreshed automatically."""
+    return fetch_currency_rates_api()
+```
+
+#### Proactive background preloading pattern
+
+```python
+import threading
+from functools import cache
+
+@cache
+def compute_sales_metrics(path: str) -> dict[str, float]:
+    return {"total": sum(float(r["amount"]) for r in load_sales_stream(path))}
+
+def preload_data(path: str) -> None:
+    """Preload data in a background daemon thread while user reads the menu."""
+    threading.Thread(target=lambda: compute_sales_metrics(path), daemon=True).start()
+```
+
+#### The 3 golden rules of lazy resources
+
+| Rule | Problem | Clean Remedy |
+|---|---|---|
+| **1. Never `@cache` a generator** | Caching stores the generator iterator itself, which exhausts on first run and returns `[]` on second run. | Cache the materialized collection (`tuple`) or the aggregate calculation result. |
+| **2. Avoid I/O in properties** | `@property` implies $O(1)$ attribute access; hidden queries in properties surprise callers in logging/repr. | Make expensive calls explicit methods (`fetch_sales()`, `load_rates()`). |
+| **3. Bound external cache lifetime** | Permanent caching of live APIs causes silent data staleness and drift. | Use `@ttl_cache(seconds=N)` to bound staleness to an acceptable window. |
+

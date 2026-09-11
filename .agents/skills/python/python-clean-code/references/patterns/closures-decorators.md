@@ -34,7 +34,26 @@ def counted(fn: Callable[P, R]) -> Callable[P, R]:
         return fn(*args, **kwargs)
 
     return wrapper
+
+
+def register_handler(registry: dict[str, Callable[P, R]], key: str):
+    """Register a callable in a dispatch table at module import time."""
+    def decorator(fn: Callable[P, R]) -> Callable[P, R]:
+        if key in registry:
+            raise ValueError(f"duplicate registration: {key}")
+        @wraps(fn)
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+            return fn(*args, **kwargs)
+
+        registry[key] = wrapper
+        return wrapper
+    return decorator
 ```
+
+Self-registering decorators execute at import time, co-locating registration metadata directly with
+the function definition. This satisfies the Open-Closed Principle (OCP) by making extensions purely
+additive without editing a central registration function. Always preserve callable metadata with
+`@wraps` and validate key collisions explicitly.
 
 ## When not to use
 

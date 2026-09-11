@@ -1,7 +1,8 @@
 ---
 name: grill-me
 description: A relentless interview to sharpen a plan or design.
-disable-model-invocation: true
+metadata:
+  disable-model-invocation: true
 ---
 
-Call the Skill tool with "grilling".
+Call the Skill tool with "grilling" (located at [grilling](../grilling/SKILL.md)).

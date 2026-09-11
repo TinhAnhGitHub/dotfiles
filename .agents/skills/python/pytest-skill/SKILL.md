@@ -31,8 +31,10 @@ clear, isolated, behavior-focused test.
    async, plugin, doctest, or compatibility testing. Do not use a real network,
    cloud resource, clock, or random source in a unit test unless that behavior
    is explicitly the subject of the test.
-3. **Choose the narrowest mechanism.** Use a plain test function and `assert`;
-   fixtures for dependencies/lifecycle; `parametrize` for a known decision
+3. **Choose the narrowest mechanism.** Organize pytest tests in a dedicated
+   `Test*` class for the production function or class under test, and use plain
+   `assert` statements within its test methods; use fixtures for
+   dependencies/lifecycle; `parametrize` for a known decision
    table; `subtests` only for cases discovered during execution; and mocks only
    at an external boundary.
 4. **Make isolation explicit.** Prefer function-scoped fixtures and
@@ -57,24 +59,82 @@ environment-specific guidance with generic mocks.
 
 ## Core test patterns
 
+## Project test organization, paths, and documentation
+
+Apply these conventions to all pytest code unless the project has an explicit,
+documented exception:
+
+- Separate test suites into `tests/unit/` and `tests/integration/`. Put shared
+  fixtures, hooks, and pytest configuration in `tests/conftest.py`, and reuse
+  those fixtures rather than recreating common setup in individual test files.
+- Treat `pytestconfig.rootpath` as the base for test resources. Construct paths
+  with `pathlib.Path`, never hard-code absolute paths, and avoid `.resolve()`
+  when it would bind the test to a machine-specific layout. Define reusable
+  resource-directory fixtures in `tests/conftest.py` and inject them where
+  needed:
+
+  ```python
+  from pathlib import Path
+
+  import pytest
+
+
+  @pytest.fixture
+  def fixtures_dir(pytestconfig) -> Path:
+      return pytestconfig.rootpath / "tests" / "fixtures"
+  ```
+
+  A test should then compose its resource path from the injected fixture, for
+  example `data_path = fixtures_dir / "data.json"`.
+- Begin every test file with a module docstring that identifies the component,
+  the covered scenarios, and whether the file contains unit or integration
+  tests. Give every test method a concise docstring stating the behavior under
+  test, its input or setup, its expected behavior, and the regression or
+  contract it protects.
+- Organize tests by production symbol. Use one dedicated `Test*` class for each
+  production function or class, with only the relevant cases for that symbol in the
+  class. Do not write standalone `test_*` functions. Name classes and methods
+  with pytest conventions and observable behavior, such as `TestParseEmail`,
+  `test_returns_expected_value`, and `test_raises_for_invalid_input`.
+
+The expected layout is:
+
+```text
+tests/
+├── conftest.py
+├── unit/
+└── integration/
+```
+
+Keep unit tests isolated and deterministic. Use integration tests when a case
+depends on multiple components, external services, databases, filesystems, or
+infrastructure.
+
+
 ### Plain tests and assertion introspection
 
 ```python
 import pytest
 
 
-def test_total_includes_tax():
-    assert total(subtotal=10, tax_rate=0.2) == 12
+class TestTotal:
+    def test_includes_tax(self):
+        """Checks subtotal 10 at 20 percent tax returns 12, protecting tax arithmetic."""
+        assert total(subtotal=10, tax_rate=0.2) == 12
 
 
-def test_invalid_email_reports_the_input():
-    with pytest.raises(ValueError, match=r"invalid email") as exc_info:
-        parse_email("not-an-email")
-    assert exc_info.value.args[0] == "invalid email"
+class TestParseEmail:
+    def test_reports_invalid_input(self):
+        """Checks invalid email input raises its validation error, preserving the input contract."""
+        with pytest.raises(ValueError, match=r"invalid email") as exc_info:
+            parse_email("not-an-email")
+        assert exc_info.value.args[0] == "invalid email"
 
 
-def test_float_result():
-    assert calculate_ratio(1, 3) == pytest.approx(1 / 3, rel=1e-6)
+class TestCalculateRatio:
+    def test_returns_approximate_float_result(self):
+        """Checks one divided by three is accurate within tolerance, guarding float precision."""
+        assert calculate_ratio(1, 3) == pytest.approx(1 / 3, rel=1e-6)
 ```
 
 Use `assert left == right`, not `self.assertEqual`; pytest rewrites asserts to
@@ -107,8 +167,10 @@ def user_factory():
     created.clear()
 
 
-def test_user_factory(user_factory):
-    assert user_factory("Bob") == {"name": "Bob"}
+class TestUserFactory:
+    def test_creates_user_with_given_name(self, user_factory):
+        """Checks the fixture factory creates Bob data, preserving fixture-provided setup."""
+        assert user_factory("Bob") == {"name": "Bob"}
 ```
 
 Rules that prevent most fixture bugs:
@@ -141,16 +203,18 @@ data setup because it hides why a test depends on that state.
 import pytest
 
 
-@pytest.mark.parametrize(
-    "raw,expected",
-    [
-        pytest.param(" Alice ", "Alice", id="trimmed"),
-        pytest.param("", "", id="empty"),
-        pytest.param(None, None, marks=pytest.mark.xfail(reason="pending API decision"), id="none"),
-    ],
-)
-def test_normalize_name(raw, expected):
-    assert normalize_name(raw) == expected
+class TestNormalizeName:
+    @pytest.mark.parametrize(
+        "raw,expected",
+        [
+            pytest.param(" Alice ", "Alice", id="trimmed"),
+            pytest.param("", "", id="empty"),
+            pytest.param(None, None, marks=pytest.mark.xfail(reason="pending API decision"), id="none"),
+        ],
+    )
+    def test_returns_normalized_value(self, raw, expected):
+        """Checks named inputs normalize as expected, documenting API edge-case behavior."""
+        assert normalize_name(raw) == expected
 ```
 
 - Give meaningful `ids` for domain cases; IDs become part of node IDs and make
@@ -176,18 +240,22 @@ Patch the name looked up by the system under test, not necessarily the name in
 the dependency's original module:
 
 ```python
-def test_fetch_user(mocker):
-    response = mocker.Mock(status_code=200)
-    response.json.return_value = {"id": 7, "name": "Ada"}
-    mocker.patch("myapp.users.requests.get", return_value=response)
+class TestFetchUser:
+    def test_returns_user_from_http_response(self, mocker):
+        """Checks a mocked user response returns Ada, protecting the HTTP boundary contract."""
+        response = mocker.Mock(status_code=200)
+        response.json.return_value = {"id": 7, "name": "Ada"}
+        mocker.patch("myapp.users.requests.get", return_value=response)
 
-    assert fetch_user(7)["name"] == "Ada"
+        assert fetch_user(7)["name"] == "Ada"
 
 
-def test_reads_environment(monkeypatch):
-    monkeypatch.setenv("APP_ENV", "test")
-    monkeypatch.delenv("OPTIONAL_FLAG", raising=False)
-    assert load_settings().environment == "test"
+class TestLoadSettings:
+    def test_reads_test_environment(self, monkeypatch):
+        """Checks test environment variables configure settings, preventing process-state leakage."""
+        monkeypatch.setenv("APP_ENV", "test")
+        monkeypatch.delenv("OPTIONAL_FLAG", raising=False)
+        assert load_settings().environment == "test"
 ```
 
 - Use `pytest-mock`'s `mocker` for `patch`, `spy`, `stub`, and automatic mock
@@ -219,19 +287,25 @@ markers = [
 import pytest
 
 
-@pytest.mark.integration
-def test_real_database_round_trip(database):
-    ...
+class TestDatabaseRoundTrip:
+    @pytest.mark.integration
+    def test_persists_and_reads_data(self, database):
+        """Checks the integration database round trip, protecting multi-component persistence."""
+        ...
 
 
-@pytest.mark.skipif(not HAS_GPU, reason="requires GPU")
-def test_gpu_path():
-    ...
+class TestGpuPath:
+    @pytest.mark.skipif(not HAS_GPU, reason="requires GPU")
+    def test_uses_gpu_when_available(self):
+        """Checks GPU-capable setup follows the GPU path, preserving optional hardware support."""
+        ...
 
 
-@pytest.mark.xfail(strict=True, raises=KnownBug, reason="issue #123")
-def test_known_bug():
-    ...
+class TestKnownBug:
+    @pytest.mark.xfail(strict=True, raises=KnownBug, reason="issue #123")
+    def test_exposes_known_bug(self):
+        """Exercises the known failing setup, ensuring the tracked defect remains visible."""
+        ...
 ```
 
 Use `pytest.importorskip("optional_pkg", minversion="...")` for optional

@@ -6,6 +6,7 @@
 |---|---|
 | Several independent feature axes are creating subclasses | [Composition over inheritance](principles/composition.md), [SOLID boundaries](principles/solid.md), [Adapter](composition/adapter.md), [Decorator](composition/decorator.md) |
 | A caller must work with multiple providers or APIs | [Adapter](composition/adapter.md), [Facade](composition/facade.md), [Dependency injection and registry](extensibility/registry-di.md) |
+| A function has sprawling if/elif chains dispatching on strings or formats | [Registry and dependency injection](extensibility/registry-di.md), [Strategy](behavior/strategy.md) |
 | A high-level workflow repeats many related parameters | [Parameter Object](construction/parameter-object.md), [Builder](construction/builder.md) |
 | Construction is coupled to concrete implementations | [Factory](construction/factory.md), [Builder](construction/builder.md) |
 | One algorithm varies at runtime | [Strategy](behavior/strategy.md), [Adapter](composition/adapter.md) |
@@ -20,7 +21,17 @@
 | A value must enforce invariants at construction | [Value Object](construction/value-object.md), [Parameter Object](construction/parameter-object.md) |
 | A workflow must pause, resume, retry, or recover | [Lifecycle and workflow](lifecycle/state-workflow.md), [State Machine](lifecycle/state-machine.md) |
 | A value is missing, not supplied, or intentionally empty | [Sentinel and lazy resources](python-specific/sentinel-lazy.md) |
-| A familiar pattern feels too complex | [Anti-patterns](anti-patterns/singleton-inheritance.md) |
+| Code suffers from concrete imports, isinstance spaghetti, or choosing between Callable, Protocol, and ABC | [Structural Protocols and Abstraction Spectrum](extensibility/protocols.md), [Composition](principles/composition.md) |
+| Nested try/except pyramids, catching all exceptions, or returning fake defaults | [Anti-patterns](anti-patterns/singleton-inheritance.md), [Absence values and Fail Fast](../../python-clean-code/references/patterns/absence-values.md) |
+| Subclasses created solely to change constants, thresholds, or configuration settings | [Anti-patterns](anti-patterns/singleton-inheritance.md), [OOP](../../python-clean-code/references/patterns/oop.md) |
+| Subtypes disabling parent methods (LSP violation) or wide base classes with unimplemented methods (stamp coupling/ISP) | [Structural Protocols](extensibility/protocols.md), [SOLID boundaries](principles/solid.md), [Anti-patterns](anti-patterns/singleton-inheritance.md) |
+| Abstracting before understanding similarity (forcing disparate domains into generic templates) | [Anti-patterns](anti-patterns/singleton-inheritance.md), [Composition](principles/composition.md), [OOP](../../python-clean-code/references/patterns/oop.md) |
+| Naive prototype with business logic, queries, global state, and prints in route handlers | [Anti-patterns](anti-patterns/singleton-inheritance.md), [SOLID boundaries](principles/solid.md), [Dependency injection](extensibility/registry-di.md) |
+| Floating-point numerical drift in monetary, exchange rate, or accounting calculations | [Typed boundaries](../../python-clean-code/references/patterns/typing.md), [Value Object](construction/value-object.md) |
+| Web API lacking rate limiting, health checks, or 12-factor environment configuration | [SOLID boundaries](../../python-clean-code/references/patterns/solid-boundaries.md), [Dependency injection](extensibility/registry-di.md) |
+| Domain logic raising HTTP exceptions, executing raw SQL, or returning API wire dicts | [Adapter](composition/adapter.md), [SOLID boundaries](../../python-clean-code/references/patterns/solid-boundaries.md), [Anti-patterns](anti-patterns/singleton-inheritance.md) |
+| Sluggish application startup from eager I/O, repeated disk/API reloads, or generator caching bugs | [Sentinel and lazy resources](python-specific/sentinel-lazy.md), [Iteration and resources](../../python-clean-code/references/patterns/iteration-resources.md) |
+| Stale dynamic API responses or auth tokens caused by unbounded `@cache` without TTL | [Sentinel and lazy resources](python-specific/sentinel-lazy.md) |
 
 ## Find by family
 

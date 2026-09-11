@@ -5,8 +5,9 @@ description: >-
   testable, and easier to extend. Use for cleanups involving functions, closures, decorators,
   type hints, Protocols, iterators, generators, context managers, async/concurrency, properties,
   descriptors, inheritance, metaprogramming, absence values, parameter objects, or questions
-  such as “is this Pythonic?” and “how should I structure this Python code?”. For architecture-
-  level pattern selection, also read python-design-patterns.
+  such as “is this Pythonic?” and “how should I structure this Python code?”. For tactical
+  pattern selection, also read python-design-patterns; for whole-application Clean Architecture
+  and DDD, also read python-software-architecture.
 ---
 
 # Python clean code
@@ -24,8 +25,26 @@ leave simple code simple.
 4. Prefer a small, local refactor before introducing a framework abstraction or class hierarchy.
 5. Preserve public behavior, metadata, exceptions, cancellation, ordering, and resource ownership.
 6. Add focused tests for the changed contract and explain why the selected pattern fits.
-7. Read `python-design-patterns` when the change affects system architecture, plugins, providers,
-   workflows, or cross-component composition.
+7. Read `python-design-patterns` when the change affects tactical component patterns (Strategy,
+   Factory, Adapter, State), registries, or dependency injection.
+8. Read `python-software-architecture` when the change affects whole-application architecture, Clean
+   Architecture layers, DDD domain aggregates, repositories, Unit of Work, or CQRS boundaries.
+9. Read `python-real-world-examples` when seeking concrete production open-source implementations,
+   real-world codebase tours, or battle-tested reference architectures.
+
+## Relationship to Sister Skills
+
+This skill represents the **Micro (Code Craftsmanship)** tier of the Python architecture hierarchy:
+- [python-design-patterns](../python-design-patterns/SKILL.md) (**Meso Level**): Step up to design patterns
+  when local refactorings reveal needs for Strategy, Factory, Registry, Adapter, Façade, Observer, State,
+  Composite, or modern DI with Dishka.
+- [python-software-architecture](../python-software-architecture/SKILL.md) (**Macro Level**): Step up to
+  software architecture when designing full application layers (Clean Architecture 4-layer ladder),
+  Domain-Driven Design (Aggregates, Entities, Value Objects), Unit of Work transactions, Message Bus,
+  CQRS, or monolith migration.
+- [python-real-world-examples](../python-real-world-examples/SKILL.md) (**Reference Layer**): Consult real-world
+  open-source case studies to see idiomatic typing, protocols, context managers, and clean code patterns
+  in battle-tested production repositories.
 
 ## Pattern families
 
