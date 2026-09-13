@@ -114,3 +114,21 @@ To add an open-source project to this skill:
 - [**`../python-clean-code/`**](../python-clean-code/SKILL.md): Provides micro-level Pythonic idioms, type hints, protocols, and clean functions that power individual modules.
 - [**`../python-design-patterns/`**](../python-design-patterns/SKILL.md): Provides tactical GoF patterns, registries, factories, and Dishka DI containers.
 - [**`../python-software-architecture/`**](../python-software-architecture/SKILL.md): Provides comprehensive theoretical foundations from *Architecture Patterns with Python*, *Clean Architecture with Python*, and *Software Design for Python Programmers*.
+
+
+## Expanded OSS corpus and evidence contract
+
+The complete 45-repository source inventory is recorded in
+[the pinned source manifest](../python-software-architecture/references/source-manifest.json);
+the cross-repository mapping is in
+[the repository pattern matrix](../python-software-architecture/references/repository-pattern-matrix.md).
+All dossiers live under [projects/](projects/) and use the canonical P01–P17
+IDs from the architecture skill.
+
+For every case study, report the exact commit, license, Python/native boundary,
+source and test paths, construction/registration path, runtime call site, error
+handling, production compromise, confidence level, and practice task. A source
+path without test or runtime evidence is C-level research, not a proven pattern.
+Milestones 1–3 receive deep annotated tours; the remaining repositories receive
+concise but complete dossiers. Retained OpenViking, CowAgent, Agent-Reach,
+Graphify, and Canonical AI Frameworks case studies remain part of the catalog.

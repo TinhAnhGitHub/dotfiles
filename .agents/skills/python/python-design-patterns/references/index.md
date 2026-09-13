@@ -55,3 +55,24 @@ OpenRLHF, slime, DSPy, TRL, and LiteLLM.
 For the complete ArjanCodes source audit, see
 [`provenance/arjancodes-2026-map.md`](provenance/arjancodes-2026-map.md). The map is navigation;
 the adapted code examples live on the linked pattern pages.
+
+
+## Canonical P01–P17 crosswalk
+
+The architecture skill owns the canonical pages and book mappings:
+[book-pattern-matrix](../../python-software-architecture/references/book-pattern-matrix.md),
+[selection guide](../../python-software-architecture/references/architecture-selection-guide.md),
+and [pattern catalog](../../python-software-architecture/patterns.md).
+
+| Topic | Canonical IDs | Applied repositories |
+|---|---|---|
+| Registry | P08 | Transformers, vLLM, pytest, Django, smolagents |
+| Strategy | P09 | TRL, verl, SGLang, DeepSpeed, Transformers |
+| Adapter/provider router | P06, P12 | LiteLLM, HTTPX, smolagents, Transformers, TensorRT-LLM |
+| Workflow/state | P13, P16 | verl, LangGraph, CrewAI, OpenAI Agents, Ray, Home Assistant |
+| Events/message bus | P10, P11 | Home Assistant, AutoGen, OpenRLHF, CrewAI, MCP Python SDK |
+| Dependency injection | P06, P07 | PydanticAI, FastAPI, OpenAI Agents |
+| Testing boundaries | P17 | pytest, HTTPX, FastAPI, Django, MLflow |
+
+Use the existing family pages for tactical detail, but cite the canonical page and
+repository dossier when answering a cross-skill question.

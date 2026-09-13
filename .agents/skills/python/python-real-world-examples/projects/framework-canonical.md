@@ -1,6 +1,6 @@
 # Canonical Open-Source AI Framework Patterns
 
-> **Catalog**: 17 Production Frameworks from [`python-clean-code`](../python-clean-code/SKILL.md) & [`python-design-patterns`](../python-design-patterns/SKILL.md)  
+> **Catalog**: 17 Production Frameworks from [`python-clean-code`](../../python-clean-code/SKILL.md) & [`python-design-patterns`](../../python-design-patterns/SKILL.md)
 > **Domain**: Deep Learning, Reinforcement Learning, Agent Orchestration & LLM Serving  
 > **Sources**: Verified production codebases across Hugging Face, OpenAI, vLLM, LangChain, and Ray ecosystems  
 

@@ -8,7 +8,7 @@ The active reference set is organized by reusable implementation pattern:
 - [`provenance/zedr-clean-code-python-map.md`](provenance/zedr-clean-code-python-map.md) — maps the supplied zedr clean-code source into the pattern taxonomy.
 - [`provenance/fluent-python-map.md`](provenance/fluent-python-map.md) — maps the old Fluent Python
   chapter organization to the new pattern families.
-- [`../../../python-design-patterns/references/provenance/arjancodes-2026-map.md`](../../../python-design-patterns/references/provenance/arjancodes-2026-map.md)
+- [`../../python-design-patterns/references/provenance/arjancodes-2026-map.md`](../../python-design-patterns/references/provenance/arjancodes-2026-map.md)
   — audits the complete ArjanCodes 2026 tree; concrete adapted examples remain on the relevant
   clean-code pages.
 

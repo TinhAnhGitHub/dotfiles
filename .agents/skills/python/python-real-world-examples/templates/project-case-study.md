@@ -151,3 +151,23 @@ Highlight 3-5 pivotal files in the repository that every architect should study:
 - **Fake-First Port Testing**: How ports are faked in unit tests (`FakeRepository`, `FakeEmailSender`) enabling fast in-memory suites without Docker/DB.
 - **Integration Seams**: How end-to-end tests exercise the entrypoints with test databases (testcontainers, sqlite in-memory).
 - **Test Ratio**: Domain unit tests vs integration tests.
+
+
+## 9. Canonical research record
+
+| Field | Required value |
+|---|---|
+| Repository / default branch | Exact GitHub URL and branch |
+| Pinned revision | Full commit SHA or immutable release |
+| License | License file or SPDX identifier, with source path |
+| Python/native boundary | Python ownership versus C/C++/CUDA/Rust/native ownership |
+| Canonical pattern IDs | P01–P17 only; include confidence |
+| Source evidence | Definition, construction/registration, runtime call site |
+| Test evidence | Exact unit, integration, contract, failure, or performance tests |
+| Book mapping | Architecture Patterns with Python, Clean Architecture with Python, and/or Mak chapter |
+| Production compromise | What differs from the theoretical ideal and why |
+| Practice exercise | Small task linked to exercises/ |
+
+Use evidence levels A (direct), B (strong), and C (inferred). Never promote a
+README-only claim to A/B. Keep source excerpts short and paraphrase copyrighted
+material.

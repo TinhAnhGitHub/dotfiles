@@ -104,3 +104,17 @@ The catalog also records the supplied [Registry video](https://www.youtube.com/w
 [simplest-design video](https://www.youtube.com/watch?v=xns3InDkAiA), together with the
 [complete 2026 source tree](https://github.com/ArjanCodes/examples/tree/main/2026). Keep GoF
 labels as aliases, but organize navigation around the problem being solved.
+
+
+## Canonical architecture crosswalk
+
+Use the architecture skill’s [P01–P17 matrix](../python-software-architecture/references/book-pattern-matrix.md)
+and [selection guide](../python-software-architecture/references/architecture-selection-guide.md)
+as the single canonical source for cross-skill pattern IDs. The pages in this
+skill remain tactical deep dives and standard-library examples; link to the
+canonical page instead of assigning a competing name or ID.
+
+For applied evidence, route to
+[python-real-world-examples](../python-real-world-examples/SKILL.md) and read the
+specific dossier before claiming that a repository implements a pattern. Use the
+repository’s pinned commit and evidence level, not a README description.

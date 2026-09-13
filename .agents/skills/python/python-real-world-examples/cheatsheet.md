@@ -65,3 +65,26 @@ When adding a new open-source repository to this skill:
 5. Identify 2-3 prominent design patterns (Registries, Adapters, Pipelines).
 6. Document realistic trade-offs and extract 3 curated code tours.
 7. Update this cheatsheet and `SKILL.md`.
+
+
+## 5. Canonical topic index
+
+| Topic | Canonical page | Repository evidence |
+|---|---|---|
+| Registry / factory / plugins | [P08](../python-software-architecture/patterns/registry-factory.md) | Transformers, vLLM, pytest, Django, smolagents, Ray |
+| Strategy / policy | [P09](../python-software-architecture/patterns/strategy-policy.md) | TRL, verl, SGLang, DeepSpeed, Transformers |
+| Provider adapter / router | [P06/P12](../python-software-architecture/patterns/adapter-provider-router.md) | LiteLLM, HTTPX, smolagents, Transformers, TensorRT-LLM, LMDeploy |
+| Workflow / state / saga | [P13/P16](../python-software-architecture/patterns/state-workflow.md) | verl, LangGraph, CrewAI, OpenAI Agents, Ray, Home Assistant |
+| Commands / events / projections | [P10/P11](../python-software-architecture/patterns/events-message-bus.md) | Home Assistant, AutoGen, OpenRLHF, CrewAI, MCP Python SDK |
+| Dependency injection / composition | [P06/P07](../python-software-architecture/patterns/dependency-injection.md) | PydanticAI, FastAPI, OpenAI Agents |
+| Testing seams / fitness | [P17](../python-software-architecture/patterns/testing-boundaries.md) | pytest, HTTPX, FastAPI, Django, Transformers, vLLM, MLflow |
+| Python versus native execution | [P16](../python-software-architecture/patterns/concurrency-lifecycle.md) | vLLM, SGLang, Megatron-LM, TensorRT-LLM, llama.cpp, MLC-LLM |
+
+## 6. Research corpus navigation
+
+The full 45-project source and revision inventory is
+[the pinned manifest](../python-software-architecture/references/source-manifest.json).
+The normalized crosswalk is
+[the repository pattern matrix](../python-software-architecture/references/repository-pattern-matrix.md).
+Read each dossier’s source and test paths before treating its claims as proven;
+C-level inferences remain explicitly labeled.

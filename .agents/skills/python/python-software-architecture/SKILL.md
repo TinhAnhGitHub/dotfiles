@@ -8,7 +8,7 @@ description: "Comprehensive software architecture and design engineering knowled
 # Python Software Architecture & Design Patterns
 
 **Authors**: Harry Percival & Bob Gregory (O'Reilly), Sam Keen (Packt), Ronald Mak (Manning)  
-**Total Volumes**: 3 | **Total Chapters**: 41 | **Generated**: 2026-09-11
+**Total Volumes**: 3 | **Total Chapters**: 41 | **Generated**: 2026-09-12
 
 ## Agent Instructions & Conversational Workflows
 
@@ -222,3 +222,28 @@ Clean Architecture organizes Python systems into four concentric circles where d
 ## Scope & Limits
 
 This skill synthesizes principles and patterns from the three authoritative texts on Python software architecture. For framework-specific documentation (FastAPI, SQLAlchemy, Pydantic, Django), refer to their respective official manuals or child skills.\n
+
+## Canonical OSS architecture research
+
+The applied architecture catalog uses stable IDs P01–P17. Start with the
+[selection guide](references/architecture-selection-guide.md), then read the
+[book-pattern matrix](references/book-pattern-matrix.md) and the relevant
+[repository pattern matrix](references/repository-pattern-matrix.md).
+
+Canonical pages are grouped under [patterns/](patterns/) and practice tasks under
+[exercises/](exercises/). The real-world skill owns the repository dossiers; this
+skill owns the theory, decisions, and book crosswalk. Do not create a second
+definition of a canonical pattern in a sibling skill.
+
+### OSS evidence workflow
+
+For a repository claim, confirm the pinned revision in
+[references/source-manifest.json](references/source-manifest.json), inspect the
+definition, construction/registration site, runtime call site, tests, error
+handling, and composition root, then classify evidence as A (direct), B (strong),
+or C (inferred). Only A/B claims are authoritative.
+
+When analyzing serving or training systems, explicitly separate Python
+configuration/orchestration from C++, CUDA, Rust, or kernel execution. Record the
+production compromise and the test that reveals its behavior. Every recommendation
+must include when not to use the pattern and a simpler alternative.
