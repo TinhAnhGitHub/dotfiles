@@ -1,11 +1,12 @@
 ---
 name: qdrant-performance-optimization
-parent: qdrant
 description: "Navigation hub linking sub-skills for proactive Qdrant tuning: search speed, indexing performance, and memory usage optimization. Use when planning configuration or capacity changes to improve speed and efficiency. For diagnosing an active production slowdown or analyzing live metrics, use qdrant-monitoring instead."
 allowed-tools:
   - Read
   - Grep
   - Glob
+metadata:
+  parent: qdrant
 ---
 
 

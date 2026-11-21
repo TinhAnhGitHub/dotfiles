@@ -1,11 +1,12 @@
 ---
 name: qdrant-scaling
-parent: qdrant
 description: "Guides Qdrant scaling decisions. Use when someone asks 'how many nodes do I need', 'data doesn't fit on one node', 'need more throughput', 'cluster is slow', 'too many tenants', 'vertical or horizontal', 'how to shard', or 'need to add capacity'."
 allowed-tools:
   - Read
   - Grep
   - Glob
+metadata:
+  parent: qdrant
 ---
 
 # Qdrant Scaling

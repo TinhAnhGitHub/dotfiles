@@ -4,7 +4,7 @@ description: "Build managed ingestion pipelines into Databricks using Lakeflow C
 compatibility: Requires databricks CLI (>= v0.294.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Lakeflow Connect

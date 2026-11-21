@@ -1,7 +1,8 @@
 ---
 name: qdrant-multitenancy
-parent: qdrant
 description: "Guides tenant isolation architecture in Qdrant for multi-tenant or multi-user applications. Use when someone asks 'how to isolate customer data', 'how to build multi-tenant search/RAG', 'how many collections should I create', 'how to partition tenants by payload', 'a customer's data legally has to stay in a certain country or region'. Also use when they describe a symptom: one customer's data is way bigger than the rest and slowing everyone down, or one tenant is hogging resources."
+metadata:
+  parent: qdrant
 ---
 
 # Qdrant Multitenancy

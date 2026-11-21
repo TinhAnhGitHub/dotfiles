@@ -4,7 +4,7 @@ description: "Unity Catalog governance, access control, and observability. Use t
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.3.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Unity Catalog

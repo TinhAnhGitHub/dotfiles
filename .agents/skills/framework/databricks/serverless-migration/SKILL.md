@@ -4,7 +4,7 @@ description: "Migrate Databricks workloads from classic compute to serverless co
 compatibility: Requires databricks CLI (>= v0.292.0)
 metadata:
   version: "0.1.0"
-parent: databricks-core
+  parent: databricks-core
 ---
 
 # Serverless Compute Migration

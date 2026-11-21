@@ -1,1 +1,0 @@
-../../.agents/agents/codebase-memory-auditor/opencode.md

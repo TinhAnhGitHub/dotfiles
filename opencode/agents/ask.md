@@ -1,1 +1,0 @@
-../../.agents/agents/ask/opencode.md

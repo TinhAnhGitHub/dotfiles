@@ -1,7 +1,8 @@
 ---
 name: qdrant-version-upgrade
-parent: qdrant
 description: "Guidance on how to upgrade your Qdrant version without interrupting the availability of your application and ensuring data integrity."
+metadata:
+  parent: qdrant
 ---
 
 

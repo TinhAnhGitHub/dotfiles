@@ -4,7 +4,7 @@ description: "Build RAG / unstructured-document evaluation datasets and demo doc
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Unstructured-Document for Demos and Eval Datasets on Databricks

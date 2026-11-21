@@ -4,7 +4,7 @@ description: "Databricks documentation reference via llms.txt index. Use when ot
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Databricks Documentation Reference

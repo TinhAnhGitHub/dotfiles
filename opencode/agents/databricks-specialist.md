@@ -1,1 +1,0 @@
-../../.agents/agents/databricks-specialist/opencode.md

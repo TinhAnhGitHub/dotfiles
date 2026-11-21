@@ -3,7 +3,7 @@ name: databricks-official-vector-search
 description: "Databricks Vector Search endpoints and indexes for RAG and semantic search; covers index types, search modes, end-to-end RAG patterns"
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Databricks Vector Search

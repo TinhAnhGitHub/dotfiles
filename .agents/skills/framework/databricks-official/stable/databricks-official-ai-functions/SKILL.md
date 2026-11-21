@@ -4,7 +4,7 @@ description: "Use Databricks built-in AI Functions (ai_classify, ai_extract, ai_
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.2.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Databricks AI Functions

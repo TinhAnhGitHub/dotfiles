@@ -4,7 +4,7 @@ description: Develop and deploy Lakeflow Jobs on Databricks via DABs, Python SDK
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.2.0"
-parent: databricks-core
+  parent: databricks-core
 ---
 
 # Lakeflow Jobs Development

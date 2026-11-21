@@ -4,7 +4,7 @@ description: "Unity Catalog metric views: define, create, query, and manage gove
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Unity Catalog Metric Views

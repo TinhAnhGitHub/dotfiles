@@ -4,7 +4,7 @@ description: >-
   Databricks SQL (DBSQL) advanced features and SQL warehouse capabilities.
   This skill MUST be invoked when the user mentions: "DBSQL", "Databricks SQL",
   "SQL warehouse", "SQL scripting", "stored procedure", "CALL procedure",
-  "materialized view", "CREATE MATERIALIZED VIEW", "pipe syntax", "|>",
+  "materialized view", "CREATE MATERIALIZED VIEW", "pipe syntax",
   "geospatial", "H3", "ST_", "spatial SQL", "collation", "COLLATE",
   "ai_query", "ai_classify", "ai_extract", "ai_gen", "AI function",
   "http_request", "remote_query", "read_files", "Lakehouse Federation",
@@ -15,7 +15,7 @@ description: >-
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Databricks SQL (DBSQL) - Advanced Features

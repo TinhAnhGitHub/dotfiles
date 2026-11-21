@@ -1,7 +1,8 @@
 ---
 name: qdrant-model-migration
-parent: qdrant
 description: "Guides embedding model migration in Qdrant without downtime. Use when someone asks 'how to switch embedding models', 'how to migrate vectors', 'how to update to a new model', 'zero-downtime model change', 'how to re-embed my data', or 'can I use two models at once'. Also use when upgrading model dimensions, switching providers, or A/B testing models."
+metadata:
+  parent: qdrant
 ---
 
 # What to Do When Changing Embedding Models

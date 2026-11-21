@@ -4,7 +4,7 @@ description: "Apache Iceberg tables on Databricks — Managed Iceberg tables, Ex
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Apache Iceberg on Databricks

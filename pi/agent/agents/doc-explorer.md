@@ -1,1 +1,0 @@
-../../../.agents/agents/doc-explorer/pi.md

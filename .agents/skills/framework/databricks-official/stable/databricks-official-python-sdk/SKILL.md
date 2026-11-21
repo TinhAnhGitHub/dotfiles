@@ -4,7 +4,7 @@ description: "Databricks development guidance including Python SDK, Databricks C
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Databricks Development Guide

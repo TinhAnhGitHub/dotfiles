@@ -1,7 +1,8 @@
 ---
 name: qdrant-edge
-parent: qdrant
 description: "Guides building on Qdrant Edge, the embedded in-process shard. Use when someone asks 'how to sync Edge with the server', 'keep a local shard in sync with Qdrant Cloud', 'BM25 or keyword search on Edge', 'hybrid search on Edge', 'embeddings on device', 'Edge snapshots', 'apply a partial snapshot', 'why is my Edge search empty after inserts', or is writing custom sync, BM25, or fusion code against qdrant-edge. Also use when deciding what Edge ships built-in versus what you must implement."
+metadata:
+  parent: qdrant
 ---
 
 # Building on Qdrant Edge

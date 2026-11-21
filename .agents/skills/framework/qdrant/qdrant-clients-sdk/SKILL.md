@@ -1,12 +1,13 @@
 ---
 name: qdrant-clients-sdk
-parent: qdrant
 description: "Qdrant provides client SDKs for various programming languages, allowing easy integration with Qdrant deployments."
 allowed-tools:
   - Read
   - Grep
   - Glob
   - Bash
+metadata:
+  parent: qdrant
 ---
 
 # Qdrant Clients SDK

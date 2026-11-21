@@ -4,7 +4,7 @@ description: "Build apps on Databricks Apps platform. Use when asked to create d
 compatibility: Requires databricks CLI (>= v0.294.0)
 metadata:
   version: "0.1.2"
-parent: databricks-core
+  parent: databricks-core
 ---
 
 # Databricks Apps Development

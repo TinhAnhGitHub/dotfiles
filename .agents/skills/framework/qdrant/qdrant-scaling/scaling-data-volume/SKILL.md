@@ -1,11 +1,12 @@
 ---
 name: qdrant-scaling-data-volume
-parent: qdrant
 description: "Guides Qdrant data volume scaling decisions. Use when someone asks 'data doesn't fit on one node', 'too much data', 'need more storage', 'vertical or horizontal scaling', 'tenant scaling', 'time window rotation', or 'data growth exceeds capacity'."
 allowed-tools:
   - Read
   - Grep
   - Glob
+metadata:
+  parent: qdrant
 ---
 
 # Scaling Data Volume

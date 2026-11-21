@@ -1,1 +1,0 @@
-../../.agents/agents/pytest-databricks-specialist/opencode.md

@@ -4,7 +4,7 @@ description: "Create Agent Bricks: Knowledge Assistants (KA) for document Q&A an
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Agent Bricks

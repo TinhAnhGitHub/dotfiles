@@ -1,6 +1,5 @@
 ---
 name: mongodb-pymongo
-parent: mongodb
 description: >-
   Use for Python applications that use PyMongo 4.x or BSON: MongoClient or AsyncMongoClient,
   Database and Collection APIs, CRUD, cursors, aggregation, transactions, change streams,
@@ -14,6 +13,7 @@ license: Apache-2.0
 metadata:
   version: "1.0.0"
   pymongo_docs_version: "4.17"
+  parent: mongodb
 ---
 
 # PyMongo 4.17 Development Guide

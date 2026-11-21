@@ -1,11 +1,11 @@
 ---
 name: mongodb-atlas-stream-processing
-parent: mongodb
 description: "Manages MongoDB Atlas Stream Processing (ASP) workflows. Handles workspace provisioning, data source/sink connections, processor lifecycle operations, debugging diagnostics, and tier sizing. Supports Kafka, Atlas clusters, S3, HTTPS, and Lambda integrations for streaming data workloads and event processing. NOT for general MongoDB queries or Atlas cluster management. Requires MongoDB MCP Server with Atlas API credentials."
 license: Apache-2.0
 metadata:
   version: "1.0.0"
   user-invocable: "true"
+  parent: mongodb
 ---
 
 # MongoDB Atlas Streams

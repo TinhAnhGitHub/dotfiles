@@ -4,7 +4,7 @@ description: "MLflow 3 GenAI agent evaluation. Use when writing mlflow.genai.eva
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # MLflow 3 GenAI Evaluation

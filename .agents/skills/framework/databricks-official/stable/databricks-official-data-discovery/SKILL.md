@@ -4,7 +4,7 @@ description: "Discover, explore, and query Databricks data via Genie — the CLI
 compatibility: Requires databricks CLI >= v1.9.0 for `databricks genie ask` (older CLIs fall back to the deprecated `databricks experimental genie ask` alias)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Databricks Data Discovery

@@ -1,7 +1,8 @@
 ---
 name: qdrant-scaling-query-volume
-parent: qdrant
 description: "Guides Qdrant query volume scaling. Use when someone asks 'query returns too many results', 'scroll performance', 'large limit values', 'paginating search results', 'fetching many vectors', or 'high cardinality results'."
+metadata:
+  parent: qdrant
 ---
 
 # Scaling for Query Volume

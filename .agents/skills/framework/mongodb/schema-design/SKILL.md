@@ -1,10 +1,10 @@
 ---
 name: mongodb-schema-design
-parent: mongodb
 description: MongoDB schema design patterns and anti-patterns. Use when designing data models, reviewing schemas, migrating from SQL, or troubleshooting performance issues caused by schema problems. Triggers on "design schema", "embed vs reference", "MongoDB data model", "schema review", "unbounded arrays", "one-to-many", "tree structure", "16MB limit", "schema validation", "JSON Schema", "time series", "schema migration", "polymorphic", "TTL", "data lifecycle", "archive", "index explosion", "unnecessary indexes", "approximation pattern", "document versioning".
 license: Apache-2.0
 metadata:
   version: "1.0.0"
+  parent: mongodb
 ---
 
 # MongoDB Schema Design

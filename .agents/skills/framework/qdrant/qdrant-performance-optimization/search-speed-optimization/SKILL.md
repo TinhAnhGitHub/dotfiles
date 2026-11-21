@@ -1,7 +1,8 @@
 ---
 name: qdrant-search-speed-optimization
-parent: qdrant
 description: "Diagnoses and fixes slow Qdrant search. Use when someone reports 'search is slow', 'high latency', 'queries take too long', 'low QPS', 'throughput too low', 'filtered search is slow', or 'search was fast but now it's slow'. Also use when search performance degrades after config changes or data growth."
+metadata:
+  parent: qdrant
 ---
 
 # Diagnose a problem

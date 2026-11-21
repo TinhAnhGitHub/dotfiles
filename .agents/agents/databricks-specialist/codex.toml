@@ -1,5 +1,0 @@
-name = "databricks-specialist"
-description = "Provides Databricks platform and engineering guidance."
-model = "gpt-5.6-luna"
-model_reasoning_effort = "high"
-developer_instructions = "Read and follow the detailed instructions in /home/tinhanhnguyen/dotfiles/.agents/agents/databricks-specialist/pi.md."

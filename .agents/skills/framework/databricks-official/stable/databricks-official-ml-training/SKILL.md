@@ -4,7 +4,7 @@ description: "Train ML models on Databricks. Use for: classification/regression/
 compatibility: Requires databricks CLI (>= v0.294.0)
 metadata:
   version: "0.1.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # ML Training on Databricks

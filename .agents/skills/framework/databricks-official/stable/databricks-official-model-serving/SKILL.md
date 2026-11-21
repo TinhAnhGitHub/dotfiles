@@ -4,7 +4,7 @@ description: "Databricks Model Serving endpoint lifecycle and ops. Use when aske
 compatibility: Requires databricks CLI (>= v0.294.0)
 metadata:
   version: "0.4.0"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # Model Serving Endpoints

@@ -1,7 +1,8 @@
 ---
 name: qdrant-cloud-ingestion
-parent: qdrant
 description: "Guides indexing and data ingestion into Qdrant Cloud (managed Qdrant). Use when someone says 'I have a Qdrant Cloud URL and API key', 'connect to cloud', 'ingest/upload data to Qdrant Cloud', 'bulk upload to cloud cluster', 'indexing on cloud', 'cloud is slow to ingest', 'migrate my data to Qdrant Cloud', 'which shards for cloud', or 'cloud strict mode'. Also use when creating collections, payload indexes, or running bulk/migration uploads against a cloud cluster (cluster URL ending in cloud.qdrant.io). Pair with qdrant-deployment-options for cluster selection and qdrant-indexing-performance-optimization when ingestion is slow."
+metadata:
+  parent: qdrant
 ---
 
 # Ingesting and Indexing Data in Qdrant Cloud

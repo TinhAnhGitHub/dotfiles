@@ -4,7 +4,7 @@ description: "Create Databricks AI/BI dashboards. Must use when creating, updati
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.2.1"
-parent: databricks-official-core
+  parent: databricks-official-core
 ---
 
 # AI/BI Dashboard Skill

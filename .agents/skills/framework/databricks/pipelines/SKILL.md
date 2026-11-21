@@ -4,7 +4,7 @@ description: Develop Lakeflow Spark Declarative Pipelines (formerly Delta Live T
 compatibility: Requires databricks CLI (>= v1.0.0)
 metadata:
   version: "0.3.0"
-parent: databricks-core
+  parent: databricks-core
 ---
 
 # Lakeflow Spark Declarative Pipelines Development

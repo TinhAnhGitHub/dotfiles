@@ -1,1 +1,0 @@
-../../../.agents/agents/skill-manager/pi.md
