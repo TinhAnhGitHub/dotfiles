@@ -8,6 +8,7 @@ published, so use a concrete child page or the `llms.txt` index.
 | Example | Pattern |
 |---|---|
 | [custom_validators](https://pydantic.dev/docs/validation/latest/examples/custom_validators/index.md) | Annotated metadata, timezone validation, core-schema wrap hooks, nested invariants |
+| [cyclic_references](https://pydantic.dev/docs/validation/latest/examples/cyclic_references/index.md) | `recursion_loop` validation errors via wrap validators; circular-reference serialization failures via wrap serializers |
 | [dynamic_models](https://pydantic.dev/docs/validation/latest/examples/dynamic_models/index.md) | `create_model`, optionalizing fields, `FieldInfo.asdict`, inherited validators |
 | [files](https://pydantic.dev/docs/validation/latest/examples/files/index.md) | JSON, JSONL, CSV, TOML, YAML, XML, and INI boundary validation |
 | [orms](https://pydantic.dev/docs/validation/latest/examples/orms/index.md) | `from_attributes=True`, aliases for reserved ORM attributes, SQLAlchemy boundary |
@@ -46,6 +47,10 @@ schema lifecycle, preserve its contract and add focused Pydantic tests rather th
 assuming the framework validates exactly like direct model construction.
 
 For tooling and integrations, use the exact pages in the official index:
-`integrations/llms/`, `integrations/dev-tools/mypy/`, `pyrefly/`, `linting/`,
-`hypothesis/`, `datamodel_code_generator/`, `rich/`, `pycharm/`,
-`visual_studio_code/`, `integrations/aws_lambda/`, and `integrations/logfire/`.
+`integrations/llms/`, `integrations/dev-tools/mypy/` (`pydantic.mypy` plugin),
+`pyrefly/` (built-in support), `linting/` (`flake8-pydantic`, `PYDXXX`),
+`hypothesis/` (the old plugin was removed in v2), `datamodel_code_generator/`,
+`documentation/` (Sphinx `intersphinx_mapping`, MkDocs `objects.inv`; note
+`latest` vs `dev`), `rich/`, `pycharm/`, `visual_studio_code/`,
+`integrations/aws_lambda/` (native-wheel troubleshooting), and
+`integrations/logfire/` (instrumentation and scrubbing).

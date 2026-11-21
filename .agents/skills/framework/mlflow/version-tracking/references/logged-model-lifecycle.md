@@ -95,6 +95,36 @@ Confirm filter syntax and return shape against the installed API. Search results
 candidate versions, but the comparison decision should use trace/evaluation evidence rather than
 recency alone.
 
+## Explicit lifecycle example
+
+```python
+import mlflow
+from mlflow.entities import LoggedModelStatus
+
+model = mlflow.initialize_logged_model(
+    name="support-agent-build",
+    model_type="agent",
+    params={"source_commit": "abc123"},
+)
+try:
+    mlflow.log_model_params({"temperature": "0.2"}, model_id=model.model_id)
+    mlflow.set_logged_model_tags(model.model_id, {"environment": "staging"})
+    mlflow.finalize_logged_model(model.model_id, LoggedModelStatus.READY)
+except Exception:
+    mlflow.finalize_logged_model(model.model_id, LoggedModelStatus.FAILED)
+    raise
+```
+
+## Search semantics (MLflow 3.17–3.18)
+
+- 3.17.0: aggregate evaluation metrics are associated with the managed dataset that
+  produced them; a Model Version page links to its source LoggedModel;
+  `search_logged_models()` gained better loading, filtering, pagination, and metric
+  ordering.
+- 3.18.0 (SQL stores): metric filtering/sorting uses the highest step, then latest
+  timestamp; `datasets` applies to both filtering and sorting. Confirm `output_format`
+  and filter syntax against the installed API.
+
 ## Failure modes
 
 - **Orphan traces:** active model was set after instrumented calls began.

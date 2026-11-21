@@ -10,8 +10,8 @@ description: >
   aliases, prompt optimization, GEPA, MetaPromptOptimizer, prompt migration,
   prompt lineage, or Gateway-backed prompt testing.
 metadata:
-  version: "0.2.0"
-  docs-reviewed: "2026-08-30"
+  version: "0.3.0"
+  docs-reviewed: "2026-11-21"
   parent: mlflow
 compatibility: MLflow 3.x; optimization, rewrite, UI, and Playground capabilities are version/AI-Gateway gated
 ---
@@ -190,15 +190,29 @@ The current API is `mlflow.genai.optimize_prompts()`; do not use the removed
 singular `optimize_prompt` API. A typical call has:
 
 ```python
+import mlflow
+import openai
+from mlflow.genai.optimize.optimizers import GepaPromptOptimizer
+from mlflow.genai.scorers import Correctness
+
+prompt = mlflow.genai.register_prompt(
+    name="demo-qa", template="Answer: {{question}}"
+)
+
+def predict_fn(question: str) -> str:
+    rendered = prompt.format(question=question)
+    response = openai.OpenAI().chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": rendered}],
+    )
+    return response.choices[0].message.content
+
 result = mlflow.genai.optimize_prompts(
     predict_fn=predict_fn,
-    train_data=train_data,
-    prompt_uris=["prompts:/catalog.schema.support-agent/12"],
-    optimizer=GepaPromptOptimizer(
-        reflection_model="<provider>:/<pinned-reflection-model>",
-        max_metric_calls=100,
-    ),
-    scorers=[Correctness(model="<provider>:/<pinned-judge-model>")],
+    train_data=[{"inputs": {"question": "Capital of France?"}, "outputs": "Paris"}],
+    prompt_uris=[prompt.uri],
+    optimizer=GepaPromptOptimizer(reflection_model="openai:/gpt-4o"),
+    scorers=[Correctness(model="openai:/gpt-4o")],
 )
 ```
 
@@ -245,6 +259,33 @@ sampling parameters, tools, structured output, variables, Prompt Registry versio
 and model configuration. These are interactive development surfaces, not approval
 or deployment gates; export exact prompt/model/config identities into a tested
 release workflow.
+
+## Version-specific changes (3.16–3.18)
+
+| Release | Change |
+|---|---|
+| 3.16.0 | `optimize_prompts()` supports chat-type prompts |
+| 3.17.0 | `search_prompts()` gained `order_by` across client, fluent, and GenAI APIs (Unity Catalog has limitations — verify against installed API); prompt-cache entries are scoped by registry |
+| 3.18.0 | UI presigned artifact flows; on case-insensitive SQL backends registry permissions use stored resource-name spelling, and prompt/model renames can be rejected when direct or exact-name grants exist; administrative deletes require stored spelling |
+
+`optimize_prompt` (singular) remains importable as a compatibility stub in 3.18.0
+but raises an exception stating it was removed in 3.5.0 — use `optimize_prompts`.
+
+```python
+import mlflow
+
+p = mlflow.genai.register_prompt(
+    name="demo-greeting", template="Hello, {{name}}!",
+    commit_message="Initial version",
+)
+loaded = mlflow.genai.load_prompt(p.name, version=p.version)
+print(loaded.format(name="Ada"))
+
+# 3.17.0+
+found = mlflow.genai.search_prompts(
+    filter_string="name LIKE 'demo-%'", order_by=["name ASC"], max_results=20
+)
+```
 
 ## Status and currentness gates
 

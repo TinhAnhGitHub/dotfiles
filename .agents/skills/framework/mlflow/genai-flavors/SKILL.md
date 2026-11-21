@@ -7,10 +7,10 @@ description: >
   whenever users ask how to log an agent, choose a flavor, preserve dependencies/resources,
   build a deployable MLflow Model, connect it to Agent Server, or migrate ChatAgent/ChatModel
   code. Load the parent `mlflow` skill first.
-compatibility: MLflow 3.x; framework flavors, ResponsesAgent, Agent Server, and several APIs are experimental or version-gated
+compatibility: MLflow 3.x; 3.18.0 adds model-code execution gates and pickle-free serialization; framework flavors, ResponsesAgent, Agent Server, and several APIs are experimental or version-gated
 metadata:
-  version: "0.2.0"
-  docs-reviewed: "2026-08-30"
+  version: "0.3.0"
+  docs-reviewed: "2026-11-21"
 ---
 
 # MLflow GenAI Flavors and Packaging
@@ -102,6 +102,79 @@ for request/event tests, `get_invoke_function`, deployment, and auth/scaling det
 
 Preserve Pydantic 2 schemas, the documented task metadata, default input example, tool approval
 items, and final stream event. Test native, PyFunc, and HTTP behavior separately.
+
+## Security and serialization (MLflow 3.18.0+)
+
+`MLFLOW_ALLOW_MODEL_CODE_EXECUTION` (default `true`) controls whether MLflow will
+load model-supplied code. Set it to `false` to refuse loading any model that needs
+code execution; it replaces/deprecates `MLFLOW_ALLOW_PICKLE_DESERIALIZATION`, which
+still works but is pickle-only. With the flag `false`, loading raises for
+`mlflow.pyfunc.load_model()` (including Spark UDFs and `mlflow models serve`),
+pickle/cloudpickle models, `code_paths`/`infer_code_paths` models, **Models from
+Code**, models on the Python path, Transformers custom code, and LlamaIndex models
+whose saved `Settings` names LLM/embedding classes. Checks are skipped in Databricks
+Runtime and Model Serving. Pickle-free formats are becoming the default:
+`serialization_format="skops"` (sklearn/LightGBM), `"pt2"` for PyTorch (needs
+`input_example`, torch >= 2.4, or >= 2.10 with the flag `false`), and DSPy
+`use_dspy_model_save=True` (dspy > 3.1.0). See
+<https://mlflow.org/docs/latest/ml/tracking/pickle-free-models/>.
+
+```python
+import os
+os.environ["MLFLOW_ALLOW_MODEL_CODE_EXECUTION"] = "false"  # 3.18.0+
+
+import mlflow
+from mlflow.models import set_model
+from mlflow.pyfunc import PythonModel
+
+class Normalizer(PythonModel):
+    def predict(self, context, model_input, params=None):
+        return [str(x).strip() for x in model_input]
+
+set_model(Normalizer())
+```
+
+```python
+import mlflow
+info = mlflow.pyfunc.log_model(
+    python_model="normalizer.py", name="normalizer",
+    pip_requirements=["mlflow==3.18.0"],  # pin: inference would otherwise load the model
+    input_example=["  hello  "],
+)
+print(mlflow.pyfunc.load_model(info.model_uri).predict([" hi "]))
+```
+
+## ResponsesAgent helper surface
+
+Only construct `ResponsesAgentResponse` and `ResponsesAgentStreamEvent` directly.
+Use the instance helpers for items: `create_text_output_item`, `create_reasoning_item`,
+`create_function_call_item`, `create_mcp_approval_request_item`,
+`create_mcp_approval_response_item`, `create_annotation_added`, and `create_text_delta`.
+`request.custom_inputs` and `custom_outputs` pass through arbitrary metadata.
+`mlflow.types.responses_helpers` is for dict validation, not item construction.
+Conversion helpers `to_chat_completions_input()` and
+`output_to_responses_items_stream()` bridge Chat Completions and Responses formats.
+
+```python
+import mlflow
+from mlflow.models import set_model
+from mlflow.pyfunc import ResponsesAgent
+from mlflow.types.responses import ResponsesAgentRequest, ResponsesAgentResponse
+
+class SupportAgent(ResponsesAgent):
+    def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
+        return ResponsesAgentResponse(
+            output=[
+                self.create_reasoning_item(
+                    summary=[{"type": "summary_text", "text": "Checked policy"}]
+                ),
+                self.create_text_output_item(text="Refunds need an order ID.", id="msg_1"),
+            ],
+            custom_outputs={"source": "policy-v12"},
+        )
+
+set_model(SupportAgent())
+```
 
 ## Reference router
 

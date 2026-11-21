@@ -33,7 +33,18 @@ Use constructor functions rather than hand-written dictionaries:
 
 - leaves: `any_schema`, `none_schema`, `bool_schema`, `int_schema`, `float_schema`,
   `decimal_schema`, `str_schema`, bytes/temporal/URL/enum/literal schemas;
-- containers: list, tuple, set, frozenset, generator, dict;
+- containers: list, tuple, set, frozenset, generator, dict, and (v2.14+) deque,
+  OrderedDict, Counter, frozendict, and Fraction schemas; named-tuple schemas
+  validate sequences from v2.14.1 and serialize them from v2.14.2;
+
+```python
+from fractions import Fraction
+from pydantic import TypeAdapter
+
+# v2.14+ native schemas; gate by installed version.
+ta = TypeAdapter(Fraction)
+assert ta.validate_python('3/4') == Fraction(3, 4)
+```
 - flow: `nullable_schema`, `union_schema`, `tagged_union_schema`, `chain_schema`,
   `lax_or_strict_schema`, `json_or_python_schema`, `with_default_schema`, and
   `custom_error_schema`;
@@ -52,12 +63,13 @@ for generic item types so outer field metadata does not accidentally propagate.
 unfinished JSON value and supports streaming/LLM output patterns (partial JSON
 parsing, v2.7+). The docs recommend defaults for all model fields and a
 `WrapValidator` that raises `PydanticUseDefault` for missing data where
-appropriate. This is different from the experimental
-`experimental_allow_partial` validation flag (v2.10+), which may ignore errors in
-the final item/field even on complete input. Neither feature proves that the
-result is complete; add an application-level completeness check.
-`cache_strings` trades memory for repeated-string speed; measure rather than
-enabling it blindly.
+appropriate. This is different from the experimental `experimental_allow_partial`
+flag on Pydantic `TypeAdapter` (v2.10+), which may ignore errors in the final
+item/field even on complete input. At the core layer the flag is named
+`allow_partial` on `SchemaValidator.validate_*`; do not conflate the two. Neither
+feature proves that the result is complete; add an application-level completeness
+check. `cache_strings` (v2.7+) trades memory for repeated-string speed; measure
+rather than enabling it blindly.
 
 ## Performance guidance from the official docs
 
@@ -78,3 +90,30 @@ enabling it blindly.
 Benchmark with representative data, error rates, JSON/Python paths, and the
 target Python/Pydantic versions. Do not trade away validation, error quality, or
 secret redaction for an unmeasured micro-optimization.
+
+## Serializer options
+
+`SchemaSerializer.to_python`/`to_json` and the high-level dump methods accept
+`fallback` (a function used when serialization fails), `warnings` (whether to
+emit `PydanticSerializationUnexpectedValue`), `exclude_computed_fields`, and
+`polymorphic_serialization` (v2.13+, models/dataclasses only). Treat `fallback`
+and duck-typed subclass serialization as security-sensitive because they can
+expose fields not present in the annotated type.
+
+```python
+from pydantic import BaseModel
+
+class Model(BaseModel):
+    value: object
+
+model = Model(value=object())  # not JSON-serializable by default
+model.model_dump_json(fallback=lambda v: repr(v))  # explicit fallback
+```
+
+## Internals worth knowing
+
+- `plugin_settings` provides an interception layer around `validate_python`,
+  `validate_json`, and `validate_strings`; plugins are release-sensitive.
+- Annotation resolution uses a namespace with defined priority; weak references
+  and `_types_namespace` affect `model_rebuild()`. When a forward ref fails,
+  define the name in the module namespace and rebuild rather than guessing.

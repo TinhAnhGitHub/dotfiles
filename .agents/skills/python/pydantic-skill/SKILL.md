@@ -32,14 +32,19 @@ constraint, or a substitute for domain invariants.
    versions, or documentation citations; otherwise load only the routed reference.
    The `latest` documentation is a rolling reference, not proof that an API exists
    in the repository's version.
-3. Gate newer APIs explicitly: partial JSON parsing is v2.7+, experimental partial
-   validation is v2.10+, `validate_by_*` and `serialize_by_alias` are v2.11+,
-   and `polymorphic_serialization` is v2.13+. Use the compatible alternative
-   rather than silently upgrading.
+3. Gate newer APIs explicitly: partial JSON parsing and `cache_strings` are v2.7+,
+   `FailFast` and the experimental pipeline API are v2.8+, `json_schema_extra`
+   merging from `Annotated` is v2.9+, validated-data factories and experimental
+   partial validation are v2.10+, named type aliases and `validate_by_*` are
+   v2.11+, `polymorphic_serialization` is v2.13+, and the stable top-level
+   `MISSING` import, `create_model(__namespace__=...)`, `TypeForm`, `frozendict`
+   support, and `multiple_of` for `Fraction`/`timedelta` are v2.14+. Use the
+   compatible alternative rather than silently upgrading.
 4. Never silently upgrade or downgrade dependencies. If a version is unknown,
-   state that it is unknown and prefer stable v2 APIs. Pydantic v2 supports Python
-   3.9+, but the examples in this skill use Python 3.10 union syntax; use
-   `Optional`/`Union` syntax or add a future-annotations import on Python 3.9.
+   state that it is unknown and prefer stable v2 APIs. Pydantic v2.14+ requires
+   Python 3.10+ (3.9 was dropped in v2.14; pydantic-settings 2.16+ requires 3.11+).
+   Older v2 releases supported Python 3.9; on those use `Optional`/`Union` syntax
+   or a future-annotations import. The examples here use Python 3.10 union syntax.
 5. Keep `BaseModel`/validation DTOs separate from persistence models, domain
    behavior, secrets handling, and authorization decisions.
 

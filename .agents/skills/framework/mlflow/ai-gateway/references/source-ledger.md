@@ -1,6 +1,7 @@
 # MLflow AI Gateway Source Ledger
 
-Reviewed 2026-08-30. Verify endpoint/provider support and security behavior against the
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-30. Verify endpoint/provider support and security behavior against the
 installed MLflow server and deployment mode.
 
 | Official source | Coverage |

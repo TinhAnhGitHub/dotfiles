@@ -7,10 +7,10 @@ description: >
   streaming events, evaluation, and custom app serving. Use whenever a user asks
   how to host, invoke, stream, package, or evaluate an MLflow agent service.
   Load the parent `mlflow` skill first.
-compatibility: MLflow 3.x; Agent Server examples require MLflow 3.6.0+ and compatible OpenAI Agents/Pydantic versions
+compatibility: MLflow 3.x; Agent Server examples require MLflow 3.6.0+, ResponsesAgent requires Pydantic 2+, agent-evaluation examples use 3.3+; 3.18 adds Skill Registry install-for-agent
 metadata:
-  version: "0.1.0"
-  docs-reviewed: "2026-08-30"
+  version: "0.2.0"
+  docs-reviewed: "2026-11-21"
 ---
 
 # MLflow Agent Serving
@@ -44,6 +44,40 @@ still responsible for authentication, authorization, scaling, secrets, and netwo
 Use Agent Server when the process should own the live framework agent. Use `ResponsesAgent` when
 the executable artifact, signature, and model lifecycle need MLflow packaging/registry semantics.
 Do not silently treat a custom PyFunc string response as a valid Responses API agent.
+
+A packaged `ResponsesAgent` model source (`model.py`) uses the instance helpers and
+must emit the final `response.output_item.done` event when streaming:
+
+```python
+import mlflow
+from mlflow.models import set_model
+from mlflow.pyfunc import ResponsesAgent
+from mlflow.types.responses import (
+    ResponsesAgentRequest, ResponsesAgentResponse, ResponsesAgentStreamEvent,
+)
+
+class EchoAgent(ResponsesAgent):
+    def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
+        return ResponsesAgentResponse(
+            output=[self.create_text_output_item(text="Hello", id="msg_1")]
+        )
+
+    def predict_stream(self, request: ResponsesAgentRequest):
+        yield ResponsesAgentStreamEvent(
+            **self.create_text_delta(delta="Hello", item_id="msg_1")
+        )
+        yield ResponsesAgentStreamEvent(
+            type="response.output_item.done",
+            item=self.create_text_output_item(text="Hello", id="msg_1"),
+        )
+
+set_model(EchoAgent())
+```
+
+Deployment options include `mlflow models serve`, Docker, and Databricks Model
+Serving. Distinguish the ResponsesAgent `input` payload from a generic PyFunc
+payload. In 3.18.0, Skill Registry can install skills into the agent's harness
+before serving; pulling a skill does not auto-load it at runtime (see `skill-registry`).
 
 ## Minimal Agent Server shape
 
@@ -109,10 +143,22 @@ curl -X POST http://localhost:8000/invocations \
   -d '{"input":[{"role":"user","content":"How do I reset access?"}]}'
 ```
 
-Set `"stream": true` only when `@stream` is registered and the client consumes the documented
-stream event format. Validate request items, tool calls, approval/denial items, custom outputs,
-and final messages in contract tests. Tool dispatch must be allow-listed and authorized by the
-application; an LLM-generated tool name is not permission.
+`AgentServer("ResponsesAgent")` also exposes `/responses` (Responses API compatibility),
+`/health`, and `/agent/info`. Streaming emits SSE events and a final `[DONE]` marker;
+test that the client consumes the complete stream. Set `"stream": true` only when
+`@stream` is registered. Validate request items, tool calls, approval/denial items,
+custom outputs, and final messages in contract tests. Tool dispatch must be
+allow-listed and authorized by the application; an LLM-generated tool name is not
+permission.
+
+Long-running inference uses `MLFLOW_DEPLOYMENT_PREDICT_TIMEOUT` and
+`MLFLOW_DEPLOYMENT_PREDICT_TOTAL_TIMEOUT`; note that the total timeout does not
+cancel a hanging request, so enforce cancellation in the application too.
+
+For remote evaluation, propagate distributed trace context with
+`get_tracing_context_headers_for_http_request()` and
+`set_tracing_context_from_http_request_headers()` so served-agent traces join the
+caller's trace.
 
 `ResponsesAgent` supports structured tool-calling, multiple output messages, multi-turn input,
 custom outputs, token tracking, and Responses API compatibility. Its model metadata uses the
@@ -148,6 +194,8 @@ import mlflow
 from mlflow.genai.scorers import RelevanceToQuery, Safety
 from mlflow.genai.agent_server import get_invoke_function
 from mlflow.types.responses import ResponsesAgentRequest, ResponsesAgentResponse
+
+from agent import agent  # noqa: F401 — import the module that registers @invoke
 
 
 def predict_fn(request: dict) -> ResponsesAgentResponse:

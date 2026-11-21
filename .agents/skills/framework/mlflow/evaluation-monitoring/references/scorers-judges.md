@@ -208,6 +208,32 @@ Judge instructions should include:
 5. counterexamples/boundaries when ambiguity is high;
 6. a rationale requirement.
 
+## 4b. TypeSafe typed judges (MLflow 3.17.0+)
+
+TypeSafe/Jev judges return typed Boolean or finite categorical (`Literal`) results
+instead of free-form text. Probabilities are stored in assessment metadata, and
+versioned model IDs improve reproducibility. Use `typesafe:/...` directly or
+Databricks `databricks:/...` with `model_api="decisions"`.
+
+Limitations: no arbitrary numeric outputs, no rationales, no `{{ trace }}`
+templating, and no `inference_params`. 3.16.0 added Unity Catalog model services
+in built-in judges and `mlflow scorers list --builtin` for the full catalog.
+
+```python
+from typing import Literal
+from mlflow.genai.judges import make_judge
+
+Verdict = Literal["good", "bad", "unclear"]
+judge = make_judge(
+    name="answer_quality",
+    instructions="Rate the answer as good, bad, or unclear.",
+    model="typesafe:/my-decision-model",
+    output_type=Verdict,
+)
+result = judge(outputs="Paris is the capital of France.")
+print(result.value, result.metadata)
+```
+
 ## 5. Code-based scorers
 
 ### Decorator pattern

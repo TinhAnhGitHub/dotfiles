@@ -38,7 +38,14 @@ except ValidationError as exc:
 ```
 
 Human messages can vary across versions and locales. Use `include_input=False`
-when asserting or logging data that could contain secrets.
+when asserting or logging data that could contain secrets. `ValidationError` also
+exposes `error_count()`, filtered `errors()`/`json()`, and `from_exception_data()`;
+see `errors/errors/`, `errors/validation_errors/`, and `errors/usage_errors/`.
+Beyond `int_parsing`/`missing`, useful machine types include `recursion_loop`,
+`recursion_depth_exceeded`, `default_factory_not_called`, `get_attribute_error`,
+`missing_sentinel_error`, `fraction_*`, `deque_type`, `ordered_dict_type`, and
+`string_not_ascii`. The `errors/troubleshooting/` page covers Logfire-based
+recurrence analysis, alerts, and scrubbing rejected `input` values.
 
 ## Debugging checklist
 

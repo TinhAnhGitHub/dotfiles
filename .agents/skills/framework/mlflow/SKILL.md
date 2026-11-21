@@ -30,9 +30,31 @@ model loads only the references needed for the task.
 | MLflow MCP Server | [`mcp-server`](mcp-server/SKILL.md) | `mlflow mcp run`, MCP access to traces, field selection, trace feedback/expectations, assistant-driven analysis, or tool scoping with `MLFLOW_MCP_TOOLS` |
 | MLflow AI Assistant | [`ai-assistant`](ai-assistant/SKILL.md) | Assistant panel/setup wizard, local coding-agent integration, project analysis, permission settings, or `uvx mlflow@latest agent setup` |
 | Model Registry and serving lifecycle | [`model-registry`](model-registry/SKILL.md) | Registered models/versions, signatures, aliases/tags, promotion/rollback/CI, OSS registry, Unity Catalog models, or the bridge to Databricks served entities and traffic |
+| Skill Registry (experimental, 3.18.0+) | [`skill-registry`](skill-registry/SKILL.md) | Register/import Agent Skills from folder/Git/OCI/ZIP, versions/statuses/aliases, `skills:/` URIs, pull/install into coding agents, digest verification, or skill governance |
 
 Future MLflow topics should be added as sibling subfolders and listed here rather than
 expanding this parent into a monolith.
+
+## Version currency (release notes checked 2026-11-21)
+
+The current release is **MLflow 3.18.0**. Sub-skill source ledgers were last fully
+reviewed on 2026-08-30 (around 3.15.x); treat `/latest/` pages as moving and verify
+installed signatures. Changes since that review that affect routing:
+
+| Release | Change | Relevant sub-skill |
+|---|---|---|
+| 3.16.0 | Span Links, Custom Trace Views, redesigned trace explorer (default), session grouping; per-user AI Gateway budgets | `tracing-observability`, `ai-gateway` |
+| 3.17.0 | TypeSafe typed judges/feedback, fine-grained sub-resource permissions, dataset-linked eval metrics, `order_by` in `search_prompts()` | `evaluation-monitoring`, `prompt-registry` |
+| 3.18.0 | Automatic Issue Detection with Issues tab + scheduling; experimental eval/trace comparison API and `quality_criteria`; experimental code-based Online Evaluation; hierarchical sessions (`session_id` list, `session_level`) | `evaluation-monitoring`, `tracing-observability` |
+| 3.18.0 | **Skill Registry** (experimental): central catalog of reusable agent skills with versions/aliases | `skill-registry` (new sub-skill) |
+
+3.17.0 and 3.18.0 require a coordinated SQL backend upgrade (`mlflow db upgrade`)
+with all writers stopped; mixed-version rolling upgrades are not supported. 3.18.0
+also makes MCP server version identity case-sensitive on MySQL/SQL Server and stops
+adding `registered_model_meta` to `models:/` downloads. Security: 3.18.0 fixes a
+FileStore trace path traversal (CVE-2026-53995) and adds
+`MLFLOW_ALLOW_MODEL_CODE_EXECUTION=false` while deprecating
+`MLFLOW_ALLOW_PICKLE_DESERIALIZATION`.
 
 ## Cross-suite routing
 

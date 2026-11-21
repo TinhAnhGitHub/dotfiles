@@ -1,6 +1,7 @@
 # Version tracking source ledger
 
-Reviewed 2026-08-30. Treat `/latest/` as moving documentation and verify the installed API.
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-30. Treat `/latest/` as moving documentation and verify the installed API.
 
 | Official source | Purpose/status |
 |---|---|

@@ -1,7 +1,16 @@
 # MLflow GenAI Evaluation and Monitoring Source Ledger
 
-Reviewed 2026-08-30. Use the installed MLflow signature and environment-specific docs when
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-30. Use the installed MLflow signature and environment-specific docs when
 the moving `/latest/` pages disagree with a package or managed workspace.
+
+## 3.18.0 additions
+
+- `compare_evaluations()` + `assert_improved()`, `quality_criteria`, code-based
+  online evaluation via job containers, hierarchical `session_level` scorers,
+  Issues tab + scheduled detection. All experimental where marked in the docs.
+- 3.17.0: TypeSafe typed judges, dataset-linked aggregate metrics.
+- 3.16.0: `mlflow scorers list --builtin`, UC model services in built-in judges.
 
 ## Evaluation indexes and execution
 

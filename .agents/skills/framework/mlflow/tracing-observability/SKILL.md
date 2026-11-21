@@ -10,7 +10,7 @@ description: >
 compatibility: MLflow 3.x; integrations, OpenTelemetry, and the lightweight production SDK are version-gated
 metadata:
   version: "0.1.0"
-  docs-reviewed: "2026-08-30"
+  docs-reviewed: "2026-11-21"
 ---
 
 # MLflow Tracing and Agent Observability
@@ -130,6 +130,21 @@ privacy-sensitive or health-check paths, and re-enable it in a scoped, tested wa
 
 Multimodal inputs/outputs can be displayed as content parts or attachments. Apply the same
 classification and retention policy to image/audio data as to text.
+
+### Version currency (MLflow 3.18.0)
+
+- **Span Links** (3.16.0+): first-class links between spans (retrieval, tool call,
+  downstream trace) surfaced in a dedicated Links tab; record them in the SDK.
+- **Custom Trace Views** (3.16.0+): describe a view in plain English via the MLflow
+  Assistant; save and reuse per experiment. The redesigned trace explorer is the
+  default, with session grouping replacing the experiment Sessions tab.
+- **Span descriptions** (3.17.0+): first-class `description` on `@mlflow.trace` and
+  `start_span()`.
+- **Hierarchical sessions** (3.18.0+): `session_id` may be a list in
+  `update_current_trace`, and offline session scorers accept `session_level`.
+- **Security**: 3.18.0 fixes a FileStore trace path traversal (CVE-2026-53995);
+  upgrade rather than relying on path validation in older servers. UC trace
+  locations and Google ADK scorer APIs are no longer experimental (3.18.0).
 
 ## Production rules
 

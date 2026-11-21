@@ -1,6 +1,7 @@
 # MCP Registry source ledger
 
-Reviewed 2026-08-30. Verify `/latest/` APIs against the installed MLflow release and the remote
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-30. Verify `/latest/` APIs against the installed MLflow release and the remote
 MCP server/transport; Registry behavior is experimental.
 
 | Official source | Coverage |

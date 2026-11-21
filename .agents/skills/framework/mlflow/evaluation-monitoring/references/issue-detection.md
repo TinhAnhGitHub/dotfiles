@@ -22,8 +22,10 @@ batch of traces. It complements, but does not replace, scorers:
 
 Current upstream docs describe the feature in the MLflow UI. Use a recent MLflow server,
 traces with meaningful inputs/outputs/spans, and a configured judge/model endpoint.
-Version-check the target deployment; current research places the feature in recent
-MLflow 3.x and identifies 3.11.1+ in release material.
+Version-check the target deployment: earlier research cited 3.11.1+, and MLflow 3.18.0
+added a dedicated **Issues tab** that groups related problems with trace evidence plus
+**scheduled detection** for new traffic. Treat scheduling and the Issues tab as 3.18.0+
+capabilities and verify the installed server before relying on them.
 
 ## 2. How it works: five stages
 
@@ -55,7 +57,11 @@ Issue detection can use:
 Detection quality depends on trace quality. If tools are opaque or spans are untyped, the
 analysis may identify a symptom without the root cause.
 
-## 4. CLEARS categories
+## 4. Issue focus areas
+
+The older "CLEARS" six-category framing is incomplete. Current docs list seven
+focus areas: **Correctness, Latency, Execution, Adherence, Relevance, Safety, and
+Cost**. Cost detects unnecessary token spend, redundant calls, and expensive paths.
 
 | Category | Detects | Example |
 |---|---|---|
@@ -65,6 +71,7 @@ analysis may identify a symptom without the root cause.
 | **Adherence** | Instruction, policy, format, or role violation | Returns prose instead of required JSON |
 | **Relevance** | Off-topic or unhelpful output | Explains billing history instead of duplicate charge |
 | **Safety** | Harmful, sensitive, or inappropriate behavior | Requests a password or exposes PII |
+| **Cost** | Wasteful token use, redundant calls, expensive paths | Repeated full-context retries |
 
 Category selection should reflect the app:
 
@@ -76,6 +83,18 @@ Category selection should reflect the app:
 
 Start broad during discovery, then use targeted runs for known high-risk dimensions.
 
+### MLflow 3.18.0 detection workflow
+
+3.18.0 added a dedicated **Issues tab** that groups related problems with linked
+trace evidence, run history, custom categories, and **scheduled detection** for new
+traffic. The current workflow also matches newly detected issues against existing
+ones and attaches span-walkthrough evidence, so the older five-stage description
+above is a simplification. Programmatic issue APIs are available; verify signatures
+against the installed release.
+
+UI statuses are **Open / Resolved / Not an issue**; the API values remain
+`pending` / `resolved` / `rejected`. Do not assume the UI label equals the API value.
+
 ## 5. Running detection
 
 ### UI workflow
@@ -83,7 +102,7 @@ Start broad during discovery, then use targeted runs for known high-risk dimensi
 1. Open an experiment view containing traces.
 2. Select all traces or a representative subset.
 3. Start **Detect Issues**.
-4. Select CLEARS categories.
+4. Select issue focus areas (including Cost).
 5. Select/configure the analysis model or AI Gateway endpoint.
 6. Run the asynchronous analysis and monitor progress.
 7. Review summary, severity distribution, clusters, and affected traces.

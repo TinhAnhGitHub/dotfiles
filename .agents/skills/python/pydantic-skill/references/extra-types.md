@@ -21,10 +21,10 @@ assume that a type imported from an old v1 path still exists in `pydantic`.
 |---|---|---|
 | `color` | `Color` | CSS colors and conversion helpers |
 | `coordinate` | `Latitude`, `Longitude`, `Coordinate` | bounded geographic coordinates |
-| `country` | `CountryAlpha2`, `CountryAlpha3`, `CountryNumericCode` | ISO 3166 codes |
+| `country` | `CountryAlpha2`, `CountryAlpha3`, `CountryNumericCode`, `CountryShortName` | ISO 3166 codes |
 | `currency_code` | `ISO4217`, `Currency` | currency codes |
 | `isbn` | `ISBN` | ISBN-10/13 validation/normalization |
-| `language_code` | `LanguageAlpha2`, `LanguageName`, `ISO639_3` | language codes |
+| `language_code` | `LanguageAlpha2`, `LanguageName`, `ISO639_3`, `ISO639_5`, `LanguageInfo` | language codes |
 | `mac_address` | `MacAddress` | MAC/EUI addresses |
 | `payment` | `PaymentCardNumber`, `PaymentCardBrand` | card format/checksum validation |
 | `pendulum_dt` | `DateTime`, `Date`, `Time`, `Duration` | Pendulum values (extra required) |
@@ -32,9 +32,12 @@ assume that a type imported from an old v1 path still exists in `pydantic`.
 | `routing_number` | `ABARoutingNumber` | ABA checksum format |
 | `script_code` | `ISO_15924` | ISO 15924 script codes |
 | `semantic_version` | `SemanticVersion` | SemVer values (extra required) |
-| `timezone_name` | `TimeZoneName` | IANA time-zone names |
+| `timezone_name` | `TimeZoneName`, `timezone_name_settings` | IANA time-zone names |
 | `ulid` | `ULID` | sortable ULIDs (extra required) |
 | — | UUID1–UUID8 | These are current `pydantic.types` aliases, not an extra-types module; verify the installed package before assuming an extra dependency |
+
+As of the v2.14 docs snapshot the API index lists these 16 modules and no new
+v2.14 modules; verify the installed package before relying on an export.
 
 The canonical API pages are listed in
 <https://pydantic.dev/docs/validation/latest/llms.txt>; use a concrete child page,

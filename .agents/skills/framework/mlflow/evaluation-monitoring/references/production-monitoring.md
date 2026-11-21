@@ -33,8 +33,13 @@ Current upstream MLflow docs provide server-side automatic evaluation. Prerequis
 3. session IDs for multi-turn judges;
 4. configured AI Gateway endpoint for judge execution.
 
-Only LLM judges are supported online in OSS. Code-based `@scorer` and `Scorer` class
-implementations remain offline-only.
+Ordinary automatic evaluation supports LLM judges online. As of **MLflow 3.18.0**,
+code-based `@scorer` functions are also supported online **experimentally** on
+self-hosted OSS MLflow using Docker job containers; `Scorer` classes remain
+unsupported online. Requirements: MLflow 3.18+, a SQL backend, a local Docker
+daemon, one server replica, a job image with a matching MLflow version, no network
+access in the job, `@scorer` functions only, and no `expectations` or scorer
+ensembles. See <https://mlflow.org/docs/latest/self-hosting/job-containers/>.
 
 ### Register and start a trace judge
 
@@ -129,10 +134,29 @@ policy = policy.start(
 )
 ```
 
-### Custom code scorer — Databricks-only online pattern
+### Custom code scorer — Databricks or self-hosted job containers
 
-Define and register from a Databricks notebook. Keep it self-contained, with imports
-inside the function and no closure/external-variable dependencies.
+On Databricks, define and register from a notebook. On self-hosted OSS MLflow 3.18+,
+the experimental job-container path requires `MLFLOW_SERVER_ENABLE_CUSTOM_SCORERS=true`,
+executor/Docker settings, a SQL backend, a local Docker daemon, and one server replica.
+Keep the scorer self-contained, with imports inside the function and no
+closure/external-variable dependencies.
+
+```python
+import mlflow
+from mlflow.genai.scorers import ScorerSamplingConfig, scorer
+
+mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.set_experiment("agent-production")
+
+@scorer
+def response_length(outputs: str) -> int:
+    return len(str(outputs).split())
+
+registered = response_length.register(name="response_length")
+active = registered.start(sampling_config=ScorerSamplingConfig(sample_rate=1.0))
+print(active.sample_rate)
+```
 
 ```python
 from mlflow.genai.scorers import scorer, ScorerSamplingConfig

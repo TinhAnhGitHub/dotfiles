@@ -1,6 +1,7 @@
 # MLflow MCP Server Source Ledger
 
-Reviewed 2026-08-30. The server is experimental; verify tool names, configuration, auth, and
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-30. The server is experimental; verify tool names, configuration, auth, and
 filter behavior against the installed MLflow release.
 
 | Official source | Coverage |

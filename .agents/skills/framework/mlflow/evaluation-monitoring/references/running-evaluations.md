@@ -300,6 +300,59 @@ Pass only if:
 
 Define this policy before viewing candidate results.
 
+### Statistical comparison (experimental, 3.18.0+)
+
+`mlflow.genai.compare_evaluations()` adds paired statistical tests for release
+gating. It pairs rows by evaluation request ID or input hash, selects McNemar
+(binary) or Wilcoxon (numeric) tests, requires at least six pairs, reports bootstrap
+confidence intervals and effect sizes, and exposes `assert_improved()` for CI.
+Set `greater_is_better` per scorer; no multiple-comparison correction is applied.
+
+```python
+import mlflow
+from mlflow.genai.scorers import scorer
+
+@scorer
+def approved(outputs: str) -> bool:
+    return outputs.strip().lower() == "approved"
+
+baseline_data = [{"inputs": {"id": i}, "outputs": "pending"} for i in range(6)]
+candidate_data = [{"inputs": {"id": i}, "outputs": "approved"} for i in range(6)]
+baseline = mlflow.genai.evaluate(data=baseline_data, scorers=[approved])
+candidate = mlflow.genai.evaluate(data=candidate_data, scorers=[approved])
+
+comparison = mlflow.genai.compare_evaluations(
+    candidate_run_id=candidate.run_id,
+    baseline_run_id=baseline.run_id,
+)
+print(comparison.summary())
+comparison.assert_improved(scorers=["approved"], alpha=0.05)
+```
+
+### `quality_criteria` (experimental, 3.18.0+)
+
+`quality_criteria` on `mlflow.genai.evaluate()` gates **aggregate run metrics**; it
+does not change row-level scoring. Criteria combine with `AND`, accept bare scorer
+means or backtick-qualified aggregations such as `` `latency/p90` ``, and set
+`result.passed`.
+
+```python
+import mlflow
+from mlflow.genai.scorers import scorer
+
+@scorer
+def answer_length(outputs: str) -> int:
+    return len(outputs.split())
+
+result = mlflow.genai.evaluate(
+    data=[{"inputs": {"question": "What is MLflow?"}, "outputs": "An AI platform."}],
+    scorers=[answer_length],
+    quality_criteria="answer_length <= 10",  # Experimental in 3.18.0
+)
+print(result.metrics)
+assert result.passed
+```
+
 ## 7. Debugging and common failures
 
 | Symptom | Likely cause | Fix |

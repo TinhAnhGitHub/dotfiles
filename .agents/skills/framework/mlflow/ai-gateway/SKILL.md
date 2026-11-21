@@ -7,10 +7,10 @@ description: >
   and coding-agent routing. Use whenever a user asks to centralize provider
   credentials, route models, add failover, control spend, enforce policies,
   or call an MLflow Gateway endpoint. Load the parent `mlflow` skill first.
-compatibility: MLflow 3.x; AI Gateway requires the FastAPI tracking server and a SQL backend store
+compatibility: MLflow 3.x; AI Gateway requires the FastAPI tracking server and a SQL backend store; 3.16 adds per-user budgets, 3.17 adds model discovery/TypeSafe Jev/Bedrock passthrough and MLFLOW_ENABLE_AI_GATEWAY, 3.18 refreshes budgets from all workspaces
 metadata:
-  version: "0.1.0"
-  docs-reviewed: "2026-08-30"
+  version: "0.2.0"
+  docs-reviewed: "2026-11-21"
 ---
 
 # MLflow AI Gateway
@@ -66,7 +66,60 @@ curl -X POST http://localhost:5000/gateway/support/mlflow/invocations \
 ```
 
 The exact endpoint/provider configuration API evolves quickly; inspect the installed API or use
-the current official endpoint guide rather than inventing a client method.
+the current official endpoint guide rather than inventing a client method. Pin the MLflow version
+in deployment manifests — endpoint schemas and provider support move between minors.
+
+### Provider adoption (for your own providers)
+
+The Gateway supports a broad provider catalog (OpenAI, Anthropic, AWS Bedrock,
+Azure OpenAI, Google Gemini/Vertex, Mistral, Groq, Together, Databricks, and
+OpenAI-compatible custom providers). Configure a **unified** endpoint for portable
+routing and a **passthrough** endpoint only when a provider-native feature is
+required. See the provider catalog:
+<https://mlflow.org/docs/latest/genai/governance/ai-gateway/endpoints/model-providers>.
+
+Create an endpoint with traffic splitting and sequential fallback (verify exact
+field names against the installed release):
+
+```python
+import mlflow
+from mlflow.gateway import GatewayClient
+
+client = GatewayClient("http://localhost:5000")
+client.create_endpoint(
+    name="support",
+    config={
+        "routing": "traffic_split",
+        "routes": [
+            {"model": "openai:/gpt-4o-mini", "share": 0.8},
+            {"model": "anthropic:/claude-3-5-haiku", "share": 0.2},
+        ],
+        "fallbacks": [
+            {"model": "databricks:/databricks-claude-3-7-sonnet"},
+        ],
+    },
+)
+```
+
+Call it through an OpenAI-compatible client without changing provider keys:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:5000/gateway/mlflow/v1",
+    api_key="unused",  # Gateway owns provider credentials
+)
+resp = client.chat.completions.create(
+    model="support",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(resp.choices[0].message.content)
+```
+
+For a custom OpenAI-compatible provider, register it as an OpenAI-compatible
+connection with its base URL and credential, then reference it by model URI in a
+route. Never place provider keys in application code or committed config.
 
 ## Query styles
 
@@ -124,6 +177,16 @@ requests. A rejected request returns HTTP 429 after the limit is reached. Define
 critical traffic, retries, fallback requests, and streaming before enabling hard limits. Local
 and Redis-backed usage trackers have different durability/coordination properties; choose the
 deployment mode deliberately.
+
+Version notes: **3.16.0** added per-user budget policies (USER scope + principal).
+**3.17.0** added OpenAI-compatible model discovery, TypeSafe Jev judges, Anthropic
+Messages passthrough on `AmazonBedrockProvider`, and the `MLFLOW_ENABLE_AI_GATEWAY`
+server toggle to disable the Gateway. **3.18.0** refreshes gateway budget policies
+from every workspace (not just the active one), routes guardrail sanitization calls
+to the server's own address, fixes Mistral reasoning-model responses, and terminates
+Anthropic passthrough streams with `data: [DONE]`. Budget policies refreshed from
+all workspaces means a limit change in one workspace can affect others — audit
+policies across workspaces before tightening a limit.
 
 ## Guardrails
 

@@ -1,6 +1,7 @@
 # Model Registry and Azure serving source ledger
 
-Reviewed 2026-08-01. `/latest/` and Microsoft Learn pages are moving sources.
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-01. `/latest/` and Microsoft Learn pages are moving sources.
 
 ## MLflow
 

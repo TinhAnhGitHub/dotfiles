@@ -55,6 +55,28 @@ V1 extra types such as `Color` and `PaymentCardNumber` moved to the separate
 - Do not mix v1 and v2 model instances. Use `pydantic.v1` only for deliberate,
   temporary compatibility boundaries.
 
+### Additional v1→v2 changes
+
+- Model equality changed; do not rely on v1 equality semantics across types.
+- Lifecycle attributes were renamed: `__fields__` → `model_fields`,
+  `__fields_set__` → `model_fields_set`, `__config__` → `model_config`, and
+  `__validators__` → `__pydantic_validator__`.
+- `GenericModel` is gone; use standard `BaseModel` generics. `isinstance` checks
+  against parameterized generics have caveats — test them explicitly.
+- `Field` no longer accepts arbitrary schema kwargs; removed options include
+  `const`, `min_items`/`max_items` (use `min_length`/`max_length`), and `regex`
+  (use `pattern`). `allow_reuse` was removed.
+- Pydantic dataclasses accept tuple input, run validators before `__post_init__`,
+  support `extra='allow'`, and expose `__pydantic_model__`.
+- Several config keys were renamed or removed; consult the migration guide's
+  settings table rather than translating names mechanically.
+- `root_validator(skip_on_failure=True)` has no direct v2 equivalent; restructure
+  with a `model_validator` and explicit error handling.
+- Input-type preservation, smart-union behavior, and float-to-int restrictions
+  changed; JSON Schema now targets a newer draft with distinct input/output
+  schemas. The mypy plugin moved to `pydantic.mypy`, and `email-validator<2` is
+  no longer supported.
+
 ## Migration workflow
 
 1. Inventory deprecated imports, decorators, config names, root models, custom

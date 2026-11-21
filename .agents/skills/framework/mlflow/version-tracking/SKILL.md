@@ -10,7 +10,7 @@ description: >
 compatibility: MLflow 3.x; automatic Git model versioning is experimental and requires a compatible newer minor release
 metadata:
   version: "0.2.0"
-  docs-reviewed: "2026-08-30"
+  docs-reviewed: "2026-11-21"
 ---
 
 # MLflow GenAI Version Tracking
@@ -95,10 +95,25 @@ with mlflow.genai.enable_git_model_versioning() as git_context:
     print(git_context.info.branch, git_context.info.commit, git_context.info.dirty)
 ```
 
-This API is experimental and current docs identify it for newer MLflow 3 releases. It captures
-branch/commit/dirty state and links traces to an application `LoggedModel`. Feature-detect it,
-pin MLflow, and use the manual pattern when it is unavailable or when Git metadata cannot be
-read, including affected Databricks Git Folder workflows.
+This API is experimental and current docs require **MLflow >= 3.4**. It captures
+branch/commit/dirty state and the dirty diff, deduplicates versions by
+branch+commit+dirty state, records the repository URL and `mlflow.git.diff`, and
+links traces to an application `LoggedModel`. It is unsupported in Databricks Git
+Folders. Feature-detect it, pin MLflow, and use the manual pattern when it is
+unavailable or when Git metadata cannot be read.
+
+```python
+import mlflow
+
+with mlflow.genai.enable_git_model_versioning(remote_name="origin") as ctx:
+    print(ctx.info.branch, ctx.info.commit, ctx.info.dirty)
+    traced_agent("How do I reset my password?")
+
+mlflow.genai.disable_git_model_versioning()
+```
+
+Agent Server's `setup_mlflow_git_based_version_tracking()` helper requires
+**MLflow >= 3.6.0** (see `agent-serving`).
 
 ## Compare application versions
 
@@ -112,9 +127,43 @@ traffic slices. Include:
 - trace examples and assessment provenance;
 - deployment endpoint/entity/config revision.
 
-The version-comparison UI/workflow helps inspect trace and performance differences, but it is
-evidence collection rather than an automatic release approval. Define explicit gates in CI or
-the deployment system and preserve the selected artifact plus rollback target.
+The version-comparison UI helps inspect trace and performance differences. In
+**MLflow 3.18.0** the experimental `mlflow.genai.compare_evaluations()` API adds
+automated statistical gating: it pairs rows by evaluation request ID or input hash,
+selects McNemar (binary) or Wilcoxon (numeric) tests, requires at least six pairs,
+reports bootstrap confidence intervals and effect sizes, and exposes
+`ComparisonResult.assert_improved()` for a CI release gate. Set `greater_is_better`
+per scorer and note that no multiple-comparison correction is applied.
+
+```python
+import mlflow
+from mlflow.genai.scorers import scorer
+
+@scorer
+def exact_match(outputs, expectations):
+    return outputs == expectations["expected_response"]
+
+data = [
+    {"inputs": {"question": f"q{i}"},
+     "expectations": {"expected_response": "good"}}
+    for i in range(6)
+]
+baseline = mlflow.genai.evaluate(
+    data=data, predict_fn=lambda question: "bad", scorers=[exact_match]
+)
+candidate = mlflow.genai.evaluate(
+    data=data, predict_fn=lambda question: "good", scorers=[exact_match]
+)
+
+comparison = mlflow.genai.compare_evaluations(
+    candidate.run_id, baseline.run_id, log_results=True
+)
+print(comparison.summary())
+comparison.assert_improved(scorers=["exact_match"], alpha=0.05)
+```
+
+The UI alone remains evidence collection, not automatic approval. Preserve the
+selected artifact plus rollback target even when `assert_improved()` passes.
 
 ## Reference router
 

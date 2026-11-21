@@ -1,6 +1,7 @@
 # MLflow Agent Serving Source Ledger
 
-Reviewed 2026-08-30. Check the installed MLflow, Pydantic, framework, and provider versions
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-30. Check the installed MLflow, Pydantic, framework, and provider versions
 before using the moving `/latest/` serving APIs.
 
 | Official source | Coverage |

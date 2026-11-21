@@ -9,6 +9,57 @@ Pydantic 2.
 
 Use generic `PythonModel` for non-agent applications with a deliberately custom schema.
 
+## Output helper catalog
+
+Only construct `ResponsesAgentResponse` and `ResponsesAgentStreamEvent` directly.
+Everything else in `mlflow.types.responses_helpers` is for validating dictionaries.
+Use these instance helpers to build items:
+
+| Helper | Purpose |
+|---|---|
+| `create_text_output_item` | Assistant text message |
+| `create_reasoning_item` | Reasoning summary item |
+| `create_function_call_item` | Tool call (`id`, `call_id`, `name`, `arguments`) |
+| `create_function_call_output_item` | Tool result using the same `call_id` |
+| `create_mcp_approval_request_item` / `create_mcp_approval_response_item` | MCP tool approval flow |
+| `create_annotation_added` | Annotation item (streaming only) |
+| `create_text_delta` | Text delta (streaming only) |
+
+`request.custom_inputs` passes through to `custom_outputs` for arbitrary metadata.
+Conversion helpers `to_chat_completions_input()` and
+`output_to_responses_items_stream()` bridge Chat Completions providers and
+Responses-format output without hand-writing item dictionaries.
+
+## Complete tool-calling sequence
+
+```python
+import mlflow
+from mlflow.entities import SpanType
+from mlflow.pyfunc import ResponsesAgent
+from mlflow.types.responses import ResponsesAgentRequest, ResponsesAgentResponse
+
+class SimpleResponsesAgent(ResponsesAgent):
+    @mlflow.trace(span_type=SpanType.AGENT)
+    def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
+        return ResponsesAgentResponse(
+            output=[
+                self.create_function_call_item(
+                    id="fc_1", call_id="call_1", name="python_exec",
+                    arguments='{"code":"result = 4 * 3\\nprint(result)"}',
+                ),
+                self.create_function_call_output_item(call_id="call_1", output="12\n"),
+                self.create_text_output_item(
+                    text="The result of 4 * 3 in Python is 12.", id="msg_1"
+                ),
+            ],
+            custom_outputs={"key1": "custom-value1"},
+        )
+```
+
+For streaming tool calls, emit each call and its result as a separate
+`response.output_item.done` event so MLflow tracing and clients can reconstruct
+message history.
+
 ## Minimal ResponsesAgent with streaming
 
 `agent.py`:
@@ -115,6 +166,58 @@ A complete recorded sequence is:
 Never expose arbitrary `eval`, shell execution, unrestricted file/network access, or unvalidated
 tool names. Prefer a fixed dispatch table and Pydantic/JSON Schema validation. For side effects,
 use idempotency keys, authorization, audit logging, and approval steps.
+
+## Adapting a Chat Completions provider
+
+Use the conversion helpers rather than manual item construction:
+
+```python
+import mlflow
+from mlflow.models import set_model
+from mlflow.pyfunc import ResponsesAgent
+from mlflow.types.responses import (
+    ResponsesAgentRequest, ResponsesAgentResponse,
+    output_to_responses_items_stream, to_chat_completions_input,
+)
+from openai import OpenAI
+
+client = OpenAI()
+
+class SimpleResponsesAgent(ResponsesAgent):
+    def call_llm(self, messages):
+        for chunk in client.chat.completions.create(
+            model="gpt-5", messages=messages, stream=True
+        ):
+            yield chunk.to_dict()
+
+    def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
+        outputs = [
+            event.item
+            for event in self.predict_stream(request)
+            if event.type == "response.output_item.done"
+        ]
+        return ResponsesAgentResponse(output=outputs, custom_outputs=request.custom_inputs)
+
+    def predict_stream(self, request: ResponsesAgentRequest):
+        messages = to_chat_completions_input([i.model_dump() for i in request.input])
+        yield from output_to_responses_items_stream(self.call_llm(messages))
+
+mlflow.openai.autolog()
+set_model(SimpleResponsesAgent())
+```
+
+## ChatAgent → ResponsesAgent message mapping
+
+| Case | ChatAgent | ResponsesAgent |
+|---|---|---|
+| Text | `{"role": "assistant", "content": "..."}` | `{"type": "message", "id": "...", "role": "assistant", "content": [{"type": "output_text", "text": "...", "annotations": []}], "status": "completed"}` |
+| Tool call | `tool_calls` on assistant message | `{"type": "function_call", "id": "fc_1", "call_id": "call_1", "name": "...", "arguments": "..."}` |
+| Tool result | `{"role": "tool", "tool_call_id": "call_1", "content": "..."}` | `{"type": "function_call_output", "call_id": "call_1", "output": "..."}` |
+| Tool definition | `{"type": "function", "function": {...}}` | `{"type": "function", "name": "...", "parameters": {...}, "strict": true, "description": "..."}` |
+
+Preserve `call_id` across call and output, replace the single assistant message with
+a list of output items, and re-test clients, UI rendering, trace scorers, and
+serving payloads.
 
 ## Generic PythonModel
 

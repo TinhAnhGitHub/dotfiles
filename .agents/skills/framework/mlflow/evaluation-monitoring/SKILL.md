@@ -11,8 +11,8 @@ description: >
   monitor, or improve an LLM app or agent with MLflow.
 compatibility: MLflow 3.x; some workflows require newer minor versions or Databricks managed MLflow
 metadata:
-  version: "0.2.0"
-  docs-reviewed: "2026-08-30"
+  version: "0.3.0"
+  docs-reviewed: "2026-11-21"
 ---
 
 # MLflow GenAI Evaluation & Monitoring
@@ -197,6 +197,12 @@ Automate the stable parts of the loop:
 - Judge Builder UI: current docs identify MLflow 3.9+.
 - `@mlflow.test` regression workflow: current CI docs use MLflow 3.14+.
 - Review queues: current docs identify the feature as experimental and added in MLflow 3.14.0.
+- TypeSafe typed Boolean/categorical judges and feedback: MLflow 3.17.0+.
+- Automatic Issue Detection: a dedicated Issues tab with trace evidence and scheduled
+  detection landed in MLflow 3.18.0 (earlier research cited 3.11.1+); see `issue-detection.md`.
+- Experimental in 3.18.0: statistical eval-run comparison API, `quality_criteria` on
+  `mlflow.genai.evaluate`, and code-based Online Evaluation (self-hosted with job containers).
+- Offline session scorers accept `session_level` for hierarchical sessions (3.18.0+).
 - Automatic evaluation and issue detection are operational/preview-sensitive; inspect the target
   server, endpoint, permissions, and installed signatures rather than assuming parity with offline
   evaluation.

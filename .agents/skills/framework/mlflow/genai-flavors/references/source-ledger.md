@@ -1,7 +1,20 @@
 # GenAI flavors source ledger
 
-Reviewed 2026-08-30. Verify `/latest/` examples against installed package signatures and
+Release-note currency check 2026-11-21 against MLflow 3.18.0; detailed page review
+2026-08-30. Verify `/latest/` examples against installed package signatures and
 framework/provider versions.
+
+## Version notes (3.16–3.18)
+
+- 3.18.0: `MLFLOW_ALLOW_MODEL_CODE_EXECUTION` gate, pickle-free serialization
+  formats, DSPy `use_dspy_model_save=True` (dspy > 3.1.0), experimental
+  `compare_evaluations()`, Skill Registry, Databricks System One judges.
+- 3.17.0: `uc_model_service` model-version dependencies and `DatabricksUCModelService`
+  resource type. Built-in judges gained UC model services in **3.16.0**, not 3.17.
+- 3.16.0: dropped cross-version testing for pyspark < 3.4.4 (CI scope, not a flavor API).
+- OpenAI Agents, Pydantic AI, Google ADK, CrewAI, and LangGraph appear as tracing
+  integrations, not first-party `mlflow.<framework>.log_model` flavors; use
+  ResponsesAgent + Models from Code / Agent Server for packaging.
 
 | Official source | Coverage/status |
 |---|---|

@@ -6,10 +6,10 @@ description: >
   backend configuration, and the bridge from UC versions to Azure Databricks custom model
   serving endpoints, traffic splits, logs, and monitoring. Use for MLOps or LLMOps model
   promotion/versioning/deployment questions. Load parent `mlflow` first.
-compatibility: MLflow 3.x; Databricks operations require compatible workspace APIs, SDK/CLI, privileges, and region support
+compatibility: MLflow 3.x; 3.17 adds UC model-service dependencies and source LoggedModel links; 3.18 changes registry-download metadata, permission-name semantics, and adds model-code execution gates; Databricks operations require compatible workspace APIs, SDK/CLI, privileges, and region support
 metadata:
-  version: "0.1.0"
-  docs-reviewed: "2026-08-01"
+  version: "0.2.0"
+  docs-reviewed: "2026-11-21"
 ---
 
 # MLflow Model Registry and Serving Lifecycle
@@ -81,6 +81,67 @@ client.set_registered_model_alias(MODEL_NAME, "champion", registered.version)
 
 Prefer `info.model_uri` returned by logging. Avoid reconstructing artifact locations from run paths,
 especially in MLflow 3 where model storage semantics changed.
+
+A concrete sklearn example with signature and input example:
+
+```python
+import mlflow
+import mlflow.sklearn
+from mlflow.models import infer_signature
+from sklearn.datasets import load_iris
+from sklearn.linear_model import LogisticRegression
+
+X, y = load_iris(return_X_y=True)
+model = LogisticRegression(max_iter=200).fit(X, y)
+signature = infer_signature(X, model.predict(X))
+
+with mlflow.start_run():
+    info = mlflow.sklearn.log_model(
+        sk_model=model, name="model", signature=signature, input_example=X[:2]
+    )
+registered = mlflow.register_model(info.model_uri, "iris_classifier")
+print(registered.version)
+```
+
+Promotion and rollback with aliases (distinct from endpoint rollback):
+
+```python
+from mlflow import MlflowClient
+
+client = MlflowClient()
+name = "iris_classifier"
+candidate = client.get_model_version_by_alias(name, "candidate")
+champion = client.get_model_version_by_alias(name, "champion")
+client.set_registered_model_alias(name, "rollback", champion.version)
+client.set_registered_model_alias(name, "champion", candidate.version)
+# Roll back:
+previous = client.get_model_version_by_alias(name, "rollback")
+client.set_registered_model_alias(name, "champion", previous.version)
+```
+
+Load by alias:
+
+```python
+import mlflow
+model = mlflow.pyfunc.load_model("models:/iris_classifier@champion")
+print(model.predict([[5.1, 3.5, 1.4, 0.2]]))
+```
+
+## Version gates and migration (3.17–3.18)
+
+- **3.17.0**: `uc_model_service` model-version dependencies, `DatabricksUCModelService`
+  resource type, source LoggedModel links on version pages, fine-grained permissions
+  for contained resources. Requires coordinated `mlflow db upgrade` with all writers
+  stopped; mixed-version rolling upgrades are unsupported.
+- **3.18.0 breaking changes**: `registered_model_meta` is no longer added to
+  `models:/` downloads — custom readers must use the URI or Registry API. Registry
+  permissions use stored resource names on case-insensitive databases (re-save
+  differently cased grants). Renames onto names with direct/exact-name grants are
+  rejected; `*` is rejected as a model name when auth is enabled. `register_model()`
+  raises when Databricks Model Serving cannot serve the model.
+- **3.18.0 security**: `MLFLOW_ALLOW_MODEL_CODE_EXECUTION=false` refuses to load
+  model-supplied code; `MLFLOW_ALLOW_PICKLE_DESERIALIZATION` is deprecated. See
+  <https://mlflow.org/docs/latest/ml/tracking/pickle-free-models/>.
 
 ## Reference router
 
