@@ -677,6 +677,12 @@ def pytest_report_header(config):
     return "myapp plugin: loaded"
 ```
 
+Plugin path migration (pytest 9+): hook arguments and node constructors use
+`pathlib.Path`, not the removed `py.path.local`/`fspath` API. Use `node.path`
+instead of `node.fspath`, and accept `path: Path` in collection hooks. Class-scoped
+fixtures defined as instance methods are deprecated — make them `@classmethod`
+(or module-level functions) when the scope is broader than `function`.
+
 Verify with `pytest --trace-config`. To import fixtures defined in a
 library conftest, use `pytest_plugins` in the **root** conftest:
 

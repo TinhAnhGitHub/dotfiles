@@ -20,6 +20,12 @@ filterwarnings =
     ignore::DeprecationWarning
 ```
 
+pytest 9+ supports native TOML config: `[tool.pytest]` in `pyproject.toml`, or a
+standalone `pytest.toml` / `.pytest.toml`. `[tool.pytest.ini_options]` remains the
+compatibility table and is still widely used. Prefer `strict = true` (pytest 9+)
+over listing `--strict-markers --strict-config` individually when the whole suite
+is ready for strict behavior.
+
 ```toml
 # pyproject.toml (modern production standard)
 [tool.pytest.ini_options]
@@ -500,7 +506,7 @@ CLI notes:
 | `-s` | Shorthand for `--capture=no` (capture fixtures still take precedence) |
 | `--capture={fd,sys,tee-sys,no}` | `fd` default (catches subprocess output), `tee-sys` captures *and* passes through |
 | `--show-capture={no,stdout,stderr,log,all}` | What captured output failed tests display (default `all`) |
-| `--pastebin={failed,all}` | Upload failure output to a pastebin service |
+| `--pastebin={failed,all}` | Deprecated in pytest 9.1; use the external `pytest-pastebin` plugin |
 
 ## §13 — Monkeypatch Deep Dive
 
@@ -933,6 +939,10 @@ Force a file with `-c FILE`; override any ini key with `-o key=value` (repeatabl
 | `required_plugins` | Comma-separated plugins that must be installed |
 | `pythonpath = ["src"]` | Add dirs to `sys.path` (src layout) |
 | `xfail_strict = true` | Global strict xfail (alias `strict_xfail`) |
+| `strict = true` | pytest 9+: enables `strict_config`, `strict_markers`, `strict_parametrization_ids`, `strict_xfail` together |
+| `strict_parametrization_ids = true` | pytest 9+: reject duplicate/unsafe parametrization IDs |
+| `parametrize_long_str_id_strategy` | pytest 9.2+: `short` / `sha256` / `legacy` / `disallow` for long string IDs |
+| `faulthandler_exit_on_timeout` | Emit faulthandler dump and exit on timeout |
 | `log_cli` / `log_cli_level` / `log_file` | Logging (see §15) |
 | `cache_dir` | Location of `.pytest_cache` |
 | `tmp_path_retention_count` / `tmp_path_retention_policy` | Keep `all` / `failed` / `none` tmp dirs (count = how many runs) |

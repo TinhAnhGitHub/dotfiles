@@ -9,10 +9,12 @@ description: >
   how to write, run, debug, organize, or improve Python tests with pytest.
   For PySpark or Databricks-specific testing, also use pytest-databricks.
 license: MIT
+compatibility: pytest 9.2.0 (Python 3.10+); version-gated notes for pytest 9.0-9.2 are marked inline
 metadata:
   author: TestMu AI
-  version: "2.0"
+  version: "3.0"
   source: "https://docs.pytest.org/en/stable/"
+  docs-reviewed: "2026-11-21"
 ---
 
 # Pytest Skill
@@ -57,6 +59,28 @@ Read the reference that matches the task:
 For Spark, Databricks Connect, `dbutils`, `WorkspaceClient`, or
 `databricks-labs-pytester`, load `pytest-databricks` as well; do not replace its
 environment-specific guidance with generic mocks.
+
+For property-based/invariant fuzzing, load the sibling `hypothesis` skill — pytest
+is the runner, Hypothesis is the input-generation and shrinking engine. For
+browser E2E tests, load the sibling `playwright` skill — it adds pytest-playwright
+fixtures, locators, and web-first assertions without repeating generic pytest
+guidance from this skill.
+
+## Version currency (pytest 9.0–9.2)
+
+- **9.0**: Python 3.9 support dropped (minimum 3.10). Native TOML config added:
+  `[tool.pytest]` in `pyproject.toml`, plus `pytest.toml`/`.pytest.toml`;
+  `[tool.pytest.ini_options]` remains the compatibility table.
+- **9.0**: global `strict = true` enables `strict_config`, `strict_markers`,
+  `strict_parametrization_ids`, and `strict_xfail` together.
+- **9.1**: `pytest.register_fixture()` added with keyword-only `name`, `func`,
+  `node` (see `reference/official-patterns.md`); `importorskip()` now skips only
+  `ModuleNotFoundError` unless `exc_type=ImportError` is passed; `--pastebin`
+  moved to the external `pytest-pastebin` plugin.
+- **9.2**: `indirect`, `ids`, and `scope` on `parametrize` are keyword-only;
+  `parametrize_long_str_id_strategy` added; `-c` rejects bad config paths;
+  plugin import failures return classified exit codes (4 missing, 3 broken).
+- Subtests remain experimental; `pytest.Subtests` is exportable for typing.
 
 ## Core test patterns
 

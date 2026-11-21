@@ -206,24 +206,43 @@ cleanup policy.
 ### Imperative fixture registration (pytest 8.3+)
 
 For plugin authors and programmatic fixture creation where declarative
-`@pytest.fixture` decorators are unsuitable, pytest 8.3+ introduces
-`pytest.register_fixture(func, name=None, scope="function")`:
+`@pytest.fixture` decorators are unsuitable, pytest **9.1+** provides
+`pytest.register_fixture()`. The current signature is keyword-only:
+`pytest.register_fixture(*, name, func, node)` — `node` controls fixture
+visibility (pass the session or a collector node). The older
+`register_fixture(func, name=None, scope=...)` form is not valid in current pytest.
 
 ```python
-# In a plugin hook or conftest setup:
-def register_dynamic_clients(config):
-    for client_name in config.getoption("--enabled-clients"):
-        def make_client_fixture(name=client_name):
-            return connect_to(name)
+# pytest 9.1+ — in a plugin hook or conftest setup:
+def make_client() -> dict[str, str]:
+    return {"status": "ready"}
 
-        pytest.register_fixture(make_client_fixture, name=f"client_{client_name}", scope="session")
+def pytest_sessionstart(session) -> None:
+    pytest.register_fixture(
+        name="client",
+        func=make_client,
+        node=session,
+    )
 ```
 
 ## 4. Marks, parametrization, and subtests
 
 Register custom marks in configuration and use `--strict-markers` to catch
 typos. Marks can be applied to functions, classes, modules via `pytestmark`,
-and individual parameter cases:
+and individual parameter cases. In pytest 9.2+, the `indirect`, `ids`, and
+`scope` arguments to `Metafunc.parametrize()` and `@pytest.mark.parametrize`
+are keyword-only; pass them by name rather than position:
+
+```python
+@pytest.mark.parametrize(
+    "value",
+    ["a", "b"],
+    ids=["first", "second"],   # keyword-only in pytest 9.2+
+    scope="function",
+)
+def test_value(value: str) -> None:
+    assert value
+```
 
 ```python
 pytestmark = pytest.mark.api
@@ -285,13 +304,18 @@ Subtests allow multiple distinct checks inside a loop or workflow without
 aborting the entire test function when one check fails:
 
 ```python
-def test_all_supported_formats(subtests, document_parser):
+import pytest
+
+def test_all_supported_formats(subtests: pytest.Subtests, document_parser):
     # Dynamic runtime discovery where combinations are not known at collection time
     for fmt in document_parser.discover_formats():
         with subtests.test(msg=f"testing format {fmt}", format=fmt):
             output = document_parser.parse(fmt)
             assert output.status == "valid", f"Failed parsing {fmt}"
 ```
+
+Subtests remain experimental in pytest 9; `pytest.Subtests` is exportable for
+typing. Use `verbosity_subtests` to control how many subtest results are shown.
 
 #### Decision Matrix: `@pytest.mark.parametrize` vs `subtests`
 
@@ -360,7 +384,17 @@ Use `skip` when prerequisites are absent and the test cannot run. Use `xfail`
 when a known defect or unsupported behavior is expected. `xfail(strict=True)`
 turns an unexpected pass into a failure. `raises=` narrows which defect is
 allowed. Use `pytest.importorskip` for optional modules and
-`allow_module_level=True` for a conditional module skip.
+`allow_module_level=True` for a conditional module skip. Since pytest 9.1,
+`importorskip()` skips only on `ModuleNotFoundError`; pass `exc_type=ImportError`
+to preserve the older behavior for arbitrary import failures:
+
+```python
+import pytest
+
+def test_optional_json() -> None:
+    json = pytest.importorskip("json", exc_type=ModuleNotFoundError)
+    assert json.loads('{"ok": true}')["ok"] is True
+```
 
 ## 7. Cache, failure handling, and debugging
 
